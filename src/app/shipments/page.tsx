@@ -606,20 +606,20 @@ function SummaryChip({
       style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         padding: '12px 20px',
-        background: active ? `${color}22` : `${color}10`,
-        border: `${active ? 2 : 1}px solid ${active ? color : color + '38'}`,
+        background: active ? `${color}28` : `${color}18`,
+        border: `${active ? 2 : 1}px solid ${color}`,
         borderRadius: radii.card,
         minWidth: 80, flex: 1,
         cursor: 'pointer',
         transition: 'all 0.15s',
-        boxShadow: active ? `0 0 16px ${color}30` : 'none',
+        boxShadow: active ? `0 0 18px ${color}40` : `0 0 8px ${color}18`,
         userSelect: 'none',
       }}
     >
       <span style={{ fontSize: font.size['2xl'], fontWeight: font.weight.extrabold, color, fontFamily: font.family, lineHeight: 1 }}>
         {count}
       </span>
-      <span style={{ marginTop: 4, fontSize: font.size.xs, color: active ? color : colors.textSecondary, fontFamily: font.family, whiteSpace: 'nowrap', fontWeight: active ? font.weight.bold : font.weight.regular }}>
+      <span style={{ marginTop: 4, fontSize: font.size.xs, color, fontFamily: font.family, whiteSpace: 'nowrap', fontWeight: font.weight.bold }}>
         {label}
       </span>
     </div>
@@ -695,11 +695,11 @@ export default function ShipmentsPage() {
 
       {/* Summary strip — clickable cards */}
       <div style={{ display: 'flex', gap: 10 }}>
-        <SummaryChip label="Booked"          count={countBooked}    color={AMBER} active={activeCard === 'booked'}          onClick={() => toggleCard('booked')} />
-        <SummaryChip label="In Transit"      count={countTransit}   color={BLUE}  active={activeCard === 'in_transit'}      onClick={() => toggleCard('in_transit')} />
+        <SummaryChip label="Booked"          count={countBooked}    color={MINT}  active={activeCard === 'booked'}          onClick={() => toggleCard('booked')} />
+        <SummaryChip label="In Transit"      count={countTransit}   color={AMBER} active={activeCard === 'in_transit'}      onClick={() => toggleCard('in_transit')} />
         <SummaryChip label="Issues"          count={countIssues}    color={RED}   active={activeCard === 'issues'}          onClick={() => toggleCard('issues')} />
-        <SummaryChip label="Awaiting Pickup" count={countPickup}    color={MINT}  active={activeCard === 'awaiting_pickup'} onClick={() => toggleCard('awaiting_pickup')} />
-        <SummaryChip label="Delivered"       count={countDelivered} color={colors.mintDim} active={activeCard === 'delivered'} onClick={() => toggleCard('delivered')} />
+        <SummaryChip label="Awaiting Pickup" count={countPickup}    color={AMBER} active={activeCard === 'awaiting_pickup'} onClick={() => toggleCard('awaiting_pickup')} />
+        <SummaryChip label="Delivered"       count={countDelivered} color={MINT}  active={activeCard === 'delivered'}       onClick={() => toggleCard('delivered')} />
       </div>
 
       {/* Active card indicator */}
