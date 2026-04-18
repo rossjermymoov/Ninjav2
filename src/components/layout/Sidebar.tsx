@@ -125,18 +125,59 @@ export function Sidebar() {
         </svg>
       </div>
 
-      {/* Nav — each item uses flexbox so icon + label centre at any height */}
+      {/* Nav — main items spread evenly, Settings pinned to bottom */}
       <nav className="flex-1 flex flex-col overflow-y-auto">
-        {NAV_ITEMS.map((item) => {
+
+        {/* ── Main items: each takes equal share of the available height ── */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          {NAV_ITEMS.filter(item => !item.dividerBefore).map((item) => {
+            const active    = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
+            const iconColor = active ? '#1DFB9D' : '#1A745A'
+
+            return (
+              <div key={item.href} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 44 }}>
+                <Link
+                  href={item.href}
+                  className="transition-all duration-150"
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 3,
+                    background: active ? 'rgba(159,162,180,0.08)' : 'transparent',
+                    borderLeft: active ? '3px solid #1DFB9D' : '3px solid transparent',
+                    textDecoration: 'none',
+                  }}
+                >
+                  {item.renderIcon(iconColor, 22)}
+                  <span style={{
+                    fontFamily: M,
+                    fontSize: 11,
+                    fontWeight: active ? 600 : 400,
+                    lineHeight: '14px',
+                    letterSpacing: '0.2px',
+                    color: active ? '#DDE2FF' : '#A4A6B3',
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {item.label}
+                  </span>
+                </Link>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* ── Settings: always at the bottom ── */}
+        {NAV_ITEMS.filter(item => item.dividerBefore).map((item) => {
           const active    = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
-          const divBefore = 'dividerBefore' in item && item.dividerBefore
           const iconColor = active ? '#1DFB9D' : '#1A745A'
 
           return (
             <div key={item.href}>
-              {divBefore && (
-                <div style={{ height: 1, margin: '0 16px', background: '#DFE0EB', opacity: 0.06 }} />
-              )}
+              <div style={{ height: 1, margin: '0 16px', background: '#DFE0EB', opacity: 0.06 }} />
               <Link
                 href={item.href}
                 className="transition-all duration-150"
@@ -150,12 +191,9 @@ export function Sidebar() {
                   background: active ? 'rgba(159,162,180,0.08)' : 'transparent',
                   borderLeft: active ? '3px solid #1DFB9D' : '3px solid transparent',
                   textDecoration: 'none',
-                  paddingTop: 2,
-                  paddingBottom: 2,
                 }}
               >
                 {item.renderIcon(iconColor, 22)}
-
                 <span style={{
                   fontFamily: M,
                   fontSize: 11,
@@ -172,6 +210,7 @@ export function Sidebar() {
             </div>
           )
         })}
+
       </nav>
     </aside>
   )

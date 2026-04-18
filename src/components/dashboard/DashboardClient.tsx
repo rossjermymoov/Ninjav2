@@ -181,6 +181,8 @@ function AlertsChip({ trackingIssues, serviceAlerts }: { trackingIssues: number;
 const CHART_GREEN  = '#1DFB9D'
 const CHART_PURPLE = '#7B2FBE'
 const CHART_TRACK  = 'rgba(123,47,190,0.15)'  // purple tint track = "outstanding" context
+const CHART_PINK   = '#CD1C69'                 // outstanding gap segment on stacked bars
+const CHART_RING   = '#4103CC'                 // doughnut ring outstanding arc
 const CHART_TEXT   = '#171B2D'
 const CHART_MUTED  = '#8892A4'
 const CHART_LOGO_BG     = '#F5F6FA'
@@ -225,42 +227,147 @@ function ChannelOrders({ channelCounts, channelMap }: {
   )
 }
 
-// ─── Breakdown mini-list ──────────────────────────────────────────────────────
+// ─── Doughnut chart (single-item view) ────────────────────────────────────────
 
-function BreakdownList({ items, showLogo }: {
-  items: { key?: string; name: string; count: number; flag?: string; logoUrl?: string | null }[]
-  showLogo?: boolean
+function DoughnutChart({
+  dispatched, outstanding, label, flag, logoUrl, logoName,
+}: {
+  dispatched: number; outstanding: number
+  label: string; flag?: string
+  logoUrl?: string | null; logoName?: string
 }) {
-  const max   = Math.max(...items.map(i => i.count), 1)
-  const total = items.reduce((s, i) => s + i.count, 0)
-  // Alternate green / purple fills for visual rhythm on white cards
-  const BAR_FILLS = [CHART_GREEN, CHART_PURPLE, CHART_GREEN, CHART_PURPLE]
+  const total     = dispatched + outstanding
+  const pct       = total > 0 ? dispatched / total : 1
+  const pctText   = Math.round(pct * 100)
+  const size      = 136
+  const cx = size / 2, cy = size / 2
+  const sw        = 30
+  const R         = (size / 2) - sw / 2 - 2
+  const circ      = 2 * Math.PI * R
+  const greenDash = pct * circ
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-      {items.map((item, idx) => (
-        <div key={item.key ?? item.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {showLogo && (
-            <div style={{ width: 36, height: 36, borderRadius: 8, background: CHART_LOGO_BG, border: `1px solid ${CHART_LOGO_BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <LogoImg src={item.logoUrl ?? null} name={item.name} size={24} />
-            </div>
-          )}
-          {item.flag && <span style={{ fontSize: 14, flexShrink: 0 }}>{item.flag}</span>}
-          <span style={{ flex: 1, fontSize: font.size.sm, color: CHART_TEXT, fontFamily: font.family, fontWeight: font.weight.semibold, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {item.name}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+      {/* Ring */}
+      <div style={{ position: 'relative', width: size, height: size }}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+          {/* Background ring — purple/outstanding */}
+          <circle cx={cx} cy={cy} r={R} fill="none" stroke={CHART_RING} strokeWidth={sw} />
+          {/* Green arc — dispatched */}
+          <circle
+            cx={cx} cy={cy} r={R}
+            fill="none"
+            stroke={CHART_GREEN}
+            strokeWidth={sw}
+            strokeDasharray={`${greenDash} ${circ}`}
+            transform={`rotate(-90 ${cx} ${cy})`}
+          />
+        </svg>
+        {/* Centre percentage */}
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: 26, fontWeight: font.weight.extrabold, color: CHART_TEXT, fontFamily: font.family, lineHeight: 1 }}>
+            {pctText}%
           </span>
-          {/* Fixed 80px bar — green/purple alternating, purple-tint track */}
-          <div style={{ width: 80, height: 6, background: CHART_TRACK, borderRadius: 3, overflow: 'hidden', flexShrink: 0 }}>
-            <div style={{ width: `${(item.count / max) * 100}%`, height: '100%', background: BAR_FILLS[idx % BAR_FILLS.length], borderRadius: 3 }} />
-          </div>
-          <span style={{ width: 30, fontSize: font.size.sm, fontWeight: font.weight.bold, color: CHART_TEXT, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
-            {item.count}
-          </span>
-          <span style={{ width: 30, fontSize: font.size.xs, color: CHART_MUTED, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
-            {total > 0 ? Math.round((item.count / total) * 100) : 0}%
-          </span>
+          <span style={{ fontSize: 10, color: CHART_MUTED, fontFamily: font.family, marginTop: 3 }}>dispatched</span>
         </div>
-      ))}
+      </div>
+
+      {/* Label row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {flag && <span style={{ fontSize: 18 }}>{flag}</span>}
+        {logoUrl !== undefined && (
+          <div style={{ width: 28, height: 28, borderRadius: 7, background: CHART_LOGO_BG, border: `1px solid ${CHART_LOGO_BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <LogoImg src={logoUrl ?? null} name={logoName ?? label} size={20} />
+          </div>
+        )}
+        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.semibold, color: CHART_TEXT, fontFamily: font.family }}>
+          {label}
+        </span>
+      </div>
+
+      {/* Stats row */}
+      <div style={{ display: 'flex', gap: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span style={{ fontSize: 10, color: CHART_MUTED, fontFamily: font.family, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Dispatched</span>
+          <span style={{ fontSize: font.size.lg, fontWeight: font.weight.bold, color: CHART_GREEN, fontFamily: font.family }}>{dispatched}</span>
+        </div>
+        {outstanding > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <span style={{ fontSize: 10, color: CHART_MUTED, fontFamily: font.family, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Outstanding</span>
+            <span style={{ fontSize: font.size.lg, fontWeight: font.weight.bold, color: CHART_RING, fontFamily: font.family }}>{outstanding}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Breakdown chart — stacked bars (multi-item) or doughnut (single-item) ────
+
+function BreakdownChart({
+  items, showLogo, ordersWaiting = 0,
+}: {
+  items: { key?: string; name: string; count: number; flag?: string; logoUrl?: string | null }[]
+  showLogo?: boolean
+  ordersWaiting?: number
+}) {
+  const max = Math.max(...items.map(i => i.count), 1)
+
+  // ── Single item → doughnut ────────────────────────────────────────────────
+  if (items.length === 1) {
+    const item = items[0]
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1, paddingTop: 8 }}>
+        <DoughnutChart
+          dispatched={item.count}
+          outstanding={ordersWaiting}
+          label={item.name}
+          flag={item.flag}
+          logoUrl={showLogo ? (item.logoUrl ?? null) : undefined}
+          logoName={item.name}
+        />
+      </div>
+    )
+  }
+
+  // ── Multiple items → stacked horizontal bars ──────────────────────────────
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+      {items.map((item) => {
+        const greenPct = (item.count / max) * 100
+        const pinkPct  = 100 - greenPct
+
+        return (
+          <div key={item.key ?? item.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+
+            {/* Left identifier — logo / flag / text label */}
+            {showLogo && (
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: CHART_LOGO_BG, border: `1px solid ${CHART_LOGO_BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <LogoImg src={item.logoUrl ?? null} name={item.name} size={24} />
+              </div>
+            )}
+            {item.flag && (
+              <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{item.flag}</span>
+            )}
+            {!showLogo && (
+              <span style={{ width: item.flag ? 64 : 80, fontSize: font.size.xs, color: CHART_TEXT, fontFamily: font.family, fontWeight: font.weight.semibold, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {item.name}
+              </span>
+            )}
+
+            {/* Stacked bar: green dispatched + pink gap-to-max */}
+            <div style={{ flex: 1, height: 32, display: 'flex', borderRadius: 6, overflow: 'hidden', minWidth: 0 }}>
+              <div style={{ width: `${greenPct}%`, background: CHART_GREEN, flexShrink: 0 }} />
+              {pinkPct > 0.2 && <div style={{ flex: 1, background: CHART_PINK }} />}
+            </div>
+
+            {/* Count */}
+            <span style={{ width: 26, fontSize: font.size.sm, fontWeight: font.weight.bold, color: CHART_TEXT, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
+              {item.count}
+            </span>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -341,13 +448,14 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
       </div>
 
       {/* ── Stat strip ── */}
-      {/* Revenue + Dispatched respond to the date selector.        */}
-      {/* Orders Waiting, Alerts, Near Cut-off are always "right now" */}
+      {/* Dispatched responds to the date selector.                        */}
+      {/* Orders Waiting, Alerts, Near Cut-off, Success Rating = live now  */}
       <div style={{ display: 'flex', gap: 12 }}>
         <StatChip
-          label="Revenue"
-          value={fmt(d.revenue)}
-          sub={`${range.toLowerCase()}`}
+          label="Orders Dispatched"
+          value={String(d.ordersDispatched)}
+          sub={`sent ${range.toLowerCase()}`}
+          color={colors.mint}
         />
         <StatChip
           label="Orders Waiting"
@@ -356,12 +464,6 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
           color={CHART_PURPLE}
           warning={live.ordersWaiting > 20}
           live
-        />
-        <StatChip
-          label="Orders Dispatched"
-          value={String(d.ordersDispatched)}
-          sub={`sent ${range.toLowerCase()}`}
-          color={colors.mint}
         />
         <AlertsChip
           trackingIssues={live.trackingIssues}
@@ -375,6 +477,19 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
           warning={live.nearCutoff > 0}
           live
           onClick={() => router.push('/orders?filter=nearCutoff')}
+        />
+        <StatChip
+          label="Ninja Success Rating"
+          value={(() => {
+            const total = d.ordersDispatched + live.ordersWaiting
+            return total > 0 ? `${Math.round((d.ordersDispatched / total) * 100)}%` : '—'
+          })()}
+          sub="dispatched vs waiting"
+          color={(() => {
+            const total = d.ordersDispatched + live.ordersWaiting
+            const pct = total > 0 ? (d.ordersDispatched / total) * 100 : 100
+            return pct >= 80 ? colors.mint : pct >= 50 ? colors.statusProcessing : colors.statusIssue
+          })()}
         />
       </div>
 
@@ -423,19 +538,29 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
 
       {/* ── Bottom row — 3 breakdowns, all follow date range ── */}
       <div style={{ display: 'flex', gap: 12 }}>
-        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff' }} padding="18px 20px">
+        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff', display: 'flex', flexDirection: 'column' }} padding="18px 20px">
           <PanelLabel text="Shipments by Country" onWhite />
-          <BreakdownList items={d.countries.map(c => ({ name: c.name, count: c.count, flag: c.flag }))} />
+          <BreakdownChart
+            items={d.countries.map(c => ({ name: c.name, count: c.count, flag: c.flag }))}
+            ordersWaiting={live.ordersWaiting}
+          />
         </NinjaCard>
 
-        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff' }} padding="18px 20px">
+        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff', display: 'flex', flexDirection: 'column' }} padding="18px 20px">
           <PanelLabel text="Shipments by Service" onWhite />
-          <BreakdownList items={d.services.map(s => ({ name: s.name, count: s.count }))} />
+          <BreakdownChart
+            items={d.services.map(s => ({ name: s.name, count: s.count }))}
+            ordersWaiting={live.ordersWaiting}
+          />
         </NinjaCard>
 
-        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff' }} padding="18px 20px">
+        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff', display: 'flex', flexDirection: 'column' }} padding="18px 20px">
           <PanelLabel text="Shipments by Courier" onWhite />
-          <BreakdownList items={courierItems} showLogo />
+          <BreakdownChart
+            items={courierItems}
+            showLogo
+            ordersWaiting={live.ordersWaiting}
+          />
         </NinjaCard>
       </div>
 
