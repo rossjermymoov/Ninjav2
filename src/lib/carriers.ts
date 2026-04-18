@@ -9,11 +9,15 @@ export interface CarrierData {
 }
 
 // Hardcoded fallbacks — keeps UI working in local dev before DB is seeded.
+// Each carrier is keyed by BOTH its slug ('royal-mail') AND its lowercase
+// display name ('royal mail') so resolveCarrier() works whether the mock
+// data uses slugs or display names as the lookup key.
 export const CARRIER_FALLBACKS: Record<string, CarrierData> = {
-  'royal-mail':  { key: 'royal-mail',  displayName: 'Royal Mail', logoUrl: null },
-  'dpd':         { key: 'dpd',         displayName: 'DPD',        logoUrl: null },
-  'evri':        { key: 'evri',        displayName: 'Evri',       logoUrl: null },
-  'ups':         { key: 'ups',         displayName: 'UPS',        logoUrl: null },
+  'royal-mail':  { key: 'royal-mail',  displayName: 'Royal Mail', logoUrl: '/carriers/royal-mail.svg' },
+  'royal mail':  { key: 'royal-mail',  displayName: 'Royal Mail', logoUrl: '/carriers/royal-mail.svg' },
+  'dpd':         { key: 'dpd',         displayName: 'DPD',        logoUrl: '/carriers/dpd.svg' },
+  'evri':        { key: 'evri',        displayName: 'Evri',       logoUrl: '/carriers/evri.svg' },
+  'ups':         { key: 'ups',         displayName: 'UPS',        logoUrl: '/carriers/ups.svg' },
   'fedex':       { key: 'fedex',       displayName: 'FedEx',      logoUrl: null },
   'dhl':         { key: 'dhl',         displayName: 'DHL',        logoUrl: null },
   'parcelforce': { key: 'parcelforce', displayName: 'Parcelforce',logoUrl: null },

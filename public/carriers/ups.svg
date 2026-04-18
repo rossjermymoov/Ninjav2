@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- UPS brown background -->
+  <rect width="64" height="64" rx="10" fill="#301506"/>
+  <!-- Shield outline -->
+  <path d="M32 10 L50 18 L50 36 C50 46 42 54 32 57 C22 54 14 46 14 36 L14 18 Z" fill="#FAB80A"/>
+  <!-- UPS text on shield -->
+  <text x="32" y="39" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="14" fill="#301506" text-anchor="middle" letter-spacing="0.5">UPS</text>
+</svg>

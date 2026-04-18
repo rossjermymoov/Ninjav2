@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- DPD red background -->
+  <rect width="64" height="64" rx="10" fill="#DC0032"/>
+  <!-- DPD diamond/rhombus mark -->
+  <polygon points="32,8 56,32 32,56 8,32" fill="#FFFFFF" opacity="0.15"/>
+  <!-- DPD text -->
+  <text x="32" y="38" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="18" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">DPD</text>
+</svg>
