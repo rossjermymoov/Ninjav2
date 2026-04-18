@@ -92,9 +92,8 @@ function IconTag() {
 
 function IconMerge() {
   return (
-    <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
-      <circle cx="7.5" cy="8" r="6.5" fill="#1A745A"/>
-      <circle cx="14.5" cy="8" r="6.5" fill="#1A745A"/>
+    <svg width="20" height="20" viewBox="0 0 25 25" fill="none">
+      <path fillRule="evenodd" clipRule="evenodd" d="M12.4998 19.5273C11.2723 20.241 9.84597 20.65 8.32499 20.65C3.73031 20.65 0 16.9192 0 12.3247C0 7.73026 3.73031 4 8.32499 4C9.84597 4 11.2723 4.40848 12.4998 5.12216C13.7274 4.40848 15.1537 4 16.6748 4C21.2694 4 25 7.73026 25 12.3247C25 16.9192 21.2694 20.65 16.6748 20.65C15.1537 20.65 13.7274 20.241 12.4998 19.5273ZM10.9742 6.25973C10.1629 5.90469 9.26681 5.70739 8.32499 5.70739C4.67279 5.70739 1.70764 8.67258 1.70764 12.3247C1.70764 15.9769 4.67279 18.9421 8.32499 18.9421C9.26681 18.9421 10.1629 18.7448 10.9742 18.3897C9.35903 16.8709 8.34976 14.7145 8.34976 12.3247C8.34976 9.93501 9.35903 7.77855 10.9742 6.25973ZM14.0255 18.3897C14.8369 18.7448 15.7329 18.9421 16.6748 18.9421C20.327 18.9421 23.2921 15.9769 23.2921 12.3247C23.2921 8.67258 20.327 5.70739 16.6748 5.70739C15.7329 5.70739 14.8369 5.90469 14.0255 6.25973C15.6407 7.77855 16.65 9.93501 16.65 12.3247C16.65 14.7145 15.6407 16.8709 14.0255 18.3897ZM13.6659 8.41927C13.331 7.96198 12.9387 7.5494 12.4998 7.19179C11.7533 7.80014 11.1417 8.56777 10.7172 9.44279L13.6659 8.41927ZM14.5646 10.1174C14.4343 9.74953 14.2723 9.39654 14.082 9.06153L10.356 10.3548C10.2244 10.7772 10.134 11.2175 10.0894 11.6707L14.5646 10.1174ZM14.9353 12.018C14.9168 11.6121 14.8616 11.2159 14.7729 10.8321L10.0589 12.4681C10.0677 12.8771 10.1135 13.2768 10.1933 13.6642L14.9353 12.018ZM14.704 14.0892C14.818 13.6771 14.893 13.2486 14.9249 12.8088L10.3848 14.3846C10.5042 14.7489 10.6545 15.0993 10.8325 15.4333L14.704 14.0892ZM12.4998 17.4577C13.3083 16.799 13.9584 15.9538 14.384 14.9873L11.2286 16.0827C11.5856 16.5986 12.0142 17.0621 12.4998 17.4577Z" fill="#1A745A"/>
     </svg>
   )
 }
@@ -124,7 +123,7 @@ function IconActionDelete() {
   )
 }
 
-// ── Action icon button ───────────────────────────────────────────────────────
+// ── Action icon button (50×50 Figma tile) ───────────────────────────────────
 function ActionBtn({
   icon,
   label,
@@ -134,11 +133,39 @@ function ActionBtn({
 }) {
   return (
     <button
-      className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-colors hover:bg-white/10"
-      style={{ minWidth: 44 }}
+      className="relative shrink-0 transition-opacity hover:opacity-80"
+      style={{
+        width: 50,
+        height: 50,
+        background: '#171B2D',
+        border: '1px solid #1A745A',
+        borderRadius: 6,
+      }}
     >
-      {icon}
-      <span style={{ fontSize: '9px', color: '#9AA0BC', fontWeight: 600 }}>
+      {/* Icon — 25×25, centred horizontally, 7px from top */}
+      <span
+        className="absolute flex items-center justify-center"
+        style={{ width: 25, height: 25, left: 13, top: 7, pointerEvents: 'none' }}
+      >
+        {icon}
+      </span>
+      {/* Label — 28px wide, centred, 32px from top */}
+      <span
+        className="absolute text-center"
+        style={{
+          width: 28,
+          left: 'calc(50% - 14px)',
+          top: 32,
+          fontFamily: 'Mulish, sans-serif',
+          fontWeight: 400,
+          fontSize: '10px',
+          lineHeight: '13px',
+          letterSpacing: '0.1px',
+          color: '#FDFFFF',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+        }}
+      >
         {label}
       </span>
     </button>
