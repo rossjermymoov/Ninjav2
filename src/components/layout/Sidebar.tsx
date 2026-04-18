@@ -33,29 +33,29 @@ export function Sidebar() {
 
   return (
     <aside className="fixed top-0 left-0 h-screen w-[136px] flex flex-col z-40"
-      style={{ background: '#0A0B1E', borderRight: '1px solid #2A2D4A' }}>
+      style={{ background: '#171B2D', borderRight: '1px solid #2A2D4A' }}>
 
       {/* Logo */}
       <div
-        className="flex flex-col items-center justify-center h-16 shrink-0 gap-0.5"
+        className="flex flex-col items-center justify-center h-20 shrink-0 gap-1"
         style={{ borderBottom: '1px solid #2A2D4A' }}
       >
         {/* Ninja mascot icon */}
         <div
           className="flex items-center justify-center rounded-full"
-          style={{ width: 28, height: 28, background: 'rgba(0,200,83,0.15)', border: '1.5px solid #00C853' }}
+          style={{ width: 32, height: 32, background: 'rgba(29,251,157,0.12)', border: '1.5px solid #1DFB9D' }}
         >
-          <span style={{ fontSize: 14 }}>🥷</span>
+          <span style={{ fontSize: 16 }}>🥷</span>
         </div>
         {/* moov wordmark */}
         <span
           style={{
-            color: '#00C853',
+            color: '#1DFB9D',
             fontSize: 17,
             fontWeight: 900,
             letterSpacing: '-0.5px',
             lineHeight: 1,
-            fontFamily: 'Arial, sans-serif',
+            fontFamily: 'Mulish, Arial, sans-serif',
           }}
         >
           moov
@@ -63,32 +63,34 @@ export function Sidebar() {
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 flex flex-col items-center py-3 gap-1 overflow-y-auto">
+      <nav className="flex-1 flex flex-col items-center py-2 gap-0 overflow-y-auto">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || (href !== '/' && pathname.startsWith(href))
           return (
             <Link
               key={href}
               href={href}
-              className="w-full flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-lg mx-1 transition-all duration-150 group"
+              className="flex flex-col items-center justify-center gap-1 py-3 transition-all duration-150"
               style={{
-                width: 'calc(100% - 12px)',
-                background: active ? 'rgba(0,200,83,0.12)' : 'transparent',
-                color: active ? '#00C853' : '#9AA0BC',
+                width: '100%',
+                background: active ? 'rgba(29,251,157,0.08)' : 'transparent',
+                borderLeft: active ? '3px solid #1DFB9D' : '3px solid transparent',
               }}
             >
               <Icon
                 size={20}
                 strokeWidth={active ? 2.5 : 1.8}
-                style={{ color: active ? '#00C853' : '#9AA0BC' }}
+                style={{ color: active ? '#1DFB9D' : '#A4A6B3' }}
               />
               <span
                 className="text-center leading-tight"
                 style={{
                   fontSize: '10px',
-                  fontWeight: active ? 700 : 500,
-                  color: active ? '#00C853' : '#9AA0BC',
+                  fontWeight: active ? 700 : 400,
+                  color: active ? '#1DFB9D' : '#A4A6B3',
                   lineHeight: '1.2',
+                  fontFamily: 'Mulish, sans-serif',
+                  letterSpacing: '0.1px',
                 }}
               >
                 {label}

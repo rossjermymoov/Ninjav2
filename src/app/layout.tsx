@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Mulish } from 'next/font/google'
 import './globals.css'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { TopBar } from '@/components/layout/TopBar'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
+const mulish = Mulish({ subsets: ['latin'], variable: '--font-sans', weight: ['400', '600', '700', '800'] })
 
 export const metadata: Metadata = {
   title: 'MoveNinja V2',
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
-      <body className="h-full" style={{ background: '#0A0B1E' }}>
+    <html lang="en" className={`${mulish.variable} h-full`}>
+      <body className="h-full" style={{ background: '#0A0B1E', fontFamily: 'var(--font-sans, Mulish), sans-serif' }}>
         <Sidebar />
         <TopBar />
         {/* Main content area — offset for sidebar (136px) and topbar (64px) */}
