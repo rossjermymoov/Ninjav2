@@ -36,10 +36,28 @@ export function Sidebar() {
       style={{ background: '#0A0B1E', borderRight: '1px solid #2A2D4A' }}>
 
       {/* Logo */}
-      <div className="flex items-center justify-center h-16 shrink-0"
-        style={{ borderBottom: '1px solid #2A2D4A' }}>
-        <span className="text-2xl font-black tracking-tight"
-          style={{ color: '#00C853', fontFamily: 'Arial, sans-serif', letterSpacing: '-1px' }}>
+      <div
+        className="flex flex-col items-center justify-center h-16 shrink-0 gap-0.5"
+        style={{ borderBottom: '1px solid #2A2D4A' }}
+      >
+        {/* Ninja mascot icon */}
+        <div
+          className="flex items-center justify-center rounded-full"
+          style={{ width: 28, height: 28, background: 'rgba(0,200,83,0.15)', border: '1.5px solid #00C853' }}
+        >
+          <span style={{ fontSize: 14 }}>🥷</span>
+        </div>
+        {/* moov wordmark */}
+        <span
+          style={{
+            color: '#00C853',
+            fontSize: 17,
+            fontWeight: 900,
+            letterSpacing: '-0.5px',
+            lineHeight: 1,
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
           moov
         </span>
       </div>
