@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import {
-  Layers, Tag, Merge, FileText, Copy, Trash2,
-  Upload, Download, ChevronDown,
   MoreVertical, Printer, ChevronLeft, ChevronRight,
 } from 'lucide-react'
 import { Order, SalesChannel } from '@/types/order'
@@ -75,23 +73,82 @@ function IconChevronCircle() {
   )
 }
 
+// ── Bulk action icons (from Figma) ────────────────────────────────────────────
+function IconBatch() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <rect x="2" y="7" width="16" height="10" rx="3" fill="#1A745A"/>
+      <rect x="0.5" y="9" width="3" height="2.5" rx="1.25" fill="#1A745A"/>
+      <rect x="16.5" y="9" width="3" height="2.5" rx="1.25" fill="#1A745A"/>
+      <rect x="6" y="3.5" width="8" height="4" rx="1.5" fill="#1A745A" opacity="0.75"/>
+    </svg>
+  )
+}
+
+function IconTag() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M1.5 1.5H9.5L18.5 10.5L11 18L2 9V1.5Z" fill="#1A745A"/>
+      <circle cx="6" cy="6" r="1.8" fill="#171B2D"/>
+    </svg>
+  )
+}
+
+function IconMerge() {
+  return (
+    <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
+      <circle cx="7.5" cy="8" r="6.5" fill="#1A745A"/>
+      <circle cx="14.5" cy="8" r="6.5" fill="#1A745A"/>
+    </svg>
+  )
+}
+
+function IconInvoice() {
+  return (
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
+      <rect x="1" y="1" width="14" height="18" rx="2" fill="#1A745A"/>
+      <rect x="4" y="6" width="8" height="1.5" rx="0.75" fill="#0D2B1F"/>
+      <rect x="4" y="9.5" width="8" height="1.5" rx="0.75" fill="#0D2B1F"/>
+      <rect x="4" y="13" width="5" height="1.5" rx="0.75" fill="#0D2B1F"/>
+    </svg>
+  )
+}
+
+function IconActionCopy() {
+  return (
+    <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+      <rect x="5.5" y="5.5" width="11" height="13" rx="2" stroke="#1DFB9D" strokeWidth="1.5"/>
+      <path d="M2.5 14V2H13" stroke="#1DFB9D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+function IconActionDelete() {
+  return (
+    <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
+      <path d="M0.5 4.5H15.5" stroke="#1DFB9D" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M5.5 1.5H10.5" stroke="#1DFB9D" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M12.5 4.5L11.5 17.5H4.5L3.5 4.5H12.5Z" stroke="#1DFB9D" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M6.5 8V14M9.5 8V14" stroke="#1DFB9D" strokeWidth="1.2" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
 // ── Action icon button ───────────────────────────────────────────────────────
 function ActionBtn({
-  icon: Icon,
+  icon,
   label,
-  danger = false,
 }: {
-  icon: React.ElementType
+  icon: React.ReactNode
   label: string
-  danger?: boolean
 }) {
   return (
     <button
       className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-colors hover:bg-white/10"
       style={{ minWidth: 44 }}
     >
-      <Icon size={16} style={{ color: danger ? '#E91E8C' : '#9AA0BC' }} strokeWidth={1.8} />
-      <span style={{ fontSize: '9px', color: danger ? '#E91E8C' : '#9AA0BC', fontWeight: 600 }}>
+      {icon}
+      <span style={{ fontSize: '9px', color: '#9AA0BC', fontWeight: 600 }}>
         {label}
       </span>
     </button>
@@ -152,16 +209,16 @@ export function OrdersTable({
         </div>
         <div className="flex items-center gap-2">
           <button
-            className="flex items-center gap-2 px-3 h-8 rounded-full text-sm font-semibold"
-            style={{ border: '1px solid #2A2D4A', background: '#1C1E35', color: '#fff', fontSize: '12px' }}
+            className="flex items-center gap-2 px-4 h-[35px] rounded-full font-semibold shrink-0"
+            style={{ border: '1px solid #1DFB9D', background: '#171B2D', color: '#fff', fontSize: '12px' }}
           >
-            <Upload size={13} /> Import Orders <ChevronDown size={12} style={{ color: '#9AA0BC' }} />
+            Import Orders <ChevronV />
           </button>
           <button
-            className="flex items-center gap-2 px-3 h-8 rounded-full text-sm font-semibold"
-            style={{ border: '1px solid #2A2D4A', background: '#1C1E35', color: '#fff', fontSize: '12px' }}
+            className="flex items-center gap-2 px-4 h-[35px] rounded-full font-semibold shrink-0"
+            style={{ border: '1px solid #1DFB9D', background: '#171B2D', color: '#fff', fontSize: '12px' }}
           >
-            <Download size={13} /> Export Orders <ChevronDown size={12} style={{ color: '#9AA0BC' }} />
+            Export Orders <ChevronV />
           </button>
         </div>
       </div>
@@ -201,12 +258,12 @@ export function OrdersTable({
 
         {/* Bulk actions */}
         <div className="flex items-center ml-auto" style={{ borderLeft: '1px solid #2A2D4A', paddingLeft: 8 }}>
-          <ActionBtn icon={Layers}   label="Batch"   />
-          <ActionBtn icon={Tag}      label="Tag"     />
-          <ActionBtn icon={Merge}    label="Merge"   />
-          <ActionBtn icon={FileText} label="Invoice" />
-          <ActionBtn icon={Copy}     label="Copy"    />
-          <ActionBtn icon={Trash2}   label="Delete"  danger />
+          <ActionBtn icon={<IconBatch />}        label="Batch"   />
+          <ActionBtn icon={<IconTag />}          label="Tag"     />
+          <ActionBtn icon={<IconMerge />}        label="Merge"   />
+          <ActionBtn icon={<IconInvoice />}      label="Invoice" />
+          <ActionBtn icon={<IconActionCopy />}   label="Copy"    />
+          <ActionBtn icon={<IconActionDelete />} label="Delete"  />
         </div>
       </div>
 
@@ -268,11 +325,12 @@ export function OrdersTable({
                         ? 'rgba(29,251,157,0.07)'
                         : '#FDFFFF',
                       borderBottom: '1px solid #DFE0EB',
+                      height: 50,
                     }}
                     onClick={() => toggleRow(order.id)}
                   >
                     {/* Checkbox */}
-                    <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
+                    <td className="py-2 px-3" onClick={(e) => e.stopPropagation()}>
                       <input
                         type="checkbox"
                         checked={isSelected}
@@ -282,12 +340,12 @@ export function OrdersTable({
                     </td>
 
                     {/* Status dot */}
-                    <td className="py-3 px-3">
+                    <td className="py-2 px-3">
                       <StatusDot status={order.status} />
                     </td>
 
                     {/* Tags */}
-                    <td className="py-3 px-3">
+                    <td className="py-2 px-3">
                       <div className="flex flex-wrap gap-1">
                         {order.tags.map((tag) => (
                           <TagPill key={tag.id} tag={tag} />
@@ -301,7 +359,7 @@ export function OrdersTable({
                     </td>
 
                     {/* Channel */}
-                    <td className="py-3 px-3">
+                    <td className="py-2 px-3">
                       <ChannelBadge
                         storeName={order.channelStoreName}
                         channel={channelMap[order.channel] ?? CHANNEL_FALLBACKS[order.channel as SalesChannel]}
@@ -309,7 +367,7 @@ export function OrdersTable({
                     </td>
 
                     {/* Order number */}
-                    <td className="py-3 px-3">
+                    <td className="py-2 px-3">
                       <span
                         className="font-semibold"
                         style={{ fontSize: '12px', color: '#6F4B9F', cursor: 'pointer' }}
@@ -319,7 +377,7 @@ export function OrdersTable({
                     </td>
 
                     {/* Service */}
-                    <td className="py-3 px-3">
+                    <td className="py-2 px-3">
                       <span style={{ fontSize: '12px', color: '#171B2D' }}>{order.deliveryService}</span>
                     </td>
 
@@ -329,7 +387,7 @@ export function OrdersTable({
                     </td>
 
                     {/* SKU */}
-                    <td className="py-3 px-3">
+                    <td className="py-2 px-3">
                       <div className="flex flex-col gap-0.5">
                         {order.sku.map((s) => (
                           <span key={s} style={{ fontSize: '11px', color: '#276E93' }}>{s}</span>
@@ -338,7 +396,7 @@ export function OrdersTable({
                     </td>
 
                     {/* Items */}
-                    <td className="py-3 px-3">
+                    <td className="py-2 px-3">
                       <span
                         className="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold"
                         style={{ background: '#1DFB9D', color: '#0A0B1E', fontSize: '11px' }}
@@ -348,7 +406,7 @@ export function OrdersTable({
                     </td>
 
                     {/* ISO */}
-                    <td className="py-3 px-3">
+                    <td className="py-2 px-3">
                       <div className="flex flex-col items-center">
                         <span style={{ fontSize: '16px' }}>{order.countryFlag}</span>
                         <span style={{ fontSize: '9px', color: '#6B7280' }}>{order.countryCode}</span>
@@ -361,7 +419,7 @@ export function OrdersTable({
                     </td>
 
                     {/* Row actions */}
-                    <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
+                    <td className="py-2 px-3" onClick={(e) => e.stopPropagation()}>
                       <button
                         className="w-7 h-7 flex items-center justify-center rounded-full transition-colors hover:opacity-80"
                         style={{ border: '1px solid #1DFB9D', background: '#171B2D' }}
