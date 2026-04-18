@@ -1,104 +1,83 @@
 // prisma/seed.ts
-// Run with: npx prisma db seed
-// Seeds the channels table with common UK marketplaces.
-// logoSvg is left null — upload logos via PUT /api/channels/:slug/logo
-// once you have the assets.
+// Seeds the Channel table from the Neuro API.
+// Safe to re-run — uses upsert so existing rows are updated, not duplicated.
+//
+// Required env var: NEURO_BEARER_TOKEN
+// Optional env var: DATABASE_URL (read automatically by Prisma)
 
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+const NEURO_API_URL = 'https://app.heyneuro.io/api/v1/channels/available'
 
-const channels = [
-  {
-    slug: 'amazon-uk',
-    displayName: 'Amazon UK',
-    colour: '#FF9900',
-  },
-  {
-    slug: 'ebay-uk',
-    displayName: 'eBay UK',
-    colour: '#E53238',
-  },
-  {
-    slug: 'shopify',
-    displayName: 'Shopify',
-    colour: '#96BF48',
-  },
-  {
-    slug: 'etsy',
-    displayName: 'Etsy',
-    colour: '#F1641E',
-  },
-  {
-    slug: 'tiktok-shop',
-    displayName: 'TikTok Shop',
-    colour: '#010101',
-  },
-  {
-    slug: 'onbuy',
-    displayName: 'OnBuy',
-    colour: '#E30613',
-  },
-  {
-    slug: 'notonthehighstreet',
-    displayName: 'Not On The High Street',
-    colour: '#D4387E',
-  },
-  {
-    slug: 'wayfair',
-    displayName: 'Wayfair',
-    colour: '#7F187F',
-  },
-  {
-    slug: 'woocommerce',
-    displayName: 'WooCommerce',
-    colour: '#7F54B3',
-  },
-  {
-    slug: 'fruugo',
-    displayName: 'Fruugo',
-    colour: '#F47920',
-  },
-  {
-    slug: 'manomano',
-    displayName: 'ManoMano',
-    colour: '#00B1D2',
-  },
-  {
-    slug: 'direct',
-    displayName: 'Direct / Website',
-    colour: '#1DFB9D',
-  },
-]
+interface NeuroChannel {
+  id: string
+  name: string
+  channel_group: string | null
+  type: string | null
+  logo: string
+}
+
+async function fetchNeuroChannels(): Promise<NeuroChannel[]> {
+  const token = process.env.NEURO_BEARER_TOKEN
+  if (!token) {
+    throw new Error(
+      'NEURO_BEARER_TOKEN env var is not set. Add it in Railway → Variables.',
+    )
+  }
+
+  const res = await fetch(NEURO_API_URL, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+
+  if (!res.ok) {
+    throw new Error(`Neuro API returned ${res.status} ${res.statusText}`)
+  }
+
+  const json = (await res.json()) as { data: NeuroChannel[] }
+  return json.data
+}
 
 async function main() {
-  console.log('Seeding channels…')
+  const db = new PrismaClient()
 
-  for (const channel of channels) {
-    await prisma.channel.upsert({
-      where: { slug: channel.slug },
+  console.log('Fetching channels from Neuro API…')
+  const channels = await fetchNeuroChannels()
+  console.log(`  → ${channels.length} channels received`)
+
+  let created = 0
+  let updated = 0
+
+  for (const ch of channels) {
+    const existing = await db.channel.findUnique({ where: { slug: ch.id } })
+
+    await db.channel.upsert({
+      where: { slug: ch.id },
       update: {
-        displayName: channel.displayName,
-        colour: channel.colour,
+        displayName: ch.name,
+        logoUrl: ch.logo,
+        isActive: true,
       },
       create: {
-        slug: channel.slug,
-        displayName: channel.displayName,
-        colour: channel.colour,
+        slug: ch.id,
+        displayName: ch.name,
+        logoUrl: ch.logo,
         isActive: true,
       },
     })
-    console.log(`  ✓ ${channel.displayName}`)
+
+    if (existing) {
+      updated++
+    } else {
+      created++
+      console.log(`  + ${ch.name} (${ch.id})`)
+    }
   }
 
-  console.log(`\nDone — ${channels.length} channels seeded.`)
+  console.log(`\nDone — ${created} created, ${updated} updated.`)
+  await db.$disconnect()
 }
 
-main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+main().catch((err) => {
+  console.error(err)
+  process.exit(1)
+})

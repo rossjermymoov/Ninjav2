@@ -14,7 +14,7 @@ export async function GET() {
         slug: true,
         displayName: true,
         colour: true,
-        logoSvg: true,
+        logoUrl: true,
         isActive: true,
       },
     })

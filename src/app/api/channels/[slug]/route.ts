@@ -1,6 +1,5 @@
-// GET  /api/channels/:slug       — fetch one channel
-// PUT  /api/channels/:slug       — update display name, colour, active flag
-// PUT  /api/channels/:slug/logo  — handled separately (see logo/route.ts)
+// GET  /api/channels/:slug  — fetch one channel
+// PUT  /api/channels/:slug  — update display name, colour, logoUrl, active flag
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
@@ -25,14 +24,14 @@ export async function PUT(req: NextRequest, { params }: Params) {
   const { slug } = await params
   try {
     const body = await req.json()
-    const { displayName, colour, logoSvg, isActive } = body
+    const { displayName, colour, logoUrl, isActive } = body
 
     const channel = await db.channel.update({
       where: { slug },
       data: {
         ...(displayName !== undefined && { displayName }),
         ...(colour !== undefined && { colour }),
-        ...(logoSvg !== undefined && { logoSvg }),
+        ...(logoUrl !== undefined && { logoUrl }),
         ...(isActive !== undefined && { isActive }),
       },
     })
