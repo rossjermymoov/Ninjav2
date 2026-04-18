@@ -208,20 +208,19 @@ export default function DashboardPage() {
           <div key={chart.title} style={{
             background: '#FFFFFF', border: '1px solid #DFE0EB', borderRadius: 8,
             display: 'flex', flexDirection: 'column', overflow: 'hidden',
-            position: 'relative', boxSizing: 'border-box',
-            padding: '12px 20px 14px',
+            boxSizing: 'border-box', padding: '12px 20px 14px',
           }}>
-            {/* Title — matches Figma: left:23px top:12px */}
+            {/* Title — Figma: left:23px top:12px, font-size:19px */}
             <h3 style={{
               fontFamily: M, fontWeight: 700, fontSize: 19, lineHeight: '24px',
               letterSpacing: '0.4px', color: '#4103CC',
-              margin: 0, marginBottom: 12, flexShrink: 0,
+              margin: 0, marginBottom: 16, flexShrink: 0,
             }}>
               {chart.title}
             </h3>
 
-            {/* Bar rows */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            {/* Bar rows — fixed 12px gap (Figma: 45px pitch − 33px bar = 12px gap) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flexShrink: 0 }}>
               {chart.rows.map((row) => (
                 <div key={row.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <BrandLogo name={row.name} />
@@ -230,8 +229,11 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {/* Legend — font-size:10px color:#000 squares:17x17 */}
-            <div style={{ display: 'flex', gap: 20, marginTop: 12, flexShrink: 0 }}>
+            {/* Push legend to bottom */}
+            <div style={{ flex: 1 }} />
+
+            {/* Legend — font-size:10px color:#000 squares:17×17 */}
+            <div style={{ display: 'flex', gap: 20, flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <div style={{ width: 17, height: 17, background: chart.colorA, flexShrink: 0 }} />
                 <span style={{ fontFamily: M, fontWeight: 400, fontSize: 10, color: '#000000', letterSpacing: '0.1px' }}>
