@@ -138,6 +138,116 @@ function StageIcon({ stageKey, color, size = 28 }: { stageKey: string; color: st
   }
 }
 
+// ─── Ninja characters ─────────────────────────────────────────────────────────
+
+function MovingNinja({ size = 35 }: { size?: number }) {
+  const w = size
+  const h = Math.round(size * 72 / 35)
+  return (
+    <svg width={w} height={h} viewBox="0 0 35 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Head skin */}
+      <ellipse cx="17.5" cy="13" rx="10" ry="11" fill="#FED5B2"/>
+      {/* Hair / upper head dark */}
+      <path d="M8 10 Q17.5 2 27 10 Q27 4 17.5 2 Q8 4 8 10Z" fill="#151B2D"/>
+      {/* Face mask lower half */}
+      <path d="M8 16 Q8.5 24.5 17.5 24.5 Q26.5 24.5 27 16Z" fill="#151B2D"/>
+      {/* Eyes white */}
+      <ellipse cx="13.5" cy="13.8" rx="2.6" ry="2.3" fill="white"/>
+      <ellipse cx="21.5" cy="13.8" rx="2.6" ry="2.3" fill="white"/>
+      {/* Pupils */}
+      <circle cx="13.5" cy="13.8" r="1.3" fill="#0D101B"/>
+      <circle cx="21.5" cy="13.8" r="1.3" fill="#0D101B"/>
+      {/* Eye highlights */}
+      <circle cx="13.9" cy="13.2" r="0.5" fill="white" opacity="0.8"/>
+      <circle cx="21.9" cy="13.2" r="0.5" fill="white" opacity="0.8"/>
+      {/* Forehead green Moov diamond */}
+      <path d="M15.5 8 L17.5 5.5 L19.5 8 L17.5 10.5Z" fill="#28FB9D"/>
+      {/* Neck */}
+      <rect x="15.2" y="23.5" width="4.6" height="4" rx="1" fill="#FED5B2"/>
+      {/* Torso */}
+      <path d="M10 27.5 L25 27.5 L26.5 51 L8.5 51Z" fill="#151B2D"/>
+      {/* Green belt sash */}
+      <rect x="10.5" y="37.5" width="14" height="3.5" rx="1.5" fill="#28FB9D"/>
+      {/* Left arm extended back-left */}
+      <path d="M10.5 30 L1 23.5 L0 27.5 L9.5 35Z" fill="#151B2D"/>
+      {/* Left hand skin */}
+      <ellipse cx="0.8" cy="25.2" rx="1.8" ry="2.4" fill="#FED5B2"/>
+      {/* Right arm extended forward-right */}
+      <path d="M24.5 30 L34 23.5 L35 27.5 L25.5 35Z" fill="#151B2D"/>
+      {/* Right hand skin */}
+      <ellipse cx="34.2" cy="25.2" rx="1.8" ry="2.4" fill="#FED5B2"/>
+      {/* Left leg */}
+      <path d="M12.5 51 L10.5 65.5 L15.5 65.5 L17 51Z" fill="#0D101B"/>
+      {/* Right leg */}
+      <path d="M18 51 L19 65.5 L24 65.5 L22.5 51Z" fill="#0D101B"/>
+      {/* Left shoe */}
+      <path d="M7.5 64 L16 64 L16 69 L7.5 69 Q5.5 69 5.5 66.5 Q5.5 64 7.5 64Z" fill="#101010"/>
+      {/* Right shoe */}
+      <path d="M19 64 L27.5 64 Q29.5 64 29.5 66.5 Q29.5 69 27.5 69 L19 69Z" fill="#101010"/>
+      {/* Green laces left */}
+      <line x1="7" y1="65.8" x2="15.5" y2="65.8" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="7" y1="67.2" x2="15.5" y2="67.2" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+      {/* Green laces right */}
+      <line x1="19.5" y1="65.8" x2="28" y2="65.8" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="19.5" y1="67.2" x2="28" y2="67.2" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+function DeliveredNinja({ size = 37 }: { size?: number }) {
+  const w = size
+  const h = Math.round(size * 74 / 37)
+  return (
+    <svg width={w} height={h} viewBox="0 0 37 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Head skin */}
+      <ellipse cx="18.5" cy="13" rx="10" ry="11" fill="#FED5B2"/>
+      {/* Hair / upper head dark */}
+      <path d="M9 10 Q18.5 2 28 10 Q28 4 18.5 2 Q9 4 9 10Z" fill="#151B2D"/>
+      {/* Face mask lower half */}
+      <path d="M9 16 Q9.5 24.5 18.5 24.5 Q27.5 24.5 28 16Z" fill="#151B2D"/>
+      {/* Eyes wider/open (celebration) */}
+      <ellipse cx="14.5" cy="13.5" rx="3" ry="2.8" fill="white"/>
+      <ellipse cx="22.5" cy="13.5" rx="3" ry="2.8" fill="white"/>
+      {/* Pupils */}
+      <circle cx="14.5" cy="13.5" r="1.5" fill="#0D101B"/>
+      <circle cx="22.5" cy="13.5" r="1.5" fill="#0D101B"/>
+      {/* Eye highlights larger for excitement */}
+      <circle cx="15" cy="12.8" r="0.6" fill="white" opacity="0.8"/>
+      <circle cx="23" cy="12.8" r="0.6" fill="white" opacity="0.8"/>
+      {/* Forehead green Moov diamond */}
+      <path d="M16.5 8 L18.5 5.5 L20.5 8 L18.5 10.5Z" fill="#28FB9D"/>
+      {/* Neck */}
+      <rect x="16.2" y="23.5" width="4.6" height="4" rx="1" fill="#FED5B2"/>
+      {/* Torso */}
+      <path d="M11 27.5 L26 27.5 L27.5 51 L9.5 51Z" fill="#151B2D"/>
+      {/* Green belt sash */}
+      <rect x="11.5" y="37.5" width="14" height="3.5" rx="1.5" fill="#28FB9D"/>
+      {/* Left arm raised up-left (celebration) */}
+      <path d="M11.5 30.5 L3.5 15.5 L6.5 14.5 L13.5 30Z" fill="#151B2D"/>
+      {/* Left hand skin */}
+      <ellipse cx="5" cy="14.5" rx="2" ry="2.5" fill="#FED5B2"/>
+      {/* Right arm raised up-right (celebration) */}
+      <path d="M25.5 30.5 L33.5 15.5 L30.5 14.5 L23.5 30Z" fill="#151B2D"/>
+      {/* Right hand skin */}
+      <ellipse cx="32" cy="14.5" rx="2" ry="2.5" fill="#FED5B2"/>
+      {/* Left leg */}
+      <path d="M13 51 L11 66 L16 66 L17.5 51Z" fill="#0D101B"/>
+      {/* Right leg */}
+      <path d="M19.5 51 L20.5 66 L25.5 66 L24 51Z" fill="#0D101B"/>
+      {/* Left shoe */}
+      <path d="M8 64 L17 64 L17 69.5 L8 69.5 Q6 69.5 6 67 Q6 64 8 64Z" fill="#101010"/>
+      {/* Right shoe */}
+      <path d="M20 64 L29 64 Q31 64 31 67 Q31 69.5 29 69.5 L20 69.5Z" fill="#101010"/>
+      {/* Green laces left (prominent for delivered) */}
+      <line x1="7.5" y1="66" x2="16.5" y2="66" stroke="#28FB9D" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="7.5" y1="67.4" x2="16.5" y2="67.4" stroke="#28FB9D" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Green laces right */}
+      <line x1="20.5" y1="66" x2="29.5" y2="66" stroke="#28FB9D" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="20.5" y1="67.4" x2="29.5" y2="67.4" stroke="#28FB9D" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
 // ─── Tracking details panel (expanded row) ────────────────────────────────────
 
 function TrackingDetails({ shipment }: { shipment: Shipment }) {
@@ -166,10 +276,11 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
   const fillWidthPct = stageIdx * 100 / N  // up to 87.5% at stageIdx=7
 
   // Vertical layout constants (px from top of .stages container)
-  // [0..43]  transit-label zone
-  // [44..77] icon zone (34px)
-  // [78..93] circle zone (16px) — track is centred here at 86px
-  const TRACK_TOP = 86  // vertical centre of circles
+  // [0..59]  ninja zone (60px) — ninja floats above current node
+  // [60..103] transit-label zone (44px)
+  // [104..137] icon zone (34px)
+  // [138..153] circle zone (16px) — track is centred here at 146px
+  const TRACK_TOP = 146  // vertical centre of circles (shifted down for ninja zone)
 
   return (
     <div style={{
@@ -180,7 +291,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
     }}>
 
       {/* ── Header ─────────────────────────────────────── */}
-      <h3 style={{ margin: '0 0 14px', fontSize: font.size.md, fontWeight: font.weight.extrabold, color: colors.textPrimary, fontFamily: M }}>
+      <h3 style={{ margin: '0 0 14px', fontSize: font.size.sm, fontWeight: font.weight.bold, color: '#FDFFFF', fontFamily: M, letterSpacing: '0.01em' }}>
         Tracking Details
       </h3>
 
@@ -282,29 +393,39 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
             return (
               <div key={stage.key} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-                {/* ① Transit-label zone (44px fixed) */}
+                {/* ① Ninja zone (60px fixed) — ninja floats above the current node */}
+                <div style={{ height: 60, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: 4 }}>
+                  {!isDelivered && current && (
+                    <MovingNinja size={35} />
+                  )}
+                  {isDelivered && stage.key === 'end' && (
+                    <DeliveredNinja size={37} />
+                  )}
+                </div>
+
+                {/* ② Transit-label zone (44px fixed) */}
                 <div style={{ height: 44, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 2 }}>
                   {stage.isTransit && completed && ev && (
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 9, fontWeight: font.weight.bold, color: current ? MINT : colors.textSecondary, fontFamily: M, lineHeight: 1.4 }}>
+                      <div style={{ fontSize: 9, fontWeight: font.weight.bold, color: current ? MINT : '#FDFFFF', fontFamily: M, lineHeight: 1.4 }}>
                         In Transit
                       </div>
                       {(() => { const { date, time } = fmtTimestamp(ev.timestamp); return (
                         <>
-                          <div style={{ fontSize: 9, color: colors.textMuted, fontFamily: M, lineHeight: 1.3 }}>{date}</div>
-                          <div style={{ fontSize: 9, color: colors.textMuted, fontFamily: M, lineHeight: 1.3 }}>{time}</div>
+                          <div style={{ fontSize: 9, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{date}</div>
+                          <div style={{ fontSize: 9, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{time}</div>
                         </>
                       )})()}
                     </div>
                   )}
                 </div>
 
-                {/* ② Icon zone (34px fixed) */}
+                {/* ③ Icon zone (34px fixed) */}
                 <div style={{ height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <StageIcon stageKey={showAsEDD ? 'end' : stage.key} color={iconColor} size={24} />
                 </div>
 
-                {/* ③ Circle (16px, on the track at TRACK_TOP) */}
+                {/* ④ Circle (16px, on the track at TRACK_TOP) */}
                 <div style={{
                   width: current ? 18 : 14,
                   height: current ? 18 : 14,
@@ -330,7 +451,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
                 <div style={{ marginTop: 8, textAlign: 'center', paddingLeft: 2, paddingRight: 2 }}>
                   {showAsEDD ? (
                     <>
-                      <div style={{ fontSize: font.size.xs, fontWeight: font.weight.bold, color: colors.textSecondary, fontFamily: M, lineHeight: 1.3 }}>
+                      <div style={{ fontSize: font.size.xs, fontWeight: font.weight.bold, color: '#FDFFFF', fontFamily: M, lineHeight: 1.3 }}>
                         Expected<br/>Delivery Date
                       </div>
                       {shipment.estimatedDelivery && (
@@ -345,8 +466,8 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
                       {!stage.isTransit && (
                         <div style={{
                           fontSize: font.size.xs,
-                          fontWeight: current ? font.weight.bold : font.weight.regular,
-                          color: current ? (isProblem ? RED : MINT) : (completed ? colors.textSecondary : colors.textMuted),
+                          fontWeight: current ? font.weight.bold : font.weight.semibold,
+                          color: current ? (isProblem ? RED : MINT) : (completed ? '#FDFFFF' : 'rgba(253,255,255,0.35)'),
                           fontFamily: M, lineHeight: 1.3,
                           whiteSpace: 'nowrap',
                         }}>
@@ -357,8 +478,8 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
                       {!stage.isTransit && completed && ev && (
                         (() => { const { date, time } = fmtTimestamp(ev.timestamp); return (
                           <div style={{ marginTop: 2 }}>
-                            <div style={{ fontSize: 9, color: colors.textMuted, fontFamily: M, lineHeight: 1.3 }}>{date}</div>
-                            <div style={{ fontSize: 9, color: colors.textMuted, fontFamily: M, lineHeight: 1.3 }}>{time}</div>
+                            <div style={{ fontSize: 9, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{date}</div>
+                            <div style={{ fontSize: 9, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{time}</div>
                           </div>
                         )})()
                       )}
