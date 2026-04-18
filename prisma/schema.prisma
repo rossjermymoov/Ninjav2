@@ -1,0 +1,30 @@
+// MoveNinja V2 — Prisma Schema
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Sales Channels ──────────────────────────────────────────────────────────
+// Stores each marketplace/channel MoveNinja receives orders from.
+// Logos are stored as raw SVG text so they render at any size without
+// extra requests. When Elasticsearch is added, slug + displayName are
+// the primary search fields.
+
+model Channel {
+  id          String   @id @default(cuid())
+  slug        String   @unique  // e.g. "amazon-uk" — used to match inbound orders
+  displayName String             // e.g. "Amazon UK"
+  colour      String   @default("#6B7280")  // fallback badge colour (hex)
+  logoSvg     String?  @db.Text // raw SVG — null until logo is uploaded
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+}

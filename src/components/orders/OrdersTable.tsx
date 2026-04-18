@@ -6,10 +6,12 @@ import {
   Upload, Download, ChevronDown, Bookmark, Filter,
   ChevronsUpDown, MoreVertical, Printer, ChevronLeft, ChevronRight,
 } from 'lucide-react'
-import { Order } from '@/types/order'
+import { Order, SalesChannel } from '@/types/order'
 import { StatusDot } from './StatusDot'
 import { TagPill } from './TagPill'
 import { ChannelBadge } from './ChannelBadge'
+import type { ChannelData } from '@/lib/channels'
+import { CHANNEL_FALLBACKS } from '@/lib/channels'
 
 // ── Filter pill ──────────────────────────────────────────────────────────────
 function FilterPill({
@@ -62,9 +64,11 @@ function ActionBtn({
 export function OrdersTable({
   orders,
   total,
+  channelMap = {},
 }: {
   orders: Order[]
   total: number
+  channelMap?: Record<string, ChannelData>
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [allSelected, setAllSelected] = useState(false)
@@ -262,7 +266,10 @@ export function OrdersTable({
 
                     {/* Channel */}
                     <td className="py-3 px-3">
-                      <ChannelBadge channel={order.channel} storeName={order.channelStoreName} />
+                      <ChannelBadge
+                        storeName={order.channelStoreName}
+                        channel={channelMap[order.channel] ?? CHANNEL_FALLBACKS[order.channel as SalesChannel]}
+                      />
                     </td>
 
                     {/* Order number */}
