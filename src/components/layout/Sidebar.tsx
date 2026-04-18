@@ -219,13 +219,13 @@ export function Sidebar() {
                 {/* Label */}
                 <span style={{
                   position: 'absolute',
-                  left: wide ? 19 : 34,
-                  right: wide ? 17 : 28,
+                  left: 3,
+                  right: 0,
                   top: wide ? 43 : (active ? 39 : 35),
                   fontFamily: M, fontSize: 16, fontWeight: 400,
                   lineHeight: '20px', letterSpacing: '0.2px',
                   color: active ? '#DDE2FF' : '#A4A6B3',
-                  textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden',
+                  textAlign: 'center', whiteSpace: 'nowrap',
                 }}>
                   {item.label}
                 </span>
