@@ -38,10 +38,10 @@ const RANGE_DATA: Record<string, RangeData> = {
       { name: 'Saturday',     count: 3  },
     ],
     courierCounts: [
-      { key: 'Royal Mail', count: 21 },
-      { key: 'DPD',        count: 15 },
-      { key: 'Evri',       count: 9  },
-      { key: 'UPS',        count: 2  },
+      { key: 'RoyalMail', count: 21 },
+      { key: 'DPD',       count: 15 },
+      { key: 'Evri',      count: 9  },
+      { key: 'UPS',       count: 2  },
     ],
   },
   Yesterday: {
@@ -67,7 +67,7 @@ const RANGE_DATA: Record<string, RangeData> = {
       { name: 'Saturday',     count: 2  },
     ],
     courierCounts: [
-      { key: 'Royal Mail', count: 20 },
+      { key: 'RoyalMail', count: 20 },
       { key: 'DPD',        count: 12 },
       { key: 'Evri',       count: 7  },
     ],
@@ -96,7 +96,7 @@ const RANGE_DATA: Record<string, RangeData> = {
       { name: 'Saturday',     count: 14 },
     ],
     courierCounts: [
-      { key: 'Royal Mail', count: 98 },
+      { key: 'RoyalMail', count: 98 },
       { key: 'DPD',        count: 71 },
       { key: 'Evri',       count: 34 },
       { key: 'UPS',        count: 8  },
@@ -126,7 +126,7 @@ const RANGE_DATA: Record<string, RangeData> = {
       { name: 'Saturday',     count: 56  },
     ],
     courierCounts: [
-      { key: 'Royal Mail', count: 391 },
+      { key: 'RoyalMail', count: 391 },
       { key: 'DPD',        count: 284 },
       { key: 'Evri',       count: 138 },
       { key: 'UPS',        count: 34  },
@@ -149,7 +149,7 @@ const LIVE_DATA: LiveData = {
   ],
   trackingAlerts: [
     { orderNo: '#4873', carrierKey: 'DPD',        tracking: 'DPD15935742013', issue: 'Address not found'  },
-    { orderNo: '#4901', carrierKey: 'Royal Mail', tracking: 'RM551234567GB',  issue: 'Delivery attempted' },
+    { orderNo: '#4901', carrierKey: 'RoyalMail', tracking: 'RM551234567GB',  issue: 'Delivery attempted' },
     { orderNo: '#4812', carrierKey: 'Evri',       tracking: 'H00CC11223344',  issue: 'Held at depot'      },
   ],
   serviceAlertList: [
@@ -163,13 +163,6 @@ export default async function DashboardPage() {
     fetchChannelMap(),
     fetchCarrierMap(),
   ])
-
-  // ── Debug: log what the DB actually returned so we can align mock keys ──
-  console.log('[dashboard] carriers from DB — keys:', Object.keys(carrierByKey))
-  console.log('[dashboard] carriers from DB — byName keys:', Object.keys(carrierByName))
-  Object.entries(carrierByKey).forEach(([k, v]) =>
-    console.log(`  carrier  key="${k}"  displayName="${v.displayName}"  logoUrl="${v.logoUrl}"`)
-  )
 
   // Channel map: fallbacks overlaid with DB data
   const channelMap = Object.fromEntries(
