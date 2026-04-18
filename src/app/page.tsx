@@ -7,17 +7,59 @@ const KPI_CARDS = [
   { label: 'Tracking Alerts',   value: '0',  numColor: '#00C853',  sub: 'Tracking' },
 ]
 
+// Logo definitions — inline SVG text badges matching brand colours
+const LOGOS: Record<string, { text: string; color: string; bg: string; fontSize?: number }> = {
+  Evri:       { text: 'EVRI',       color: '#fff', bg: '#8B2FC9', fontSize: 11 },
+  DPD:        { text: 'dpd',        color: '#fff', bg: '#DC0032', fontSize: 12 },
+  Yodel:      { text: 'YODEL',      color: '#fff', bg: '#6C1F7C', fontSize: 10 },
+  DX:         { text: 'DX',         color: '#fff', bg: '#003087', fontSize: 12 },
+  CitySprint: { text: 'City',       color: '#fff', bg: '#E8651A', fontSize: 10 },
+  TikTok:     { text: 'TikTok',     color: '#fff', bg: '#000000', fontSize: 10 },
+  Amazon:     { text: 'amazon',     color: '#fff', bg: '#FF9900', fontSize: 10 },
+  eBay:       { text: 'eBay',       color: '#E53238', bg: '#f5f5f5', fontSize: 11 },
+  Shopify:    { text: 'shopify',    color: '#fff', bg: '#96BF48', fontSize: 10 },
+  Woo:        { text: 'Woo',        color: '#fff', bg: '#9B5C8F', fontSize: 11 },
+}
+
+function BrandLogo({ name }: { name: string }) {
+  const logo = LOGOS[name]
+  if (!logo) return <span style={{ fontSize: 11, fontWeight: 700, color: '#374151', width: 68 }}>{name}</span>
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: logo.bg,
+        color: logo.color,
+        fontWeight: 800,
+        fontSize: logo.fontSize ?? 11,
+        borderRadius: 5,
+        padding: '3px 8px',
+        width: 72,
+        flexShrink: 0,
+        letterSpacing: '-0.3px',
+        fontFamily: 'Arial, sans-serif',
+      }}
+    >
+      {logo.text}
+    </span>
+  )
+}
+
 const CHART_CARDS = [
   {
     title: 'Carrier Performance Tracking',
     titleColor: '#7B2FBE',
     rows: [
-      { name: 'Evri',      good: 78, bad: 12 },
-      { name: 'DPD',       good: 65, bad: 18 },
-      { name: 'Yodel',     good: 45, bad: 22 },
-      { name: 'DX',        good: 55, bad: 14 },
-      { name: 'CitySprint',good: 20, bad: 8  },
+      { name: 'Evri',       good: 78, bad: 12 },
+      { name: 'DPD',        good: 65, bad: 18 },
+      { name: 'Yodel',      good: 45, bad: 22 },
+      { name: 'DX',         good: 55, bad: 14 },
+      { name: 'CitySprint', good: 20, bad: 8  },
     ],
+    colorA: '#00C853',
+    colorB: '#E91E8C',
     legendA: { color: '#00C853', label: 'Delivered on Time' },
     legendB: { color: '#E91E8C', label: 'Delayed Shipments' },
   },
@@ -25,12 +67,14 @@ const CHART_CARDS = [
     title: 'Orders Dispatched by Service',
     titleColor: '#7B2FBE',
     rows: [
-      { name: 'Evri',      good: 60, bad: 40 },
-      { name: 'DPD',       good: 55, bad: 35 },
-      { name: 'Yodel',     good: 40, bad: 30 },
-      { name: 'DX',        good: 35, bad: 25 },
-      { name: 'CitySprint',good: 22, bad: 18 },
+      { name: 'Evri',       good: 60, bad: 40 },
+      { name: 'DPD',        good: 55, bad: 35 },
+      { name: 'Yodel',      good: 40, bad: 30 },
+      { name: 'DX',         good: 35, bad: 25 },
+      { name: 'CitySprint', good: 22, bad: 18 },
     ],
+    colorA: '#00C853',
+    colorB: '#7B2FBE',
     legendA: { color: '#00C853', label: 'Packets' },
     legendB: { color: '#7B2FBE', label: 'Parcels' },
   },
@@ -44,16 +88,20 @@ const CHART_CARDS = [
       { name: 'Shopify', good: 45, bad: 30 },
       { name: 'Woo',     good: 40, bad: 22 },
     ],
+    colorA: '#00C853',
+    colorB: '#7B2FBE',
     legendA: { color: '#00C853', label: 'Completed' },
     legendB: { color: '#7B2FBE', label: 'Not Completed' },
   },
 ]
 
-function ChartBar({ good, bad, total = 100 }: { good: number; bad: number; total?: number }) {
+function ChartBar({ good, bad, colorA, colorB, total = 100 }: {
+  good: number; bad: number; colorA: string; colorB: string; total?: number
+}) {
   return (
-    <div className="flex gap-1 w-full" style={{ height: 16 }}>
-      <div style={{ width: `${(good / total) * 100}%`, background: '#00C853', borderRadius: 3 }} />
-      <div style={{ width: `${(bad / total) * 100}%`, background: '#E91E8C', borderRadius: 3 }} />
+    <div style={{ display: 'flex', gap: 3, width: '100%', height: 26, alignItems: 'center' }}>
+      <div style={{ width: `${(good / total) * 100}%`, background: colorA, borderRadius: 5, height: 26 }} />
+      <div style={{ width: `${(bad  / total) * 100}%`, background: colorB, borderRadius: 5, height: 26 }} />
     </div>
   )
 }
@@ -109,10 +157,8 @@ export default function DashboardPage() {
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               {chart.rows.map((row) => (
                 <div key={row.name} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ width: 68, fontSize: 11, color: '#374151', fontWeight: 600, flexShrink: 0 }}>
-                    {row.name}
-                  </span>
-                  <ChartBar good={row.good} bad={row.bad} />
+                  <BrandLogo name={row.name} />
+                  <ChartBar good={row.good} bad={row.bad} colorA={chart.colorA} colorB={chart.colorB} />
                 </div>
               ))}
             </div>
@@ -131,7 +177,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Sensai strip — pinned to bottom */}
+      {/* Sensei strip — pinned to bottom */}
       <div
         style={{
           background: '#14162A',
