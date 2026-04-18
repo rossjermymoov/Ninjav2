@@ -346,7 +346,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
     <div style={{
       background: colors.pageBg,
       borderTop: `1px solid ${colors.borderSubtle}`,
-      padding: '22px 28px 28px',
+      padding: '22px 28px 32px',
       fontFamily: M,
     }}>
 
@@ -440,7 +440,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
         }} />
 
         {/* Stage columns */}
-        <div style={{ display: 'flex', position: 'relative', zIndex: 2 }}>
+        <div style={{ display: 'flex', position: 'relative', zIndex: 2, paddingBottom: 80 }}>
           {TRACKING_STAGES.map((stage, i) => {
             const completed  = isDelivered || i <= stageIdx
             const current    = i === stageIdx
@@ -552,6 +552,34 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
           })}
         </div>
 
+      </div>
+
+      {/* ── Action buttons ─────────────────────────────── */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 4, marginBottom: isProblem ? 16 : 0 }}>
+        <button style={{
+          padding: '10px 28px', borderRadius: 99,
+          background: MINT, color: colors.pageBg,
+          fontFamily: M, fontSize: font.size.sm, fontWeight: font.weight.bold,
+          border: 'none', cursor: 'pointer', letterSpacing: '0.02em',
+          transition: 'opacity 0.15s',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        >
+          Raise Query
+        </button>
+        <button style={{
+          padding: '10px 28px', borderRadius: 99,
+          background: colors.surfaceBg, color: colors.textPrimary,
+          fontFamily: M, fontSize: font.size.sm, fontWeight: font.weight.bold,
+          border: `1.5px solid ${MINT}`, cursor: 'pointer', letterSpacing: '0.02em',
+          transition: 'background 0.15s',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.background = `${MINT}18`)}
+          onMouseLeave={e => (e.currentTarget.style.background = colors.surfaceBg)}
+        >
+          Make a Claim
+        </button>
       </div>
 
       {/* Problem banner */}
