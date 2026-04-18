@@ -187,13 +187,13 @@ function ChannelOrders({ channelCounts, channelMap }: {
   const total = rows.reduce((s, c) => s + c.count, 0)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
       {rows.map((row) => {
         const ch = channelMap[row.slug] ?? { displayName: row.slug, colour: colors.manual, logoUrl: null }
         return (
           <div key={row.slug} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 8, background: colors.surfaceBg, border: `1px solid ${colors.borderSubtle}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <LogoImg src={ch.logoUrl ?? null} name={ch.displayName} size={24} />
+            <div style={{ width: 30, height: 30, borderRadius: 7, background: colors.surfaceBg, border: `1px solid ${colors.borderSubtle}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <LogoImg src={ch.logoUrl ?? null} name={ch.displayName} size={20} />
             </div>
             <span style={{ width: 100, fontSize: font.size.sm, color: colors.textPrimary, fontFamily: font.family, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {ch.displayName}
@@ -389,7 +389,7 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
           </div>
 
           {/* Scrollable alerts body */}
-          <div className="mn-alerts-scroll" style={{ maxHeight: 280, paddingRight: 4 }}>
+          <div className="mn-alerts-scroll" style={{ maxHeight: 230, paddingRight: 4 }}>
 
             {/* Tracking issues */}
             <PanelLabel text="Tracking Issues" />
