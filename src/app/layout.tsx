@@ -15,6 +15,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${mulish.variable} h-full`}>
       <body className="h-full" style={{ background: '#0A0B1E', fontFamily: 'var(--font-sans, Mulish), sans-serif' }}>
+
+        {/* Tokyo cityscape background — fixed, full-screen, behind all UI */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: -1,
+            backgroundImage: 'url(/bg-tokyo.svg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center bottom',
+            backgroundRepeat: 'no-repeat',
+            opacity: 0.07,
+            pointerEvents: 'none',
+          }}
+        />
+
         <Sidebar />
         <TopBar />
         {/* Main content area — offset for sidebar (145px) and topbar (80px) */}
