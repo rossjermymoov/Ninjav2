@@ -127,9 +127,11 @@ function IconActionDelete() {
 function ActionBtn({
   icon,
   label,
+  mint = false,
 }: {
   icon: React.ReactNode
   label: string
+  mint?: boolean
 }) {
   return (
     <button
@@ -138,7 +140,7 @@ function ActionBtn({
         width: 50,
         height: 50,
         background: '#171B2D',
-        border: '1px solid #1A745A',
+        border: `1px solid ${mint ? '#1DFB9D' : '#1A745A'}`,
         borderRadius: 6,
       }}
     >
@@ -274,13 +276,13 @@ export function OrdersTable({
         </button>
 
         {/* Bulk actions */}
-        <div className="flex items-center ml-auto" style={{ borderLeft: '1px solid #2A2D4A', paddingLeft: 8 }}>
+        <div className="flex items-center ml-auto" style={{ borderLeft: '1px solid #2A2D4A', paddingLeft: 8, gap: 8 }}>
           <ActionBtn icon={<IconBatch />}        label="Batch"   />
           <ActionBtn icon={<IconTag />}          label="Tag"     />
           <ActionBtn icon={<IconMerge />}        label="Merge"   />
           <ActionBtn icon={<IconInvoice />}      label="Invoice" />
-          <ActionBtn icon={<IconActionCopy />}   label="Copy"    />
-          <ActionBtn icon={<IconActionDelete />} label="Delete"  />
+          <ActionBtn icon={<IconActionCopy />}   label="Copy"    mint />
+          <ActionBtn icon={<IconActionDelete />} label="Delete"  mint />
         </div>
       </div>
 
