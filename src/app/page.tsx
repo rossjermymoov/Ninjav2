@@ -164,6 +164,13 @@ export default async function DashboardPage() {
     fetchCarrierMap(),
   ])
 
+  // ── Debug: log what the DB actually returned so we can align mock keys ──
+  console.log('[dashboard] carriers from DB — keys:', Object.keys(carrierByKey))
+  console.log('[dashboard] carriers from DB — byName keys:', Object.keys(carrierByName))
+  Object.entries(carrierByKey).forEach(([k, v]) =>
+    console.log(`  carrier  key="${k}"  displayName="${v.displayName}"  logoUrl="${v.logoUrl}"`)
+  )
+
   // Channel map: fallbacks overlaid with DB data
   const channelMap = Object.fromEntries(
     (Object.keys(CHANNEL_FALLBACKS) as SalesChannel[]).map((ch) => {
