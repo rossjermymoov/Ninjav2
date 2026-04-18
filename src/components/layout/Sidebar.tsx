@@ -68,36 +68,45 @@ export function Sidebar() {
             <Link
               key={href}
               href={href}
-              className="flex flex-col items-center transition-all duration-150 shrink-0"
+              className="transition-all duration-150 shrink-0"
               style={{
+                position: 'relative',
                 width: '100%',
                 height: 70,
-                paddingTop: 10,
-                paddingBottom: 0,
+                display: 'block',
                 background: active ? 'rgba(159,162,180,0.08)' : 'transparent',
                 borderLeft: active ? '3px solid #1DFB9D' : '3px solid transparent',
                 textDecoration: 'none',
-                justifyContent: 'flex-start',
               }}
             >
-              {/* Icon — 25px, at top:10px of item */}
+              {/* Icon — active: top:10px #1DFB9D | inactive: top:8px #1A745A (Figma Inactive Green) */}
               <Icon
                 size={25}
                 strokeWidth={active ? 2.2 : 1.8}
-                style={{ color: active ? '#1DFB9D' : '#A4A6B3', flexShrink: 0 }}
-              />
-              {/* Label — 16px Regular, at ~35px from item top */}
-              <span
-                className="text-center"
                 style={{
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  top: active ? 10 : 8,
+                  color: active ? '#1DFB9D' : '#1A745A',
+                }}
+              />
+              {/* Label — active: top:39px | inactive: top:35px (from Figma CSS) */}
+              <span
+                style={{
+                  position: 'absolute',
+                  left: 34,
+                  right: 28,
+                  top: active ? 39 : 35,
                   fontFamily: M,
                   fontSize: 16,
                   fontWeight: 400,
                   lineHeight: '20px',
                   letterSpacing: '0.2px',
                   color: active ? '#DDE2FF' : '#A4A6B3',
-                  marginTop: 0,
-                  paddingTop: 0,
+                  textAlign: 'center',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
                 }}
               >
                 {label}
