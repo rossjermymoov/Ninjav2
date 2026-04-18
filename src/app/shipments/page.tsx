@@ -508,7 +508,7 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
 
         {/* Tracking number(s) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
-          <span style={{ fontSize: font.size.xs, color: TXT3, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: font.size.xs, fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {shipment.trackingNumbers[0]}
           </span>
           {isMulti && (
@@ -523,7 +523,7 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
         </div>
 
         {/* Booked date/time */}
-        <span style={{ fontSize: font.size.xs, color: TXT3, fontFamily: M, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: font.size.xs, fontWeight: font.weight.semibold, color: TXT, fontFamily: M, whiteSpace: 'nowrap' }}>
           {shipment.bookedAt}
         </span>
 
