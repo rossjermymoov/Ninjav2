@@ -178,52 +178,41 @@ function AlertsChip({ trackingIssues, serviceAlerts }: { trackingIssues: number;
 // ─── Ninja SVG illustration ───────────────────────────────────────────────────
 
 function NinjaSVG({ height = 72 }: { height?: number }) {
-  const w = Math.round(height * (81 / 89))
+  const w = Math.round(height * (79.25 / 87.98))
   return (
-    <svg width={w} height={height} viewBox="0 0 81 89" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Hair / headband detail */}
-      <path d="M18.5 26C18.5 12.5 28.2 3 40.5 3C52.8 3 62.5 12.5 62.5 26" fill="#28FB9D"/>
-      {/* Head */}
-      <ellipse cx="40.5" cy="28" rx="22" ry="23" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.8"/>
-      {/* Headband line */}
-      <path d="M18.8 24C19 20 21 16 24 13" stroke="#1DFB9D" strokeWidth="1.4" strokeLinecap="round"/>
-      <path d="M62.2 24C62 20 60 16 57 13" stroke="#1DFB9D" strokeWidth="1.4" strokeLinecap="round"/>
-      {/* Eyes */}
-      <ellipse cx="31.5" cy="24" rx="4.5" ry="5" fill="#1DFB9D"/>
-      <ellipse cx="49.5" cy="24" rx="4.5" ry="5" fill="#1DFB9D"/>
-      <ellipse cx="31.5" cy="25" rx="2.2" ry="2.8" fill="#151B2D"/>
-      <ellipse cx="49.5" cy="25" rx="2.2" ry="2.8" fill="#151B2D"/>
-      {/* Eye shine */}
-      <ellipse cx="32.8" cy="23.2" rx="1" ry="1" fill="#fff" opacity="0.7"/>
-      <ellipse cx="50.8" cy="23.2" rx="1" ry="1" fill="#fff" opacity="0.7"/>
-      {/* Face mask (lower half) */}
-      <path d="M19 31 Q19 52 40.5 52 Q62 52 62 31 Z" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.8"/>
-      {/* Mask fold lines */}
-      <path d="M26 37 Q40.5 33 55 37" stroke="#1DFB9D" strokeWidth="1" opacity="0.5" fill="none"/>
-      <path d="M24 43 Q40.5 39 57 43" stroke="#1DFB9D" strokeWidth="1" opacity="0.3" fill="none"/>
-      {/* Smile lines on mask */}
-      <path d="M33 42 Q40.5 46 48 42" stroke="#1DFB9D" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
-      {/* Neck */}
-      <rect x="33" y="49" width="15" height="9" rx="2" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.6"/>
-      {/* Body / torso */}
-      <path d="M18 57 C16 57 12 65 12 74 C12 80 16 86 24 87 L57 87 C65 86 69 80 69 74 C69 65 65 57 63 57 L52 55 L40.5 57 L29 55 Z" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.8"/>
-      {/* Left arm */}
-      <path d="M18 57 C10 53 5 60 7 68 C8 72 11 75 14 74" stroke="#1DFB9D" strokeWidth="2" strokeLinecap="round" fill="none"/>
-      {/* Right arm */}
-      <path d="M63 57 C71 53 76 60 74 68 C73 72 70 75 67 74" stroke="#1DFB9D" strokeWidth="2" strokeLinecap="round" fill="none"/>
-      {/* Left fist */}
-      <ellipse cx="7.5" cy="70" rx="5" ry="5" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.6"/>
-      {/* Right fist */}
-      <ellipse cx="73.5" cy="70" rx="5" ry="5" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.6"/>
-      {/* Belt */}
-      <rect x="19" y="64" width="43" height="6" rx="3" fill="#1DFB9D"/>
-      {/* Belt knot */}
-      <rect x="36" y="61" width="9" height="12" rx="3" fill="#28FB9D"/>
-      {/* Whisker accents */}
-      <path d="M20 36 L9 34" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
-      <path d="M20 39 L9 39" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
-      <path d="M61 36 L72 34" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
-      <path d="M61 39 L72 39" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+    <svg width={w} height={height} viewBox="0 0 79.25 87.98" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* ── LEFT LEG ── */}
+      <rect x="1" y="57" rx="7" width="28.31" height="27.97" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.2"/>
+      {/* ── LEFT FOOT ── */}
+      <rect x="0.5" y="79.17" rx="3.5" width="12.16" height="7.81" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1"/>
+      <rect x="2.02" y="80.6" rx="2" width="8.11" height="5.23" fill="#151B2D"/>
+      {/* Left laces */}
+      <line x1="3.2" y1="80.5" x2="5.8" y2="86.2" stroke="#28FB9D" strokeWidth="0.7" strokeLinecap="round"/>
+      <line x1="6.5" y1="80.2" x2="8.8" y2="85.6" stroke="#28FB9D" strokeWidth="0.5" strokeLinecap="round"/>
+      {/* ── RIGHT LEG ── */}
+      <rect x="49.94" y="57.2" rx="7" width="28.31" height="27.78" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.2"/>
+      {/* ── RIGHT FOOT ── */}
+      <rect x="66.59" y="79.17" rx="3.5" width="12.16" height="7.81" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1"/>
+      <rect x="67.11" y="80.6" rx="2" width="8.14" height="5.18" fill="#151B2D"/>
+      {/* Right laces */}
+      <line x1="68.3" y1="80.5" x2="70.9" y2="86.2" stroke="#28FB9D" strokeWidth="0.7" strokeLinecap="round"/>
+      <line x1="71.6" y1="80.2" x2="73.9" y2="85.6" stroke="#28FB9D" strokeWidth="0.5" strokeLinecap="round"/>
+      {/* ── LOWER BODY ── */}
+      <rect x="21.8" y="50" rx="8" width="35.66" height="35.18" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.2"/>
+      {/* ── UPPER TORSO ── */}
+      <rect x="20.5" y="36" rx="8" width="38.24" height="26.94" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.2"/>
+      {/* ── BELT BUCKLE (green accent) ── */}
+      <rect x="37.3" y="55" rx="1.5" width="4.77" height="6.63" fill="#1DFB9D"/>
+      {/* ── HEAD: headband layer ── */}
+      <rect x="16.04" y="0.5" rx="11" width="47.17" height="34.58" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.2"/>
+      {/* ── HEAD: face mask ── */}
+      <rect x="16.19" y="4.08" rx="10" width="46.88" height="38.14" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.2"/>
+      {/* ── LEFT EYE SLIT ── */}
+      <rect x="21.5" y="16" rx="1.38" width="8.04" height="2.76" fill="#1DFB9D"/>
+      {/* ── RIGHT EYE SLIT ── */}
+      <rect x="49.7" y="16" rx="1.38" width="8.04" height="2.76" fill="#1DFB9D"/>
+      {/* ── MOOV LOGO MARK ── */}
+      <path d="M35.15 61.8L39.63 57L44.46 61.8L39.63 66.21Z" fill="#28FB9D"/>
     </svg>
   )
 }
