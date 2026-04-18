@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { fetchChannelMap } from '@/lib/channels'
 
 // ─── Design tokens (extracted from Figma CSS) ────────────────────────────────
 const M = 'Mulish, sans-serif'
@@ -68,8 +69,27 @@ const LOGOS: Record<string, { text: string; color: string; bg: string; fs?: numb
   Woo:        { text: 'Woo',     color: '#fff', bg: '#945C87', fs: 10 },
 }
 
-function BrandLogo({ name }: { name: string }) {
+// Maps chart row display names to Neuro API channel slugs for logo lookup
+const CHART_NAME_TO_SLUG: Record<string, string> = {
+  TikTok:  'tiktokshop',
+  Amazon:  'amazonsp',
+  eBay:    'ebay',
+  Shopify: 'shopify',
+  Woo:     'woocommerce',
+}
+
+function BrandLogo({ name, logoUrl }: { name: string; logoUrl?: string | null }) {
   const logo = LOGOS[name]
+  if (logoUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={logoUrl}
+        alt={name}
+        style={{ width: 35, height: 20, objectFit: 'contain', flexShrink: 0 }}
+      />
+    )
+  }
   return (
     <span style={{
       display: 'inline-flex',
@@ -113,7 +133,8 @@ function ChartBar({ good, bad, maxTotal, colorA, colorB }: {
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const channelMap = await fetchChannelMap()
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32, position: 'relative', minHeight: 0 }}>
 
@@ -222,7 +243,7 @@ export default function DashboardPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flexShrink: 0 }}>
               {chart.rows.map((row) => (
                 <div key={row.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <BrandLogo name={row.name} />
+                  <BrandLogo name={row.name} logoUrl={channelMap[CHART_NAME_TO_SLUG[row.name]]?.logoUrl} />
                   <ChartBar good={row.good} bad={row.bad} maxTotal={chart.maxTotal} colorA={chart.colorA} colorB={chart.colorB} />
                 </div>
               ))}
