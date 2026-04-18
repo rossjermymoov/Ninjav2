@@ -49,6 +49,28 @@
 }
 
 :root {
+  /* ── Layout dimensions — scale to viewport height ─── */
+  /* 13" MacBook (~800px viewport height) uses smaller values */
+  --mn-sidebar-w:    145px;
+  --mn-topbar-h:      64px;
+  --mn-topbar-btn:    30px;
+  --mn-nav-h:         54px;
+  --mn-logo-h:        88px;
+  --mn-icon-size:     22px;
+}
+
+/* Larger screens (900px+ height, e.g. external display / 14"+ laptops) */
+@media (min-height: 900px) {
+  :root {
+    --mn-topbar-h:    80px;
+    --mn-topbar-btn:  36px;
+    --mn-nav-h:       70px;
+    --mn-logo-h:     112px;
+    --mn-icon-size:   25px;
+  }
+}
+
+:root {
   /* ── MoveNinja Dark Theme (always dark) ────────────── */
   --mn-green:       #00C853;
   --mn-green-dim:   #00843A;

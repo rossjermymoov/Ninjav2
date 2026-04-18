@@ -2,32 +2,28 @@
 // Falls back to hardcoded data when DB is not connected.
 
 import { DashboardClient } from '@/components/dashboard/DashboardClient'
-import type { DashboardData } from '@/components/dashboard/DashboardClient'
+import type { RangeData, LiveData } from '@/components/dashboard/DashboardClient'
 import { fetchChannelMap, CHANNEL_FALLBACKS, CHANNEL_TO_SLUG } from '@/lib/channels'
-import { fetchCarrierMap } from '@/lib/carriers'
+import { fetchCarrierMap, resolveCarrier } from '@/lib/carriers'
 import type { SalesChannel } from '@/types/order'
-
-// ─── Mock data keyed by date range ───────────────────────────────────────────
-// In production these numbers will come from the DB query layer.
-// channelCounts.slug must match Channel.slug (Neuro API id, e.g. "tiktokshop").
-// courierCounts.key must match Carrier.key (Voila API key, e.g. "Evri").
 
 const DATE_OPTIONS = ['Today', 'Yesterday', 'This Week', 'This Month']
 
-const MOCK_DATA: Record<string, DashboardData> = {
+// ─── Date-range-dependent data ────────────────────────────────────────────────
+// Revenue and Dispatched totals change per period.
+// Channel/country/service/courier breakdowns reflect the same period.
+
+const RANGE_DATA: Record<string, RangeData> = {
   Today: {
     revenue: 3840,
-    ordersOutstanding: 47,
-    toDispatch: 9,
-    trackedIssues: 3,
-    collectionRisk: 2,
+    ordersDispatched: 38,
     channelCounts: [
-      { slug: 'tiktokshop',  channelKey: 'tiktok',      count: 18 },
-      { slug: 'shopify',     channelKey: 'shopify',     count: 11 },
-      { slug: 'amazonsp',    channelKey: 'amazon',      count: 9  },
-      { slug: 'etsy',        channelKey: 'etsy',        count: 5  },
-      { slug: 'ebay',        channelKey: 'ebay',        count: 3  },
-      { slug: 'manual',      channelKey: 'manual',      count: 1  },
+      { slug: 'tiktokshop', channelKey: 'tiktok',  count: 18 },
+      { slug: 'shopify',    channelKey: 'shopify', count: 11 },
+      { slug: 'amazonsp',   channelKey: 'amazon',  count: 9  },
+      { slug: 'etsy',       channelKey: 'etsy',    count: 5  },
+      { slug: 'ebay',       channelKey: 'ebay',    count: 3  },
+      { slug: 'manual',     channelKey: 'manual',  count: 1  },
     ],
     countries: [
       { flag: '🇬🇧', name: 'United Kingdom', count: 38 },
@@ -47,22 +43,10 @@ const MOCK_DATA: Record<string, DashboardData> = {
       { key: 'Evri',       count: 9  },
       { key: 'UPS',        count: 2  },
     ],
-    collectionAlerts: [
-      { orderNo: '#5501', channelSlug: 'shopify',    service: 'Next Day', cutoff: '14:30', minsLeft: 18 },
-      { orderNo: '#5502', channelSlug: 'tiktokshop', service: '24hr',     cutoff: '14:30', minsLeft: 18 },
-    ],
-    trackingAlerts: [
-      { orderNo: '#4873', carrierKey: 'DPD',        tracking: 'DPD15935742013', issue: 'Address not found'   },
-      { orderNo: '#4901', carrierKey: 'Royal Mail', tracking: 'RM551234567GB',  issue: 'Delivery attempted'  },
-      { orderNo: '#4812', carrierKey: 'Evri',       tracking: 'H00CC11223344',  issue: 'Held at depot'       },
-    ],
   },
   Yesterday: {
     revenue: 4120,
-    ordersOutstanding: 39,
-    toDispatch: 0,
-    trackedIssues: 1,
-    collectionRisk: 0,
+    ordersDispatched: 39,
     channelCounts: [
       { slug: 'tiktokshop', channelKey: 'tiktok',  count: 15 },
       { slug: 'shopify',    channelKey: 'shopify', count: 10 },
@@ -87,24 +71,17 @@ const MOCK_DATA: Record<string, DashboardData> = {
       { key: 'DPD',        count: 12 },
       { key: 'Evri',       count: 7  },
     ],
-    collectionAlerts: [],
-    trackingAlerts: [
-      { orderNo: '#4812', carrierKey: 'Evri', tracking: 'H00CC11223344', issue: 'Held at depot' },
-    ],
   },
   'This Week': {
     revenue: 21300,
-    ordersOutstanding: 211,
-    toDispatch: 9,
-    trackedIssues: 8,
-    collectionRisk: 2,
+    ordersDispatched: 202,
     channelCounts: [
-      { slug: 'tiktokshop',  channelKey: 'tiktok',      count: 80 },
-      { slug: 'shopify',     channelKey: 'shopify',     count: 55 },
-      { slug: 'amazonsp',    channelKey: 'amazon',      count: 38 },
-      { slug: 'etsy',        channelKey: 'etsy',        count: 23 },
-      { slug: 'ebay',        channelKey: 'ebay',        count: 11 },
-      { slug: 'manual',      channelKey: 'manual',      count: 4  },
+      { slug: 'tiktokshop', channelKey: 'tiktok',  count: 80 },
+      { slug: 'shopify',    channelKey: 'shopify', count: 55 },
+      { slug: 'amazonsp',   channelKey: 'amazon',  count: 38 },
+      { slug: 'etsy',       channelKey: 'etsy',    count: 23 },
+      { slug: 'ebay',       channelKey: 'ebay',    count: 11 },
+      { slug: 'manual',     channelKey: 'manual',  count: 4  },
     ],
     countries: [
       { flag: '🇬🇧', name: 'United Kingdom', count: 172 },
@@ -124,31 +101,17 @@ const MOCK_DATA: Record<string, DashboardData> = {
       { key: 'Evri',       count: 34 },
       { key: 'UPS',        count: 8  },
     ],
-    collectionAlerts: [
-      { orderNo: '#5501', channelSlug: 'shopify',    service: 'Next Day', cutoff: '14:30', minsLeft: 18 },
-      { orderNo: '#5502', channelSlug: 'tiktokshop', service: '24hr',     cutoff: '14:30', minsLeft: 18 },
-    ],
-    trackingAlerts: [
-      { orderNo: '#4873', carrierKey: 'DPD',        tracking: 'DPD15935742013', issue: 'Address not found'  },
-      { orderNo: '#4901', carrierKey: 'Royal Mail', tracking: 'RM551234567GB',  issue: 'Delivery attempted' },
-      { orderNo: '#4812', carrierKey: 'Evri',       tracking: 'H00CC11223344',  issue: 'Held at depot'      },
-      { orderNo: '#4650', carrierKey: 'DPD',        tracking: 'DPD29384756201', issue: 'Customer refused'   },
-      { orderNo: '#4731', carrierKey: 'Royal Mail', tracking: 'RM443322110GB',  issue: 'Return to sender'   },
-    ],
   },
   'This Month': {
     revenue: 89450,
-    ordersOutstanding: 847,
-    toDispatch: 9,
-    trackedIssues: 31,
-    collectionRisk: 2,
+    ordersDispatched: 838,
     channelCounts: [
-      { slug: 'tiktokshop',  channelKey: 'tiktok',      count: 322 },
-      { slug: 'shopify',     channelKey: 'shopify',     count: 203 },
-      { slug: 'amazonsp',    channelKey: 'amazon',      count: 152 },
-      { slug: 'etsy',        channelKey: 'etsy',        count: 93  },
-      { slug: 'ebay',        channelKey: 'ebay',        count: 51  },
-      { slug: 'manual',      channelKey: 'manual',      count: 26  },
+      { slug: 'tiktokshop', channelKey: 'tiktok',  count: 322 },
+      { slug: 'shopify',    channelKey: 'shopify', count: 203 },
+      { slug: 'amazonsp',   channelKey: 'amazon',  count: 152 },
+      { slug: 'etsy',       channelKey: 'etsy',    count: 93  },
+      { slug: 'ebay',       channelKey: 'ebay',    count: 51  },
+      { slug: 'manual',     channelKey: 'manual',  count: 26  },
     ],
     countries: [
       { flag: '🇬🇧', name: 'United Kingdom', count: 688 },
@@ -168,27 +131,40 @@ const MOCK_DATA: Record<string, DashboardData> = {
       { key: 'Evri',       count: 138 },
       { key: 'UPS',        count: 34  },
     ],
-    collectionAlerts: [
-      { orderNo: '#5501', channelSlug: 'shopify',    service: 'Next Day', cutoff: '14:30', minsLeft: 18 },
-      { orderNo: '#5502', channelSlug: 'tiktokshop', service: '24hr',     cutoff: '14:30', minsLeft: 18 },
-    ],
-    trackingAlerts: [
-      { orderNo: '#4873', carrierKey: 'DPD',        tracking: 'DPD15935742013', issue: 'Address not found'  },
-      { orderNo: '#4901', carrierKey: 'Royal Mail', tracking: 'RM551234567GB',  issue: 'Delivery attempted' },
-      { orderNo: '#4812', carrierKey: 'Evri',       tracking: 'H00CC11223344',  issue: 'Held at depot'      },
-    ],
   },
 }
 
+// ─── Live "right now" data ────────────────────────────────────────────────────
+// These values do NOT change with the date selector.
+// In production they will come from a real-time query.
+
+const LIVE_DATA: LiveData = {
+  ordersWaiting:  9,
+  trackingIssues: 3,
+  serviceAlerts:  2,
+  nearCutoff:     2,
+  collectionAlerts: [
+    { orderNo: '#5501', channelSlug: 'shopify',    service: 'Next Day', cutoff: '14:30', minsLeft: 18 },
+    { orderNo: '#5502', channelSlug: 'tiktokshop', service: '24hr',     cutoff: '14:30', minsLeft: 18 },
+  ],
+  trackingAlerts: [
+    { orderNo: '#4873', carrierKey: 'DPD',        tracking: 'DPD15935742013', issue: 'Address not found'  },
+    { orderNo: '#4901', carrierKey: 'Royal Mail', tracking: 'RM551234567GB',  issue: 'Delivery attempted' },
+    { orderNo: '#4812', carrierKey: 'Evri',       tracking: 'H00CC11223344',  issue: 'Held at depot'      },
+  ],
+  serviceAlertList: [
+    { message: 'Royal Mail API rate limit at 85% — monitor closely', severity: 'warn' },
+    { message: 'DPD label generation queue delayed by ~4 mins',      severity: 'info' },
+  ],
+}
+
 export default async function DashboardPage() {
-  // Fetch channel and carrier maps from DB (falls back to empty {} if DB is unavailable)
-  const [dbChannelMap, dbCarrierMap] = await Promise.all([
+  const [dbChannelMap, { byKey: carrierByKey, byName: carrierByName }] = await Promise.all([
     fetchChannelMap(),
     fetchCarrierMap(),
   ])
 
-  // Build a complete channelMap: start with fallbacks for all known channels,
-  // then overlay any DB rows that exist
+  // Channel map: fallbacks overlaid with DB data
   const channelMap = Object.fromEntries(
     (Object.keys(CHANNEL_FALLBACKS) as SalesChannel[]).map((ch) => {
       const slug = CHANNEL_TO_SLUG[ch]
@@ -196,19 +172,26 @@ export default async function DashboardPage() {
     })
   )
 
-  // Build carrierMap: DB rows take priority, fallback for anything not yet seeded
-  const allCarrierKeys = Array.from(
-    new Set(DATE_OPTIONS.flatMap(r => MOCK_DATA[r].courierCounts.map(c => c.key)))
+  // Carrier map: key → resolved CarrierData (DB logo URL, key-then-name lookup)
+  // Keys include all mock courierCount keys plus all actual DB keys so the full
+  // set is available to the client for alert rows.
+  const allMockKeys = Array.from(
+    new Set(DATE_OPTIONS.flatMap(r => RANGE_DATA[r].courierCounts.map(c => c.key)))
   )
+  const allAlertKeys = [
+    ...LIVE_DATA.trackingAlerts.map(a => a.carrierKey),
+  ]
+  const allKeys = Array.from(new Set([...allMockKeys, ...allAlertKeys, ...Object.keys(carrierByKey)]))
   const carrierMap = Object.fromEntries(
-    allCarrierKeys.map(key => [key, dbCarrierMap[key] ?? { key, displayName: key, logoUrl: null }])
+    allKeys.map(key => [key, resolveCarrier(key, carrierByKey, carrierByName)])
   )
 
   return (
     <DashboardClient
       channelMap={channelMap}
       carrierMap={carrierMap}
-      data={MOCK_DATA}
+      rangeData={RANGE_DATA}
+      liveData={LIVE_DATA}
       dateOptions={DATE_OPTIONS}
     />
   )

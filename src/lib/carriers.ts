@@ -9,7 +9,6 @@ export interface CarrierData {
 }
 
 // Hardcoded fallbacks — keeps UI working in local dev before DB is seeded.
-// Keys match Voila API courier key values.
 export const CARRIER_FALLBACKS: Record<string, CarrierData> = {
   'royal-mail':  { key: 'royal-mail',  displayName: 'Royal Mail', logoUrl: null },
   'dpd':         { key: 'dpd',         displayName: 'DPD',        logoUrl: null },
@@ -20,10 +19,13 @@ export const CARRIER_FALLBACKS: Record<string, CarrierData> = {
   'parcelforce': { key: 'parcelforce', displayName: 'Parcelforce',logoUrl: null },
 }
 
-// Fetch all active carriers from DB and return a key→data map.
-// Returns an empty map on error so callers fall back gracefully.
-export async function fetchCarrierMap(): Promise<Record<string, CarrierData>> {
-  if (!process.env.DATABASE_URL) return {}
+// Fetch ALL active carriers from DB — returns a key→data map AND a
+// lowercase-displayName→data map so callers can do name-based fallback lookup.
+export async function fetchCarrierMap(): Promise<{
+  byKey:  Record<string, CarrierData>
+  byName: Record<string, CarrierData>  // keyed by displayName.toLowerCase()
+}> {
+  if (!process.env.DATABASE_URL) return { byKey: {}, byName: {} }
 
   try {
     const { db } = await import('@/lib/db')
@@ -32,14 +34,27 @@ export async function fetchCarrierMap(): Promise<Record<string, CarrierData>> {
       where: { isActive: true },
       select: { key: true, displayName: true, logoUrl: true },
     }) as CarrierData[]
-    return Object.fromEntries(rows.map((r) => [r.key, r]))
+    return {
+      byKey:  Object.fromEntries(rows.map(r => [r.key, r])),
+      byName: Object.fromEntries(rows.map(r => [r.displayName.toLowerCase(), r])),
+    }
   } catch (err) {
     console.warn('[carriers] DB fetch failed, using fallbacks:', err)
-    return {}
+    return { byKey: {}, byName: {} }
   }
 }
 
-// Resolve carrier data for a given key, preferring DB over fallback.
-export function resolveCarrier(key: string, dbMap: Record<string, CarrierData>): CarrierData {
-  return dbMap[key] ?? CARRIER_FALLBACKS[key] ?? { key, displayName: key, logoUrl: null }
+// Resolve a carrier by key first, then by display name (case-insensitive),
+// then fall back to hardcoded fallback, then bare shell.
+export function resolveCarrier(
+  key: string,
+  byKey: Record<string, CarrierData>,
+  byName: Record<string, CarrierData>,
+): CarrierData {
+  return (
+    byKey[key] ??
+    byName[key.toLowerCase()] ??
+    CARRIER_FALLBACKS[key.toLowerCase()] ??
+    { key, displayName: key, logoUrl: null }
+  )
 }

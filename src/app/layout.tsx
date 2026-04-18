@@ -34,11 +34,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <Sidebar />
         <TopBar />
-        {/* Main content area — offset for sidebar (145px) and topbar (80px) */}
+        {/* Main content — offsets driven by CSS variables (globals.css) so they
+            scale with viewport height: 13" Mac gets 64px topbar / 54px nav items,
+            larger screens get 80px / 70px. */}
         <main
           style={{
-            marginLeft: 145,
-            paddingTop: 80,
+            marginLeft: 'var(--mn-sidebar-w)',
+            paddingTop: 'var(--mn-topbar-h)',
             minHeight: '100vh',
             display: 'flex',
             flexDirection: 'column',
@@ -46,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             boxShadow: 'inset 0 48px 36px -57px rgba(255,255,255,0.05)',
           }}
         >
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: 45, paddingLeft: 29, paddingRight: 32, paddingBottom: 37 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '24px 24px 24px 24px' }}>
             {children}
           </div>
         </main>
