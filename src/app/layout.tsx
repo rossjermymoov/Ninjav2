@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             boxShadow: 'inset 0 48px 36px -57px rgba(255,255,255,0.05)',
           }}
         >
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 24 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingTop: 45, paddingLeft: 29, paddingRight: 32, paddingBottom: 37 }}>
             {children}
           </div>
         </main>

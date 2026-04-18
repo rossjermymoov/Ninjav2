@@ -346,7 +346,7 @@ export function OrdersTable({
             </colgroup>
             {/* Header */}
             <thead>
-              <tr style={{ background: '#171B2D' }}>
+              <tr style={{ background: '#171B2D', height: 40 }}>
                 <th className="py-3 px-3">
                   <input
                     type="checkbox"
@@ -381,7 +381,7 @@ export function OrdersTable({
                     className="mn-row transition-colors cursor-pointer"
                     style={{
                       background: '#FDFFFF',
-                      borderBottom: '0.5px solid #DFE0EB',
+                      borderBottom: '1px solid #DFE0EB',
                       height: 50,
                     }}
                     onClick={() => toggleRow(order.id)}
@@ -496,7 +496,7 @@ export function OrdersTable({
       </div>
 
       {/* ── Pagination ──────────────────────────────────────────── */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3" style={{ marginTop: 18 }}>
         {/* Per page selector */}
         <button
           className="flex items-center gap-2 px-3 h-8 rounded-full text-sm"
