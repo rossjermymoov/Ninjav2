@@ -33,6 +33,7 @@ export interface Shipment {
   country: string
   countryFlag: string
   carrier: string
+  carrierLogoUrl: string | null
   trackingNumbers: string[]    // array — >1 means multi-parcel
   service: string
   bookedAt: string             // when the label was created
@@ -45,8 +46,9 @@ export interface Shipment {
 
 // ─── Ordered newest-first ─────────────────────────────────────────────────────
 
+const CDN = 'https://app.heyvoila.io/courier-service-logos'
+
 export const MOCK_SHIPMENTS: Shipment[] = [
-  // ── s9: just booked, multi-parcel ──
   {
     id: 's9',
     orderNumber: '#5643',
@@ -55,6 +57,7 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'DPD',
+    carrierLogoUrl: `${CDN}/dpd.jpg`,
     trackingNumbers: ['DPD99182736450', 'DPD99182736451', 'DPD99182736452'],
     service: 'Next Day',
     bookedAt: '2024-03-15 17:30',
@@ -66,7 +69,6 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     weight: '4.80 kg',
     items: 6,
   },
-  // ── s8: booked, awaiting collection ──
   {
     id: 's8',
     orderNumber: '#5501',
@@ -75,6 +77,7 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'DPD',
+    carrierLogoUrl: `${CDN}/dpd.jpg`,
     trackingNumbers: ['DPD38291047563'],
     service: 'Saturday',
     bookedAt: '2024-03-15 16:00',
@@ -86,7 +89,6 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     weight: '3.20 kg',
     items: 5,
   },
-  // ── s5: processing → booked label ──
   {
     id: 's5',
     orderNumber: '#5102',
@@ -95,6 +97,7 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'DPD',
+    carrierLogoUrl: `${CDN}/dpd.jpg`,
     trackingNumbers: ['DPD25748391022'],
     service: 'Next Day',
     bookedAt: '2024-03-15 14:15',
@@ -106,7 +109,6 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     weight: '0.80 kg',
     items: 2,
   },
-  // ── s6: in transit, multi-parcel ──
   {
     id: 's6',
     orderNumber: '#5287',
@@ -115,22 +117,22 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'Evri',
+    carrierLogoUrl: `${CDN}/evri.jpg`,
     trackingNumbers: ['H00BB98765432', 'H00BB98765433'],
     service: '48hr',
     bookedAt: '2024-03-15 13:00',
     estimatedDelivery: '2024-03-17',
     trackingEvents: [
-      { type: 'booked',             timestamp: '2024-03-15 13:00' },
-      { type: 'collected',          timestamp: '2024-03-15 16:45', location: 'Bristol Evri Drop-off' },
-      { type: 'in_transit_to_depot',timestamp: '2024-03-15 19:00' },
-      { type: 'at_collection_depot',timestamp: '2024-03-15 23:30', location: 'Bristol Depot' },
-      { type: 'in_transit_to_hub',  timestamp: '2024-03-16 03:00' },
+      { type: 'booked',              timestamp: '2024-03-15 13:00' },
+      { type: 'collected',           timestamp: '2024-03-15 16:45', location: 'Bristol Evri Drop-off' },
+      { type: 'in_transit_to_depot', timestamp: '2024-03-15 19:00' },
+      { type: 'at_collection_depot', timestamp: '2024-03-15 23:30', location: 'Bristol Depot' },
+      { type: 'in_transit_to_hub',   timestamp: '2024-03-16 03:00' },
     ],
     currentEvent: 'in_transit_to_hub',
     weight: '1.50 kg',
     items: 4,
   },
-  // ── s2: dispatched / collected ──
   {
     id: 's2',
     orderNumber: '#4836',
@@ -139,6 +141,7 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'Evri',
+    carrierLogoUrl: `${CDN}/evri.jpg`,
     trackingNumbers: ['H00AA12345678'],
     service: '48hr',
     bookedAt: '2024-03-15 11:45',
@@ -152,7 +155,6 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     weight: '1.20 kg',
     items: 2,
   },
-  // ── s1: in transit heading to hub ──
   {
     id: 's1',
     orderNumber: '#1012',
@@ -161,24 +163,24 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'Royal Mail',
+    carrierLogoUrl: `${CDN}/royalmail.jpg`,
     trackingNumbers: ['RM123456789GB'],
     service: '24hr Tracked',
     bookedAt: '2024-03-15 10:30',
     estimatedDelivery: '2024-03-16',
     trackingEvents: [
-      { type: 'booked',              timestamp: '2024-03-15 10:30' },
-      { type: 'collected',           timestamp: '2024-03-15 14:00', location: 'Shrewsbury Mail Centre' },
-      { type: 'in_transit_to_depot', timestamp: '2024-03-15 16:30' },
-      { type: 'at_collection_depot', timestamp: '2024-03-15 20:00', location: 'Shrewsbury MC' },
-      { type: 'in_transit_to_hub',   timestamp: '2024-03-16 01:00' },
-      { type: 'at_hub',              timestamp: '2024-03-16 04:30', location: 'Northampton National DC' },
+      { type: 'booked',                  timestamp: '2024-03-15 10:30' },
+      { type: 'collected',               timestamp: '2024-03-15 14:00', location: 'Shrewsbury Mail Centre' },
+      { type: 'in_transit_to_depot',     timestamp: '2024-03-15 16:30' },
+      { type: 'at_collection_depot',     timestamp: '2024-03-15 20:00', location: 'Shrewsbury MC' },
+      { type: 'in_transit_to_hub',       timestamp: '2024-03-16 01:00' },
+      { type: 'at_hub',                  timestamp: '2024-03-16 04:30', location: 'Northampton National DC' },
       { type: 'in_transit_to_receiving', timestamp: '2024-03-16 07:00' },
     ],
     currentEvent: 'in_transit_to_receiving',
     weight: '0.45 kg',
     items: 1,
   },
-  // ── s3: on hold (problem) ──
   {
     id: 's3',
     orderNumber: '#4873',
@@ -187,6 +189,7 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'DPD',
+    carrierLogoUrl: `${CDN}/dpd.jpg`,
     trackingNumbers: ['DPD15935742013'],
     service: 'Next Day',
     bookedAt: '2024-03-14 15:20',
@@ -204,7 +207,6 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     weight: '2.10 kg',
     items: 3,
   },
-  // ── s10: address issue ──
   {
     id: 's10',
     orderNumber: '#4791',
@@ -213,26 +215,26 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'Royal Mail',
+    carrierLogoUrl: `${CDN}/royalmail.jpg`,
     trackingNumbers: ['RM554433221GB'],
     service: '48hr Tracked',
     bookedAt: '2024-03-14 12:00',
     estimatedDelivery: '2024-03-16',
     trackingEvents: [
-      { type: 'booked',              timestamp: '2024-03-14 12:00' },
-      { type: 'collected',           timestamp: '2024-03-14 15:00', location: 'Birmingham MC' },
-      { type: 'in_transit_to_depot', timestamp: '2024-03-14 17:00' },
-      { type: 'at_collection_depot', timestamp: '2024-03-14 21:00', location: 'Birmingham MC' },
-      { type: 'in_transit_to_hub',   timestamp: '2024-03-15 00:00' },
-      { type: 'at_hub',              timestamp: '2024-03-15 04:00', location: 'Coventry NDC' },
+      { type: 'booked',                  timestamp: '2024-03-14 12:00' },
+      { type: 'collected',               timestamp: '2024-03-14 15:00', location: 'Birmingham MC' },
+      { type: 'in_transit_to_depot',     timestamp: '2024-03-14 17:00' },
+      { type: 'at_collection_depot',     timestamp: '2024-03-14 21:00', location: 'Birmingham MC' },
+      { type: 'in_transit_to_hub',       timestamp: '2024-03-15 00:00' },
+      { type: 'at_hub',                  timestamp: '2024-03-15 04:00', location: 'Coventry NDC' },
       { type: 'in_transit_to_receiving', timestamp: '2024-03-15 07:00' },
-      { type: 'at_receiving_depot',  timestamp: '2024-03-15 10:00', location: 'Birmingham Delivery Office' },
-      { type: 'address_issue',       timestamp: '2024-03-15 12:30', location: 'Birmingham Delivery Office' },
+      { type: 'at_receiving_depot',      timestamp: '2024-03-15 10:00', location: 'Birmingham Delivery Office' },
+      { type: 'address_issue',           timestamp: '2024-03-15 12:30', location: 'Birmingham Delivery Office' },
     ],
     currentEvent: 'address_issue',
     weight: '0.90 kg',
     items: 2,
   },
-  // ── s7: out for delivery ──
   {
     id: 's7',
     orderNumber: '#5394',
@@ -241,6 +243,7 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'Royal Mail',
+    carrierLogoUrl: `${CDN}/royalmail.jpg`,
     trackingNumbers: ['RM112233445GB'],
     service: '24hr Tracked',
     bookedAt: '2024-03-13 16:45',
@@ -260,7 +263,6 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     weight: '0.55 kg',
     items: 1,
   },
-  // ── s4: delivered ──
   {
     id: 's4',
     orderNumber: '#3391',
@@ -269,6 +271,7 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'United Kingdom',
     countryFlag: '🇬🇧',
     carrier: 'Royal Mail',
+    carrierLogoUrl: `${CDN}/royalmail.jpg`,
     trackingNumbers: ['RM987654321GB'],
     service: '24hr Tracked',
     bookedAt: '2024-03-13 09:10',
@@ -289,7 +292,6 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     weight: '0.30 kg',
     items: 1,
   },
-  // ── s11: customs hold (international) ──
   {
     id: 's11',
     orderNumber: '#3214',
@@ -298,6 +300,7 @@ export const MOCK_SHIPMENTS: Shipment[] = [
     country: 'France',
     countryFlag: '🇫🇷',
     carrier: 'Royal Mail',
+    carrierLogoUrl: `${CDN}/royalmail.jpg`,
     trackingNumbers: ['RM776655443GB'],
     service: 'International Tracked',
     bookedAt: '2024-03-12 14:00',

@@ -40,107 +40,279 @@ const EVENT_LABEL: Record<TrackingEventType, string> = {
   returned_to_sender:       'Returned to Sender',
 }
 
-const RED    = colors.statusIssue    // #FF4D6A
-const MINT   = colors.mint           // #1DFB9D
-const AMBER  = colors.statusProcessing
-const BLUE   = colors.statusShipped
+const RED   = colors.statusIssue    // #FF4D6A
+const MINT  = colors.mint           // #1DFB9D
+const AMBER = colors.statusProcessing
+const BLUE  = colors.statusShipped
 
 // Status label + colour for the compact badge in the row
 function eventBadgeConfig(evt: TrackingEventType): { label: string; color: string; bg: string } {
   if (PROBLEM_EVENTS.has(evt)) return { label: EVENT_LABEL[evt], color: RED, bg: `${RED}20` }
-  if (evt === 'delivered')         return { label: 'Delivered', color: MINT, bg: `${MINT}18` }
+  if (evt === 'delivered')         return { label: 'Delivered',       color: MINT,  bg: `${MINT}18` }
   if (evt === 'out_for_delivery')  return { label: 'Out for Delivery', color: BLUE, bg: `${BLUE}18` }
-  if (evt === 'booked')            return { label: 'Booked', color: AMBER, bg: `${AMBER}18` }
+  if (evt === 'booked')            return { label: 'Booked',           color: AMBER, bg: `${AMBER}18` }
   return { label: EVENT_LABEL[evt], color: MINT, bg: `${MINT}12` }
 }
 
-// ─── Tracking timeline ────────────────────────────────────────────────────────
+// ─── Visual stages (horizontal timeline) ─────────────────────────────────────
 
-function TrackingTimeline({ shipment }: { shipment: Shipment }) {
+interface VisualStage {
+  key: string
+  label: string
+  events: TrackingEventType[]
+}
+
+const VISUAL_STAGES: VisualStage[] = [
+  { key: 'booked',    label: 'Booked',           events: ['booked'] },
+  { key: 'collected', label: 'Collected',         events: ['collected', 'in_transit_to_depot'] },
+  { key: 'depot',     label: 'At Depot',          events: ['at_collection_depot', 'in_transit_to_hub'] },
+  { key: 'hub',       label: 'At Hub',            events: ['at_hub', 'in_transit_to_receiving'] },
+  { key: 'route',     label: 'Out for Delivery',  events: ['at_receiving_depot', 'out_for_delivery'] },
+  { key: 'delivered', label: 'Delivered',         events: ['delivered'] },
+]
+
+function getVisualStageIdx(event: TrackingEventType): number {
+  const idx = VISUAL_STAGES.findIndex(s => s.events.includes(event))
+  return idx === -1 ? 0 : idx
+}
+
+function getEffectiveStageIdx(shipment: Shipment): number {
+  if (PROBLEM_EVENTS.has(shipment.currentEvent)) {
+    // Walk back through events to find the last non-problem event
+    const lastNormal = [...shipment.trackingEvents].reverse().find(e => !PROBLEM_EVENTS.has(e.type))
+    if (!lastNormal) return 0
+    return getVisualStageIdx(lastNormal.type)
+  }
+  return getVisualStageIdx(shipment.currentEvent)
+}
+
+// ─── Horizontal tracking timeline ────────────────────────────────────────────
+
+function HorizontalTimeline({ shipment }: { shipment: Shipment }) {
   const M = font.family
-  const events = shipment.trackingEvents
-  const last   = events[events.length - 1]
   const isProblem = PROBLEM_EVENTS.has(shipment.currentEvent)
+  const stageIdx  = getEffectiveStageIdx(shipment)
+  const isDelivered = shipment.currentEvent === 'delivered'
+  const activeColor = isProblem ? RED : MINT
+
+  // Fill percentage: from node 0 to current node along the track
+  const fillPct = VISUAL_STAGES.length > 1
+    ? (stageIdx / (VISUAL_STAGES.length - 1)) * 100
+    : 0
+
+  const lastEvent = shipment.trackingEvents[shipment.trackingEvents.length - 1]
+
+  // Icons for each stage (SVG paths)
+  const stageIcons: Record<string, React.ReactNode> = {
+    booked:    <path d="M4 4h8v1.5H4V4zm0 3h8v1.5H4V7zm0 3h5v1.5H4V10z" fill="currentColor"/>,
+    collected: <path d="M8 2l1.5 3H13l-2.7 2 1 3L8 8.3 4.7 10l1-3L3 5h3.5L8 2z" fill="currentColor"/>,
+    depot:     <path d="M2 6l6-4 6 4v7H9v-4H7v4H2V6z" fill="currentColor"/>,
+    hub:       <path d="M8 2l6 3v2H2V5l6-3zm-5 6h10v5H3V8zm2 1v3h2V9H5zm4 0v3h2V9H9z" fill="currentColor"/>,
+    route:     <path d="M13 4H5l-3 4 3 4h8l2-4-2-4zm-5 5.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="currentColor"/>,
+    delivered: <path d="M2 4h12v8H2V4zm10 2l-5 3-5-3" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>,
+  }
 
   return (
-    <div style={{ padding: '16px 20px 20px', background: 'rgba(29,251,157,0.03)', borderTop: `1px solid ${colors.borderSubtle}` }}>
+    <div style={{ padding: '20px 28px 22px', background: '#F8F9FB', borderTop: '1px solid #E4E6ED' }}>
 
-      {/* Timeline */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-        {events.map((ev, i) => {
-          const isProb  = PROBLEM_EVENTS.has(ev.type)
-          const isCurrent = i === events.length - 1
-          const dotColor = isProb ? RED : MINT
-          return (
-            <div key={i} style={{ display: 'flex', gap: 12, position: 'relative' }}>
-              {/* Vertical line */}
-              {i < events.length - 1 && (
-                <div style={{ position: 'absolute', left: 9, top: 22, bottom: -2, width: 2, background: isProb ? `${RED}40` : `${MINT}30` }} />
-              )}
-              {/* Dot */}
-              <div style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0, marginTop: 2,
-                background: isCurrent && !isProb ? 'transparent' : (isProb ? RED : MINT),
-                border: `2px solid ${dotColor}`,
-                boxShadow: isCurrent ? `0 0 8px ${dotColor}80` : 'none',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                {isCurrent && !isProb && (
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: MINT }} />
+      {/* Problem banner */}
+      {isProblem && (
+        <div style={{ marginBottom: 16, padding: '8px 14px', borderRadius: 8, background: `${RED}12`, border: `1px solid ${RED}40`, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 14, lineHeight: 1 }}>⚠️</span>
+          <span style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, color: RED, fontFamily: M }}>
+            {EVENT_LABEL[shipment.currentEvent]}
+          </span>
+          {lastEvent.location && (
+            <span style={{ fontSize: font.size.xs, color: RED, fontFamily: M, opacity: 0.8 }}>· {lastEvent.location}</span>
+          )}
+          <span style={{ fontSize: font.size.xs, color: RED, fontFamily: M, opacity: 0.7, marginLeft: 'auto' }}>{lastEvent.timestamp}</span>
+        </div>
+      )}
+
+      {/* Progress track */}
+      <div style={{ position: 'relative', paddingTop: 8, paddingBottom: 4 }}>
+
+        {/* Track background line (node-to-node) */}
+        <div style={{
+          position: 'absolute',
+          top: '50%', transform: 'translateY(-50%)',
+          left: 12, right: 12,
+          height: 4, background: '#E2E5EF', borderRadius: 2, zIndex: 0,
+        }} />
+
+        {/* Track fill */}
+        <div style={{
+          position: 'absolute',
+          top: '50%', transform: 'translateY(-50%)',
+          left: 12,
+          width: `calc((100% - 24px) * ${fillPct / 100})`,
+          height: 4,
+          background: activeColor,
+          borderRadius: 2,
+          zIndex: 1,
+          transition: 'width 0.3s ease',
+          boxShadow: isProblem ? `0 0 6px ${RED}60` : `0 0 8px ${MINT}50`,
+        }} />
+
+        {/* Nodes */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
+          {VISUAL_STAGES.map((stage, i) => {
+            const isCompleted = isDelivered || i < stageIdx
+            const isCurrent   = i === stageIdx
+            const isPending   = !isDelivered && i > stageIdx
+
+            const dotBg    = isCompleted ? MINT : (isCurrent ? (isProblem ? RED : MINT) : '#E2E5EF')
+            const dotBorder = isCompleted ? MINT : (isCurrent ? activeColor : '#C8CBDA')
+            const dotGlow  = isCurrent ? `0 0 12px ${activeColor}70` : 'none'
+            const dotSize  = isCurrent ? 26 : 22
+
+            return (
+              <div key={stage.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
+                {/* Carrier logo above node for collected / out_for_delivery stage */}
+                {(i === 1 || i === 4) && isCurrent && shipment.carrierLogoUrl && (
+                  <div style={{
+                    position: 'absolute',
+                    marginTop: -32,
+                    width: 22, height: 22,
+                    borderRadius: 6,
+                    background: '#fff',
+                    border: '1px solid #E4E6ED',
+                    overflow: 'hidden',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                  }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={shipment.carrierLogoUrl} alt={shipment.carrier} width={16} height={16} style={{ objectFit: 'contain' }} />
+                  </div>
                 )}
-                {isProb && (
-                  <span style={{ fontSize: 10, color: '#fff', lineHeight: 1 }}>!</span>
-                )}
-                {!isCurrent && !isProb && (
-                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                    <path d="M1.5 4l1.8 1.8L6.5 2" stroke={colors.cardBg} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                )}
-              </div>
-              {/* Event info */}
-              <div style={{ paddingBottom: 16 }}>
-                <div style={{ display: 'flex', gap: 10, alignItems: 'baseline' }}>
-                  <span style={{ fontSize: font.size.sm, fontWeight: isProb || isCurrent ? font.weight.bold : font.weight.semibold, color: isProb ? RED : (isCurrent ? MINT : colors.textPrimary), fontFamily: M }}>
-                    {EVENT_LABEL[ev.type]}
-                  </span>
-                  <span style={{ fontSize: font.size.xs, color: colors.textMuted, fontFamily: M }}>
-                    {ev.timestamp}
-                  </span>
+
+                {/* Node circle */}
+                <div style={{
+                  width: dotSize, height: dotSize,
+                  borderRadius: '50%',
+                  background: dotBg,
+                  border: `2px solid ${dotBorder}`,
+                  boxShadow: dotGlow,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.2s',
+                  flexShrink: 0,
+                }}>
+                  {isCompleted && !isCurrent && (
+                    // Filled: dark inner dot (per Figma spec)
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: colors.cardBg }} />
+                  )}
+                  {isCurrent && !isProblem && (
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style={{ color: colors.cardBg }}>
+                      {stageIcons[stage.key]}
+                    </svg>
+                  )}
+                  {isCurrent && isProblem && (
+                    <span style={{ fontSize: 11, fontWeight: 800, color: '#fff', lineHeight: 1 }}>!</span>
+                  )}
+                  {isPending && (
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#C8CBDA' }} />
+                  )}
                 </div>
-                {ev.location && (
-                  <span style={{ fontSize: font.size.xs, color: colors.textMuted, fontFamily: M }}>{ev.location}</span>
-                )}
               </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Stage labels */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
+        {VISUAL_STAGES.map((stage, i) => {
+          const isCompleted = isDelivered || i < stageIdx
+          const isCurrent   = i === stageIdx
+          const isPending   = !isDelivered && i > stageIdx
+          return (
+            <div key={stage.key} style={{ width: 72, textAlign: 'center', flexShrink: 0 }}>
+              <span style={{
+                fontSize: font.size.xs,
+                fontWeight: isCurrent ? font.weight.bold : font.weight.regular,
+                color: isCurrent
+                  ? (isProblem ? RED : '#171B2D')
+                  : (isCompleted ? '#5C6478' : '#C8CBDA'),
+                fontFamily: M,
+                display: 'block',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}>
+                {stage.label}
+              </span>
             </div>
           )
         })}
-
-        {/* Pending future stages (greyed out) */}
-        {!isProblem && shipment.currentEvent !== 'delivered' && (() => {
-          const doneIdx = PIPELINE.indexOf(last.type)
-          const remaining = PIPELINE.slice(doneIdx + 1)
-          return remaining.map((stage, i) => (
-            <div key={`pend-${i}`} style={{ display: 'flex', gap: 12, position: 'relative' }}>
-              {i < remaining.length - 1 && (
-                <div style={{ position: 'absolute', left: 9, top: 22, bottom: -2, width: 2, background: colors.borderSubtle }} />
-              )}
-              <div style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0, marginTop: 2, border: `2px solid ${colors.borderSubtle}`, background: 'transparent' }} />
-              <div style={{ paddingBottom: 14 }}>
-                <span style={{ fontSize: font.size.sm, color: colors.textMuted, fontFamily: M }}>{EVENT_LABEL[stage]}</span>
-              </div>
-            </div>
-          ))
-        })()}
       </div>
 
-      {/* Est. delivery footer (hidden once delivered) */}
-      {shipment.currentEvent !== 'delivered' && shipment.estimatedDelivery && (
-        <div style={{ marginTop: 4, paddingTop: 12, borderTop: `1px solid ${colors.borderSubtle}`, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: font.size.xs, color: colors.textMuted, fontFamily: M, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Est. Delivery</span>
-          <span style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, color: isProblem ? RED : AMBER, fontFamily: M }}>
-            {shipment.estimatedDelivery}
-          </span>
+      {/* Recent events (last 3) */}
+      <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {shipment.trackingEvents.slice(-3).reverse().map((ev, i) => {
+          const isProb = PROBLEM_EVENTS.has(ev.type)
+          const isFirst = i === 0
+          return (
+            <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: isProb ? RED : (isFirst ? MINT : '#C8CBDA'), flexShrink: 0, marginTop: 2 }} />
+              <span style={{ fontSize: font.size.xs, fontWeight: isFirst ? font.weight.bold : font.weight.regular, color: isProb ? RED : (isFirst ? '#171B2D' : '#9FA2B4'), fontFamily: M }}>
+                {EVENT_LABEL[ev.type]}
+              </span>
+              {ev.location && (
+                <span style={{ fontSize: font.size.xs, color: '#9FA2B4', fontFamily: M }}>· {ev.location}</span>
+              )}
+              <span style={{ fontSize: font.size.xs, color: '#C8CBDA', fontFamily: M, marginLeft: 'auto' }}>
+                {ev.timestamp}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Footer: est delivery + action buttons */}
+      <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid #E4E6ED', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+          {shipment.estimatedDelivery && shipment.currentEvent !== 'delivered' && (
+            <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
+              <span style={{ fontSize: font.size.xs, color: '#9FA2B4', fontFamily: M, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Est. Delivery</span>
+              <span style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, color: isProblem ? RED : AMBER, fontFamily: M }}>
+                {shipment.estimatedDelivery}
+              </span>
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
+            <span style={{ fontSize: font.size.xs, color: '#9FA2B4', fontFamily: M, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Weight</span>
+            <span style={{ fontSize: font.size.xs, fontWeight: font.weight.semibold, color: '#5C6478', fontFamily: M }}>{shipment.weight}</span>
+          </div>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
+            <span style={{ fontSize: font.size.xs, color: '#9FA2B4', fontFamily: M, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Items</span>
+            <span style={{ fontSize: font.size.xs, fontWeight: font.weight.semibold, color: '#5C6478', fontFamily: M }}>{shipment.items}</span>
+          </div>
         </div>
-      )}
+
+        {/* Action buttons */}
+        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+          <button style={{
+            padding: '7px 18px', borderRadius: 99,
+            background: MINT, border: 'none',
+            fontSize: font.size.xs, fontWeight: font.weight.bold,
+            color: colors.cardBg, fontFamily: M,
+            cursor: 'pointer', letterSpacing: '0.04em',
+            boxShadow: `0 2px 8px ${MINT}40`,
+          }}>
+            Raise
+          </button>
+          <button style={{
+            padding: '7px 18px', borderRadius: 99,
+            background: 'transparent',
+            border: `1.5px solid ${colors.mintDim}`,
+            fontSize: font.size.xs, fontWeight: font.weight.bold,
+            color: colors.mintDim, fontFamily: M,
+            cursor: 'pointer', letterSpacing: '0.04em',
+          }}>
+            Track
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -195,7 +367,7 @@ function OptionsMenu({ shipmentId }: { shipmentId: string }) {
           boxShadow: '0 4px 20px rgba(0,0,0,0.35)',
           minWidth: 188,
         }}>
-          {OPTIONS.map((opt, i) => (
+          {OPTIONS.map((opt) => (
             <React.Fragment key={opt.action}>
               {opt.action === 'cancel' && (
                 <div style={{ height: 1, margin: '4px 12px', background: '#E8EAEF' }} />
@@ -219,6 +391,26 @@ function OptionsMenu({ shipmentId }: { shipmentId: string }) {
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+// ─── Carrier logo ─────────────────────────────────────────────────────────────
+
+function CarrierLogo({ src, name }: { src: string | null; name: string }) {
+  const [failed, setFailed] = useState(false)
+  if (!src || failed) {
+    const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+    return (
+      <div style={{ width: 36, height: 36, borderRadius: 8, background: '#F0F2F5', border: '1px solid #E4E6ED', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <span style={{ fontSize: 11, fontWeight: font.weight.bold, color: '#6B7280', fontFamily: font.family }}>{initials}</span>
+      </div>
+    )
+  }
+  return (
+    <div style={{ width: 36, height: 36, borderRadius: 8, background: '#F0F2F5', border: '1px solid #E4E6ED', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={name} width={28} height={28} onError={() => setFailed(true)} style={{ objectFit: 'contain', display: 'block' }} />
     </div>
   )
 }
@@ -256,14 +448,18 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
   const isProblem = PROBLEM_EVENTS.has(shipment.currentEvent)
   const isMulti   = shipment.trackingNumbers.length > 1
 
+  const TXT  = '#171B2D'
+  const TXT2 = '#5C6478'
+  const TXT3 = '#9FA2B4'
+
   return (
     <div style={{
-      background: colors.cardBg,
-      border: `1px solid ${isProblem ? `${RED}50` : colors.borderSubtle}`,
+      background: '#fff',
+      border: `1px solid ${isProblem ? `${RED}60` : '#E4E6ED'}`,
       borderRadius: radii.card,
       marginBottom: 8,
       overflow: 'hidden',
-      boxShadow: isProblem ? `0 0 12px ${RED}18` : 'none',
+      boxShadow: isProblem ? `0 0 14px ${RED}20` : '0 1px 4px rgba(0,0,0,0.06)',
       transition: 'border-color 0.2s',
     }}>
 
@@ -272,62 +468,54 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
         onClick={onToggle}
         style={{
           display: 'grid',
-          gridTemplateColumns: '32px 90px 1fr 110px 100px 130px 148px 130px 140px 36px',
+          gridTemplateColumns: '32px 90px 1fr 110px 52px 130px 148px 130px 140px 36px',
           alignItems: 'center',
           gap: 8,
-          padding: '12px 14px',
+          padding: '10px 14px',
           cursor: 'pointer',
           userSelect: 'none',
         }}
       >
         {/* Expand chevron */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textMuted }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: TXT3 }}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
             <path d="M3 5l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
 
         {/* Order number */}
-        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, color: MINT, fontFamily: M }}>
+        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
           {shipment.orderNumber}
         </span>
 
         {/* Customer name */}
-        <span style={{ fontSize: font.size.sm, color: colors.textPrimary, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.customerName}
         </span>
 
         {/* Country + postcode */}
-        <span style={{ fontSize: font.size.sm, color: colors.textSecondary, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: font.size.sm, color: TXT2, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.countryFlag} {shipment.postcode}
         </span>
 
-        {/* Carrier */}
-        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.semibold, color: colors.textPrimary, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {shipment.carrier}
-        </span>
+        {/* Carrier logo */}
+        <CarrierLogo src={shipment.carrierLogoUrl} name={shipment.carrier} />
 
         {/* Service */}
-        <span style={{ fontSize: font.size.xs, color: colors.textSecondary, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: font.size.xs, color: TXT2, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.service}
         </span>
 
         {/* Tracking number(s) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
-          <span style={{ fontSize: font.size.xs, color: colors.textMuted, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: font.size.xs, color: TXT3, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {shipment.trackingNumbers[0]}
           </span>
           {isMulti && (
             <span style={{
-              flexShrink: 0,
-              padding: '1px 5px',
-              borderRadius: 99,
-              background: `${MINT}20`,
-              border: `1px solid ${MINT}50`,
-              fontSize: 10,
-              fontWeight: font.weight.bold,
-              color: MINT,
-              fontFamily: M,
+              flexShrink: 0, padding: '1px 5px', borderRadius: 99,
+              background: `${colors.mintDim}20`, border: `1px solid ${colors.mintDim}50`,
+              fontSize: 10, fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M,
             }}>
               +{shipment.trackingNumbers.length - 1}
             </span>
@@ -335,7 +523,7 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
         </div>
 
         {/* Booked date/time */}
-        <span style={{ fontSize: font.size.xs, color: colors.textMuted, fontFamily: M, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: font.size.xs, color: TXT3, fontFamily: M, whiteSpace: 'nowrap' }}>
           {shipment.bookedAt}
         </span>
 
@@ -349,7 +537,7 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
       </div>
 
       {/* Expanded tracking timeline */}
-      {expanded && <TrackingTimeline shipment={shipment} />}
+      {expanded && <HorizontalTimeline shipment={shipment} />}
     </div>
   )
 }
@@ -362,7 +550,7 @@ function TableHeader() {
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: '32px 90px 1fr 110px 100px 130px 148px 130px 140px 36px',
+      gridTemplateColumns: '32px 90px 1fr 110px 52px 130px 148px 130px 140px 36px',
       gap: 8,
       padding: '6px 14px 8px',
     }}>
@@ -390,18 +578,9 @@ function FilterSelect({ label, value, options, onChange }: {
         value={value}
         onChange={e => onChange(e.target.value)}
         style={{
-          padding: '7px 28px 7px 10px',
-          background: 'transparent',
-          border: 'none',
-          outline: 'none',
-          color: colors.textPrimary,
-          fontFamily: M,
-          fontSize: font.size.sm,
-          fontWeight: font.weight.semibold,
-          cursor: 'pointer',
-          appearance: 'none',
-          WebkitAppearance: 'none',
-          minWidth: 100,
+          padding: '7px 28px 7px 10px', background: 'transparent', border: 'none', outline: 'none',
+          color: colors.textPrimary, fontFamily: M, fontSize: font.size.sm, fontWeight: font.weight.semibold,
+          cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', minWidth: 100,
         }}
       >
         <option value="all" style={{ background: '#171B2D' }}>All</option>
@@ -412,17 +591,37 @@ function FilterSelect({ label, value, options, onChange }: {
   )
 }
 
-// ─── Summary chips ────────────────────────────────────────────────────────────
+// ─── Summary chips (clickable, filter on click) ───────────────────────────────
 
-function SummaryChip({ label, count, color }: { label: string; count: number; color: string }) {
+type CardFilter = 'booked' | 'in_transit' | 'issues' | 'awaiting_pickup' | 'delivered'
+
+function SummaryChip({
+  label, count, color, active, onClick,
+}: {
+  label: string; count: number; color: string; active: boolean; onClick: () => void
+}) {
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      padding: '12px 20px', background: `${color}14`, border: `1px solid ${color}40`,
-      borderRadius: radii.card, minWidth: 80, flex: 1,
-    }}>
-      <span style={{ fontSize: font.size['2xl'], fontWeight: font.weight.extrabold, color, fontFamily: font.family, lineHeight: 1 }}>{count}</span>
-      <span style={{ marginTop: 4, fontSize: font.size.xs, color: colors.textSecondary, fontFamily: font.family, whiteSpace: 'nowrap' }}>{label}</span>
+    <div
+      onClick={onClick}
+      style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        padding: '12px 20px',
+        background: active ? `${color}22` : `${color}10`,
+        border: `${active ? 2 : 1}px solid ${active ? color : color + '38'}`,
+        borderRadius: radii.card,
+        minWidth: 80, flex: 1,
+        cursor: 'pointer',
+        transition: 'all 0.15s',
+        boxShadow: active ? `0 0 16px ${color}30` : 'none',
+        userSelect: 'none',
+      }}
+    >
+      <span style={{ fontSize: font.size['2xl'], fontWeight: font.weight.extrabold, color, fontFamily: font.family, lineHeight: 1 }}>
+        {count}
+      </span>
+      <span style={{ marginTop: 4, fontSize: font.size.xs, color: active ? color : colors.textSecondary, fontFamily: font.family, whiteSpace: 'nowrap', fontWeight: active ? font.weight.bold : font.weight.regular }}>
+        {label}
+      </span>
     </div>
   )
 }
@@ -430,45 +629,49 @@ function SummaryChip({ label, count, color }: { label: string; count: number; co
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function ShipmentsPage() {
-  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [expandedId,    setExpandedId]    = useState<string | null>(null)
   const [filterCarrier, setFilterCarrier] = useState('all')
   const [filterService, setFilterService] = useState('all')
-  const [filterStatus,  setFilterStatus]  = useState('all')
+  const [activeCard,    setActiveCard]    = useState<CardFilter | null>(null)
 
   const M = font.family
 
   // Unique carriers and services from data
   const allCarriers = Array.from(new Set(MOCK_SHIPMENTS.map(s => s.carrier))).sort()
   const allServices = Array.from(new Set(MOCK_SHIPMENTS.map(s => s.service))).sort()
-  const statusGroups = [
-    { value: 'booked',         label: 'Booked' },
-    { value: 'in_progress',    label: 'In Progress' },
-    { value: 'out_for_delivery', label: 'Out for Delivery' },
-    { value: 'delivered',      label: 'Delivered' },
-    { value: 'problem',        label: 'Problem' },
-  ]
+
+  // Card toggle handler
+  function toggleCard(card: CardFilter) {
+    setActiveCard(prev => prev === card ? null : card)
+  }
+
+  // Card-based status test
+  function passesCardFilter(s: Shipment): boolean {
+    if (!activeCard) return true
+    const isProb = PROBLEM_EVENTS.has(s.currentEvent)
+    switch (activeCard) {
+      case 'booked':          return s.currentEvent === 'booked'
+      case 'in_transit':      return !isProb && s.currentEvent !== 'booked' && s.currentEvent !== 'delivered' && s.currentEvent !== 'out_for_delivery'
+      case 'issues':          return isProb
+      case 'awaiting_pickup': return s.currentEvent === 'out_for_delivery'
+      case 'delivered':       return s.currentEvent === 'delivered'
+    }
+  }
 
   // Filter + sort newest first
   const filtered = MOCK_SHIPMENTS.filter(s => {
     if (filterCarrier !== 'all' && s.carrier !== filterCarrier) return false
     if (filterService !== 'all' && s.service !== filterService) return false
-    if (filterStatus !== 'all') {
-      const isProb = PROBLEM_EVENTS.has(s.currentEvent)
-      if (filterStatus === 'problem'         && !isProb) return false
-      if (filterStatus === 'delivered'       && s.currentEvent !== 'delivered') return false
-      if (filterStatus === 'out_for_delivery'&& s.currentEvent !== 'out_for_delivery') return false
-      if (filterStatus === 'booked'          && s.currentEvent !== 'booked') return false
-      if (filterStatus === 'in_progress'     && (s.currentEvent === 'booked' || s.currentEvent === 'delivered' || isProb)) return false
-    }
+    if (!passesCardFilter(s)) return false
     return true
   }).sort((a, b) => b.bookedAt.localeCompare(a.bookedAt))
 
   // Summary counts (always from full set)
-  const inTransit   = MOCK_SHIPMENTS.filter(s => !PROBLEM_EVENTS.has(s.currentEvent) && s.currentEvent !== 'booked' && s.currentEvent !== 'delivered').length
-  const outDelivery = MOCK_SHIPMENTS.filter(s => s.currentEvent === 'out_for_delivery').length
-  const delivered   = MOCK_SHIPMENTS.filter(s => s.currentEvent === 'delivered').length
-  const problems    = MOCK_SHIPMENTS.filter(s => PROBLEM_EVENTS.has(s.currentEvent)).length
-  const booked      = MOCK_SHIPMENTS.filter(s => s.currentEvent === 'booked').length
+  const countBooked   = MOCK_SHIPMENTS.filter(s => s.currentEvent === 'booked').length
+  const countTransit  = MOCK_SHIPMENTS.filter(s => !PROBLEM_EVENTS.has(s.currentEvent) && s.currentEvent !== 'booked' && s.currentEvent !== 'delivered' && s.currentEvent !== 'out_for_delivery').length
+  const countIssues   = MOCK_SHIPMENTS.filter(s => PROBLEM_EVENTS.has(s.currentEvent)).length
+  const countPickup   = MOCK_SHIPMENTS.filter(s => s.currentEvent === 'out_for_delivery').length
+  const countDelivered = MOCK_SHIPMENTS.filter(s => s.currentEvent === 'delivered').length
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -487,31 +690,35 @@ export default function ShipmentsPage() {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <FilterSelect label="Carrier" value={filterCarrier} options={allCarriers} onChange={setFilterCarrier} />
           <FilterSelect label="Service" value={filterService} options={allServices} onChange={setFilterService} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 0, background: colors.cardBg, border: `1px solid ${colors.borderSubtle}`, borderRadius: radii.input, overflow: 'hidden' }}>
-            <span style={{ padding: '7px 10px', fontSize: font.size.xs, fontWeight: font.weight.bold, color: colors.textMuted, fontFamily: M, textTransform: 'uppercase', letterSpacing: '0.06em', borderRight: `1px solid ${colors.borderSubtle}` }}>
-              Status
-            </span>
-            <select
-              value={filterStatus}
-              onChange={e => setFilterStatus(e.target.value)}
-              style={{ padding: '7px 28px 7px 10px', background: 'transparent', border: 'none', outline: 'none', color: colors.textPrimary, fontFamily: M, fontSize: font.size.sm, fontWeight: font.weight.semibold, cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', minWidth: 120 }}
-            >
-              <option value="all" style={{ background: '#171B2D' }}>All</option>
-              {statusGroups.map(g => <option key={g.value} value={g.value} style={{ background: '#171B2D' }}>{g.label}</option>)}
-            </select>
-            <span style={{ marginLeft: -24, marginRight: 8, color: colors.textMuted, pointerEvents: 'none', fontSize: 10 }}>▼</span>
-          </div>
         </div>
       </div>
 
-      {/* Summary strip */}
+      {/* Summary strip — clickable cards */}
       <div style={{ display: 'flex', gap: 10 }}>
-        <SummaryChip label="In Progress"      count={inTransit}   color={BLUE} />
-        <SummaryChip label="Out for Delivery" count={outDelivery} color={MINT} />
-        <SummaryChip label="Delivered"        count={delivered}   color={colors.mintDim} />
-        <SummaryChip label="Booked"           count={booked}      color={AMBER} />
-        <SummaryChip label="Problems"         count={problems}    color={RED} />
+        <SummaryChip label="Booked"          count={countBooked}    color={AMBER} active={activeCard === 'booked'}          onClick={() => toggleCard('booked')} />
+        <SummaryChip label="In Transit"      count={countTransit}   color={BLUE}  active={activeCard === 'in_transit'}      onClick={() => toggleCard('in_transit')} />
+        <SummaryChip label="Issues"          count={countIssues}    color={RED}   active={activeCard === 'issues'}          onClick={() => toggleCard('issues')} />
+        <SummaryChip label="Awaiting Pickup" count={countPickup}    color={MINT}  active={activeCard === 'awaiting_pickup'} onClick={() => toggleCard('awaiting_pickup')} />
+        <SummaryChip label="Delivered"       count={countDelivered} color={colors.mintDim} active={activeCard === 'delivered'} onClick={() => toggleCard('delivered')} />
       </div>
+
+      {/* Active card indicator */}
+      {activeCard && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: -8 }}>
+          <span style={{ fontSize: font.size.xs, color: colors.textMuted, fontFamily: M }}>
+            Filtered by:
+          </span>
+          <span style={{ fontSize: font.size.xs, fontWeight: font.weight.bold, color: colors.textSecondary, fontFamily: M, textTransform: 'capitalize' }}>
+            {activeCard.replace('_', ' ')}
+          </span>
+          <button
+            onClick={() => setActiveCard(null)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.textMuted, fontSize: font.size.xs, fontFamily: M, padding: '0 4px', lineHeight: 1 }}
+          >
+            ✕ Clear
+          </button>
+        </div>
+      )}
 
       {/* Table */}
       <div>
