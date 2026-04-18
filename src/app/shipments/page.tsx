@@ -337,6 +337,12 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
   // [138..153] circle zone (16px) — track is centred here at 146px
   const TRACK_TOP = 146  // vertical centre of circles (shifted down for ninja zone)
 
+  // Font sizes scaled ×1.5 from base (xs=11→17, sm=12→18, 9→14, 10→15)
+  const TX = '17px'   // xs upscaled
+  const TS = '18px'   // sm upscaled
+  const TT = '14px'   // 9px upscaled
+  const TC = '15px'   // 10px upscaled
+
   return (
     <div style={{
       background: colors.pageBg,
@@ -346,7 +352,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
     }}>
 
       {/* ── Header ─────────────────────────────────────── */}
-      <h3 style={{ margin: '0 0 14px', fontSize: font.size.sm, fontWeight: font.weight.bold, color: '#FDFFFF', fontFamily: M, letterSpacing: '0.01em' }}>
+      <h3 style={{ margin: '0 0 14px', fontSize: TS, fontWeight: font.weight.bold, color: '#FDFFFF', fontFamily: M, letterSpacing: '0.01em' }}>
         Tracking Details
       </h3>
 
@@ -358,13 +364,13 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
             <img src={shipment.carrierLogoUrl} alt={shipment.carrier} height={18} style={{ objectFit: 'contain', display: 'block' }} />
           </div>
         ) : (
-          <span style={{ fontSize: font.size.sm, fontWeight: font.weight.extrabold, color: MINT, fontFamily: M }}>{shipment.carrier}</span>
+          <span style={{ fontSize: TS, fontWeight: font.weight.extrabold, color: MINT, fontFamily: M }}>{shipment.carrier}</span>
         )}
-        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, color: MINT, fontFamily: M }}>
+        <span style={{ fontSize: TS, fontWeight: font.weight.bold, color: MINT, fontFamily: M }}>
           {shipment.trackingNumbers[0]}
         </span>
         {shipment.trackingNumbers.length > 1 && (
-          <span style={{ fontSize: font.size.xs, padding: '2px 8px', borderRadius: 99, background: `${MINT}18`, color: MINT, fontWeight: font.weight.bold, fontFamily: M }}>
+          <span style={{ fontSize: TX, padding: '2px 8px', borderRadius: 99, background: `${MINT}18`, color: MINT, fontWeight: font.weight.bold, fontFamily: M }}>
             +{shipment.trackingNumbers.length - 1}
           </span>
         )}
@@ -391,16 +397,16 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
             <span style={{
               padding: '6px 14px',
               background: 'rgba(253,255,255,0.10)',
-              fontSize: font.size.xs, fontWeight: font.weight.semibold,
-              color: 'rgba(253,255,255,0.55)',
+              fontSize: TX, fontWeight: font.weight.bold,
+              color: '#FDFFFF',
               fontFamily: M, whiteSpace: 'nowrap',
             }}>
               {pill.label}
             </span>
             <span style={{
               padding: '6px 16px',
-              fontSize: font.size.xs, fontWeight: font.weight.bold,
-              color: colors.textPrimary,
+              fontSize: TX, fontWeight: font.weight.bold,
+              color: '#FDFFFF',
               fontFamily: M, whiteSpace: 'nowrap',
             }}>
               {pill.value}
@@ -462,13 +468,13 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
                 <div style={{ height: 44, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 2 }}>
                   {stage.isTransit && completed && ev && (
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 9, fontWeight: font.weight.bold, color: current ? MINT : '#FDFFFF', fontFamily: M, lineHeight: 1.4 }}>
+                      <div style={{ fontSize: TT, fontWeight: font.weight.bold, color: current ? MINT : '#FDFFFF', fontFamily: M, lineHeight: 1.4 }}>
                         In Transit
                       </div>
                       {(() => { const { date, time } = fmtTimestamp(ev.timestamp); return (
                         <>
-                          <div style={{ fontSize: 9, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{date}</div>
-                          <div style={{ fontSize: 9, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{time}</div>
+                          <div style={{ fontSize: TT, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{date}</div>
+                          <div style={{ fontSize: TT, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{time}</div>
                         </>
                       )})()}
                     </div>
@@ -477,7 +483,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
 
                 {/* ③ Icon zone (34px fixed) */}
                 <div style={{ height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <StageIcon stageKey={showAsEDD ? 'end' : stage.key} color={iconColor} size={24} />
+                  <StageIcon stageKey={showAsEDD ? 'end' : stage.key} color={iconColor} size={32} />
                 </div>
 
                 {/* ④ Circle (16px, on the track at TRACK_TOP) */}
@@ -498,7 +504,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
                     <div style={{ width: 5, height: 5, borderRadius: '50%', background: colors.pageBg }} />
                   )}
                   {current && isProblem && (
-                    <span style={{ fontSize: 9, fontWeight: 800, color: '#fff', lineHeight: 1 }}>!</span>
+                    <span style={{ fontSize: TT, fontWeight: 800, color: '#fff', lineHeight: 1 }}>!</span>
                   )}
                 </div>
 
@@ -506,11 +512,11 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
                 <div style={{ marginTop: 8, textAlign: 'center', paddingLeft: 2, paddingRight: 2 }}>
                   {showAsEDD ? (
                     <>
-                      <div style={{ fontSize: font.size.xs, fontWeight: font.weight.bold, color: '#FDFFFF', fontFamily: M, lineHeight: 1.3 }}>
+                      <div style={{ fontSize: TX, fontWeight: font.weight.bold, color: '#FDFFFF', fontFamily: M, lineHeight: 1.3 }}>
                         Expected<br/>Delivery Date
                       </div>
                       {shipment.estimatedDelivery && (
-                        <div style={{ fontSize: 10, color: AMBER, fontWeight: font.weight.bold, fontFamily: M, marginTop: 2 }}>
+                        <div style={{ fontSize: TC, color: AMBER, fontWeight: font.weight.bold, fontFamily: M, marginTop: 2 }}>
                           {(() => { const [y,m,d] = shipment.estimatedDelivery.split('-'); return `${d}-${m}-${y}` })()}
                         </div>
                       )}
@@ -520,7 +526,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
                       {/* Label — don't show for transit stages (label already shown above) */}
                       {!stage.isTransit && (
                         <div style={{
-                          fontSize: font.size.xs,
+                          fontSize: TX,
                           fontWeight: current ? font.weight.bold : font.weight.semibold,
                           color: current ? (isProblem ? RED : MINT) : (completed ? '#FDFFFF' : 'rgba(253,255,255,0.35)'),
                           fontFamily: M, lineHeight: 1.3,
@@ -533,8 +539,8 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
                       {!stage.isTransit && completed && ev && (
                         (() => { const { date, time } = fmtTimestamp(ev.timestamp); return (
                           <div style={{ marginTop: 2 }}>
-                            <div style={{ fontSize: 9, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{date}</div>
-                            <div style={{ fontSize: 9, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{time}</div>
+                            <div style={{ fontSize: TT, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{date}</div>
+                            <div style={{ fontSize: TT, color: '#DFE0EB', fontFamily: M, lineHeight: 1.3 }}>{time}</div>
                           </div>
                         )})()
                       )}
@@ -554,16 +560,16 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
         <div style={{ marginTop: 20, padding: '10px 14px', borderRadius: 8, background: `${RED}12`, border: `1px solid ${RED}40`, display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 14 }}>⚠️</span>
           <div>
-            <div style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, color: RED, fontFamily: M }}>
+            <div style={{ fontSize: TS, fontWeight: font.weight.bold, color: RED, fontFamily: M }}>
               {EVENT_LABEL[shipment.currentEvent]}
             </div>
             {shipment.trackingEvents.at(-1)?.location && (
-              <div style={{ fontSize: font.size.xs, color: RED, opacity: 0.8, fontFamily: M }}>
+              <div style={{ fontSize: TX, color: RED, opacity: 0.8, fontFamily: M }}>
                 {shipment.trackingEvents.at(-1)!.location}
               </div>
             )}
           </div>
-          <span style={{ marginLeft: 'auto', fontSize: font.size.xs, color: RED, opacity: 0.7, fontFamily: M }}>
+          <span style={{ marginLeft: 'auto', fontSize: TX, color: RED, opacity: 0.7, fontFamily: M }}>
             {shipment.trackingEvents.at(-1)?.timestamp}
           </span>
         </div>
