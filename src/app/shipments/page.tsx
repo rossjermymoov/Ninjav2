@@ -710,7 +710,7 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
         onClick={onToggle}
         style={{
           display: 'grid',
-          gridTemplateColumns: '32px 90px 85px 1fr 52px 130px 190px 130px 140px 36px',
+          gridTemplateColumns: '32px 90px 113px 1fr 52px 130px 190px 130px 140px 36px',
           alignItems: 'center', gap: 8, padding: '10px 14px',
           cursor: 'pointer', userSelect: 'none',
         }}
@@ -773,7 +773,7 @@ function TableHeader() {
   const M = font.family
   const COL = ['', 'Order', 'Destination', 'Customer', 'Carrier', 'Service', 'Tracking', 'Booked', 'Status', '']
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '32px 90px 85px 1fr 52px 130px 190px 130px 140px 36px', gap: 8, padding: '6px 14px 8px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '32px 90px 113px 1fr 52px 130px 190px 130px 140px 36px', gap: 8, padding: '6px 14px 8px' }}>
       {COL.map((h, i) => (
         <span key={i} style={{ fontSize: font.size.xs, fontWeight: font.weight.bold, color: colors.textMuted, fontFamily: M, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
           {h}
