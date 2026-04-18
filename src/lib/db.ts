@@ -1,9 +1,7 @@
 // src/lib/db.ts
-// Prisma client singleton — prevents connection pool exhaustion
-// during Next.js hot reloads in development.
-//
-// Prisma 7 with engineType="library" requires the connection URL
-// to be passed via datasourceUrl rather than in schema.prisma.
+// Prisma 5 client singleton.
+// Prevents connection pool exhaustion during Next.js hot reloads.
+// DATABASE_URL is read automatically from the environment via schema.prisma.
 
 import { PrismaClient } from '@prisma/client'
 
@@ -14,7 +12,6 @@ const globalForPrisma = globalThis as unknown as {
 export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
-    datasourceUrl: process.env.DATABASE_URL,
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   })
 
