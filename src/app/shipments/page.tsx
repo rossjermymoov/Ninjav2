@@ -710,7 +710,7 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
         onClick={onToggle}
         style={{
           display: 'grid',
-          gridTemplateColumns: '32px 90px 1fr 110px 52px 130px 148px 130px 140px 36px',
+          gridTemplateColumns: '32px 90px 85px 1fr 52px 130px 190px 130px 140px 36px',
           alignItems: 'center', gap: 8, padding: '10px 14px',
           cursor: 'pointer', userSelect: 'none',
         }}
@@ -725,13 +725,13 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
         <span style={{ fontSize: '15px', fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
           {shipment.orderNumber}
         </span>
-        {/* Customer name */}
-        <span style={{ fontSize: '15px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {shipment.customerName}
-        </span>
         {/* Destination */}
         <span style={{ fontSize: '15px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.countryFlag} {shipment.postcode}
+        </span>
+        {/* Customer name */}
+        <span style={{ fontSize: '15px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {shipment.customerName}
         </span>
         {/* Carrier logo */}
         <CarrierLogo src={shipment.carrierLogoUrl} name={shipment.carrier} />
@@ -771,9 +771,9 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
 
 function TableHeader() {
   const M = font.family
-  const COL = ['', 'Order', 'Customer', 'Destination', 'Carrier', 'Service', 'Tracking', 'Booked', 'Status', '']
+  const COL = ['', 'Order', 'Destination', 'Customer', 'Carrier', 'Service', 'Tracking', 'Booked', 'Status', '']
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '32px 90px 1fr 110px 52px 130px 148px 130px 140px 36px', gap: 8, padding: '6px 14px 8px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '32px 90px 85px 1fr 52px 130px 190px 130px 140px 36px', gap: 8, padding: '6px 14px 8px' }}>
       {COL.map((h, i) => (
         <span key={i} style={{ fontSize: font.size.xs, fontWeight: font.weight.bold, color: colors.textMuted, fontFamily: M, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
           {h}
