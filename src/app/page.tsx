@@ -9,13 +9,14 @@ const M = 'Mulish, sans-serif'
 const CHART_CARDS = [
   {
     title: 'Carrier Performance Tracking',
-    maxTotal: 266,   // Evri row = 234+32 = 266px (widest)
+    maxTotal: 266,   // DPD row = 218+48 = 266px (widest)
     rows: [
-      { name: 'Evri',       good: 234, bad: 32  },
-      { name: 'DPD',        good: 134, bad: 49  },
-      { name: 'Yodel',      good: 82,  bad: 46  },
-      { name: 'DX',         good: 91,  bad: 24  },
-      { name: 'CitySprint', good: 43,  bad: 12  },
+      { name: 'DPD',            good: 218, bad: 48,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/dpd.jpg'       },
+      { name: 'UPS',            good: 164, bad: 52,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/ups.jpg'       },
+      { name: 'DHL',            good: 131, bad: 61,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/dhl-parcel.jpg'},
+      { name: 'Yodel',          good: 82,  bad: 46,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/yodel.jpg'     },
+      { name: 'Evri',           good: 74,  bad: 29,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/evri.jpg'      },
+      { name: 'CitySprint',     good: 43,  bad: 12,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/citysprint.jpg'},
     ],
     colorA: '#1DFB9D',
     colorB: '#CD1C69',
@@ -24,13 +25,14 @@ const CHART_CARDS = [
   },
   {
     title: 'Orders Dispatched by Service',
-    maxTotal: 266,   // Evri row = 141+125 = 266px
+    maxTotal: 266,   // DPD row = 141+125 = 266px
     rows: [
-      { name: 'Evri',       good: 141, bad: 125 },
-      { name: 'DPD',        good: 122, bad: 125 },
-      { name: 'Yodel',      good: 82,  bad: 64  },
-      { name: 'DX',         good: 45,  bad: 48  },
-      { name: 'CitySprint', good: 45,  bad: 29  },
+      { name: 'DPD',            good: 141, bad: 125, logoUrl: 'https://app.heyvoila.io/courier-service-logos/dpd.jpg'       },
+      { name: 'UPS',            good: 122, bad: 98,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/ups.jpg'       },
+      { name: 'DHL',            good: 98,  bad: 84,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/dhl-parcel.jpg'},
+      { name: 'Yodel',          good: 82,  bad: 64,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/yodel.jpg'     },
+      { name: 'Evri',           good: 65,  bad: 48,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/evri.jpg'      },
+      { name: 'CitySprint',     good: 45,  bad: 29,  logoUrl: 'https://app.heyvoila.io/courier-service-logos/citysprint.jpg'},
     ],
     colorA: '#1DFB9D',
     colorB: '#4103CC',
@@ -56,11 +58,14 @@ const CHART_CARDS = [
 
 // ─── Brand Logos ─────────────────────────────────────────────────────────────
 const LOGOS: Record<string, { text: string; color: string; bg: string; fs?: number }> = {
-  Evri:       { text: 'EVRI',    color: '#fff', bg: '#8B2FC9', fs: 10 },
+  // Carriers
   DPD:        { text: 'dpd',     color: '#fff', bg: '#DC0032', fs: 11 },
+  UPS:        { text: 'UPS',     color: '#fff', bg: '#351C15', fs: 11 },
+  DHL:        { text: 'DHL',     color: '#fff', bg: '#FFCC00', fs: 11 },
   Yodel:      { text: 'YODEL',   color: '#fff', bg: '#6C1F7C', fs: 9  },
-  DX:         { text: 'DX',      color: '#fff', bg: '#1C9AD7', fs: 11 },
+  Evri:       { text: 'EVRI',    color: '#fff', bg: '#8B2FC9', fs: 10 },
   CitySprint: { text: 'City',    color: '#fff', bg: '#E8651A', fs: 9  },
+  // Channels
   TikTok:     { text: 'TikTok',  color: '#fff', bg: '#000000', fs: 9  },
   Amazon:     { text: 'amazon',  color: '#fff', bg: '#FF9900', fs: 9  },
   eBay:       { text: 'eBay',    color: '#E53238', bg: '#f5f5f5', fs: 10 },

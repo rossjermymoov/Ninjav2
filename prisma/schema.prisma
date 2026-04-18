@@ -30,3 +30,21 @@ model Channel {
   @@index([slug])
   @@index([isActive])
 }
+
+// ─── Carriers ────────────────────────────────────────────────────────────────
+// Stores each courier/carrier MoveNinja dispatches with.
+// keys match the key field returned by the Voila API /couriers/v1/list-couriers endpoint.
+// Logos are JPG URLs from the Voila CDN.
+
+model Carrier {
+  id          String   @id @default(cuid())
+  key         String   @unique  // matches Voila API courier key, e.g. "Evri"
+  displayName String             // e.g. "Evri"
+  logoUrl     String?            // JPG URL from Voila CDN
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+  @@index([isActive])
+}
