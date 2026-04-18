@@ -177,6 +177,15 @@ function AlertsChip({ trackingIssues, serviceAlerts }: { trackingIssues: number;
 
 // ─── Channel orders panel ─────────────────────────────────────────────────────
 
+// Chart colours — consistent across all white-bg chart panels
+const CHART_GREEN  = '#1DFB9D'
+const CHART_PURPLE = '#7B2FBE'
+const CHART_TRACK  = 'rgba(123,47,190,0.15)'  // purple tint track = "outstanding" context
+const CHART_TEXT   = '#171B2D'
+const CHART_MUTED  = '#8892A4'
+const CHART_LOGO_BG     = '#F5F6FA'
+const CHART_LOGO_BORDER = '#E8EAEF'
+
 function ChannelOrders({ channelCounts, channelMap }: {
   channelCounts: DashboardChannelRow[]
   channelMap: Record<string, ChannelData>
@@ -187,25 +196,26 @@ function ChannelOrders({ channelCounts, channelMap }: {
   const total = rows.reduce((s, c) => s + c.count, 0)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {rows.map((row) => {
         const ch = channelMap[row.slug] ?? { displayName: row.slug, colour: colors.manual, logoUrl: null }
         return (
           <div key={row.slug} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 30, height: 30, borderRadius: 7, background: colors.surfaceBg, border: `1px solid ${colors.borderSubtle}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <LogoImg src={ch.logoUrl ?? null} name={ch.displayName} size={20} />
+            {/* Logo — bigger container on white card */}
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: CHART_LOGO_BG, border: `1px solid ${CHART_LOGO_BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <LogoImg src={ch.logoUrl ?? null} name={ch.displayName} size={28} />
             </div>
-            <span style={{ width: 100, fontSize: font.size.sm, color: colors.textPrimary, fontFamily: font.family, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <span style={{ width: 100, fontSize: font.size.sm, color: CHART_TEXT, fontFamily: font.family, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: font.weight.semibold }}>
               {ch.displayName}
             </span>
-            {/* Bar fills remaining space — flex: 1, not fixed width */}
-            <div style={{ flex: 1, height: 8, background: colors.borderSubtle, borderRadius: 4, overflow: 'hidden' }}>
-              <div style={{ width: `${(row.count / max) * 100}%`, height: '100%', background: ch.colour, borderRadius: 4, transition: 'width 0.4s ease' }} />
+            {/* Bar: green fill (dispatched) on purple-tint track (outstanding context) */}
+            <div style={{ flex: 1, height: 8, background: CHART_TRACK, borderRadius: 4, overflow: 'hidden' }}>
+              <div style={{ width: `${(row.count / max) * 100}%`, height: '100%', background: CHART_GREEN, borderRadius: 4, transition: 'width 0.4s ease' }} />
             </div>
-            <span style={{ width: 36, fontSize: font.size.md, fontWeight: font.weight.bold, color: colors.textPrimary, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
+            <span style={{ width: 36, fontSize: font.size.md, fontWeight: font.weight.bold, color: CHART_TEXT, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
               {row.count}
             </span>
-            <span style={{ width: 36, fontSize: font.size.sm, color: colors.textMuted, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
+            <span style={{ width: 36, fontSize: font.size.sm, color: CHART_MUTED, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
               {total > 0 ? Math.round((row.count / total) * 100) : 0}%
             </span>
           </div>
@@ -217,36 +227,36 @@ function ChannelOrders({ channelCounts, channelMap }: {
 
 // ─── Breakdown mini-list ──────────────────────────────────────────────────────
 
-const PALETTE = [colors.mint, colors.statusShipped, colors.statusProcessing, colors.mintDim]
-
 function BreakdownList({ items, showLogo }: {
   items: { key?: string; name: string; count: number; flag?: string; logoUrl?: string | null }[]
   showLogo?: boolean
 }) {
   const max   = Math.max(...items.map(i => i.count), 1)
   const total = items.reduce((s, i) => s + i.count, 0)
+  // Alternate green / purple fills for visual rhythm on white cards
+  const BAR_FILLS = [CHART_GREEN, CHART_PURPLE, CHART_GREEN, CHART_PURPLE]
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
       {items.map((item, idx) => (
         <div key={item.key ?? item.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {showLogo && (
-            <div style={{ width: 30, height: 30, borderRadius: 6, background: colors.surfaceBg, border: `1px solid ${colors.borderSubtle}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <LogoImg src={item.logoUrl ?? null} name={item.name} size={20} />
+            <div style={{ width: 36, height: 36, borderRadius: 8, background: CHART_LOGO_BG, border: `1px solid ${CHART_LOGO_BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <LogoImg src={item.logoUrl ?? null} name={item.name} size={24} />
             </div>
           )}
-          {item.flag && <span style={{ fontSize: 13, flexShrink: 0 }}>{item.flag}</span>}
-          <span style={{ flex: 1, fontSize: font.size.sm, color: colors.textSecondary, fontFamily: font.family, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {item.flag && <span style={{ fontSize: 14, flexShrink: 0 }}>{item.flag}</span>}
+          <span style={{ flex: 1, fontSize: font.size.sm, color: CHART_TEXT, fontFamily: font.family, fontWeight: font.weight.semibold, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {item.name}
           </span>
-          {/* Fixed 80px bar */}
-          <div style={{ width: 80, height: 5, background: colors.borderSubtle, borderRadius: 3, overflow: 'hidden', flexShrink: 0 }}>
-            <div style={{ width: `${(item.count / max) * 100}%`, height: '100%', background: PALETTE[idx % PALETTE.length], borderRadius: 3 }} />
+          {/* Fixed 80px bar — green/purple alternating, purple-tint track */}
+          <div style={{ width: 80, height: 6, background: CHART_TRACK, borderRadius: 3, overflow: 'hidden', flexShrink: 0 }}>
+            <div style={{ width: `${(item.count / max) * 100}%`, height: '100%', background: BAR_FILLS[idx % BAR_FILLS.length], borderRadius: 3 }} />
           </div>
-          <span style={{ width: 30, fontSize: font.size.sm, fontWeight: font.weight.semibold, color: colors.textPrimary, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
+          <span style={{ width: 30, fontSize: font.size.sm, fontWeight: font.weight.bold, color: CHART_TEXT, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
             {item.count}
           </span>
-          <span style={{ width: 30, fontSize: font.size.xs, color: colors.textMuted, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
+          <span style={{ width: 30, fontSize: font.size.xs, color: CHART_MUTED, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
             {total > 0 ? Math.round((item.count / total) * 100) : 0}%
           </span>
         </div>
@@ -295,9 +305,10 @@ function ServiceAlertRow({ a }: { a: LiveData['serviceAlertList'][0] }) {
 
 // ─── Panel label ──────────────────────────────────────────────────────────────
 
-function PanelLabel({ text }: { text: string }) {
+// onWhite=true → dark muted text for white-background chart cards
+function PanelLabel({ text, onWhite }: { text: string; onWhite?: boolean }) {
   return (
-    <p style={{ margin: '0 0 12px', fontSize: font.size.sm, fontWeight: font.weight.bold, color: colors.textSecondary, fontFamily: font.family, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+    <p style={{ margin: '0 0 12px', fontSize: font.size.sm, fontWeight: font.weight.bold, color: onWhite ? '#8892A4' : colors.textSecondary, fontFamily: font.family, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
       {text}
     </p>
   )
@@ -342,7 +353,7 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
           label="Orders Waiting"
           value={String(live.ordersWaiting)}
           sub="in queue right now"
-          color={live.ordersWaiting > 0 ? colors.statusProcessing : colors.mint}
+          color={CHART_PURPLE}
           warning={live.ordersWaiting > 20}
           live
         />
@@ -360,7 +371,7 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
           label="Near Cut-off"
           value={String(live.nearCutoff)}
           sub="tap to view orders"
-          color={live.nearCutoff > 0 ? colors.statusProcessing : colors.mint}
+          color={live.nearCutoff > 0 ? CHART_PURPLE : colors.mint}
           warning={live.nearCutoff > 0}
           live
           onClick={() => router.push('/orders?filter=nearCutoff')}
@@ -371,8 +382,8 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
       <div style={{ display: 'flex', gap: 12 }}>
 
         {/* Channel breakdown — follows date range */}
-        <NinjaCard style={{ flex: '1 1 0', minWidth: 0 }} padding="18px 20px">
-          <PanelLabel text="Orders by Channel" />
+        <NinjaCard style={{ flex: '1 1 0', minWidth: 0, background: '#fff' }} padding="18px 20px">
+          <PanelLabel text="Orders by Channel" onWhite />
           <ChannelOrders channelCounts={d.channelCounts} channelMap={channelMap} />
         </NinjaCard>
 
@@ -412,18 +423,18 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
 
       {/* ── Bottom row — 3 breakdowns, all follow date range ── */}
       <div style={{ display: 'flex', gap: 12 }}>
-        <NinjaCard style={{ flex: 1, minWidth: 0 }} padding="18px 20px">
-          <PanelLabel text="Shipments by Country" />
+        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff' }} padding="18px 20px">
+          <PanelLabel text="Shipments by Country" onWhite />
           <BreakdownList items={d.countries.map(c => ({ name: c.name, count: c.count, flag: c.flag }))} />
         </NinjaCard>
 
-        <NinjaCard style={{ flex: 1, minWidth: 0 }} padding="18px 20px">
-          <PanelLabel text="Shipments by Service" />
+        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff' }} padding="18px 20px">
+          <PanelLabel text="Shipments by Service" onWhite />
           <BreakdownList items={d.services.map(s => ({ name: s.name, count: s.count }))} />
         </NinjaCard>
 
-        <NinjaCard style={{ flex: 1, minWidth: 0 }} padding="18px 20px">
-          <PanelLabel text="Shipments by Courier" />
+        <NinjaCard style={{ flex: 1, minWidth: 0, background: '#fff' }} padding="18px 20px">
+          <PanelLabel text="Shipments by Courier" onWhite />
           <BreakdownList items={courierItems} showLogo />
         </NinjaCard>
       </div>
