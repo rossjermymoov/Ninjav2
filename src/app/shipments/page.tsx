@@ -307,6 +307,11 @@ function DeliveredNinja({ size = 37 }: { size?: number }) {
 
 function TrackingDetails({ shipment }: { shipment: Shipment }) {
   const M = font.family
+  // Original font-size constants for tracking panel
+  const TS = font.size.sm   // 12px — header, carrier, tracking number, problem title
+  const TX = font.size.xs   // 11px — pill labels, stage labels, problem detail
+  const TT = 9              // timestamps, in-transit text, problem "!"
+  const TC = 10             // EDD date value
   const isProblem  = PROBLEM_EVENTS.has(shipment.currentEvent)
   const stageIdx   = getTrackingStageIdx(shipment)
   const isDelivered = shipment.currentEvent === 'delivered'
@@ -336,12 +341,6 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
   // [104..137] icon zone (34px)
   // [138..153] circle zone (16px) — track is centred here at 146px
   const TRACK_TOP = 146  // vertical centre of circles (shifted down for ninja zone)
-
-  // Font sizes scaled ×1.5 from base (xs=11→17, sm=12→18, 9→14, 10→15)
-  const TX = '17px'   // xs upscaled
-  const TS = '18px'   // sm upscaled
-  const TT = '14px'   // 9px upscaled
-  const TC = '15px'   // 10px upscaled
 
   return (
     <div style={{
@@ -483,7 +482,7 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
 
                 {/* ③ Icon zone (34px fixed) */}
                 <div style={{ height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <StageIcon stageKey={showAsEDD ? 'end' : stage.key} color={iconColor} size={32} />
+                  <StageIcon stageKey={showAsEDD ? 'end' : stage.key} color={iconColor} size={24} />
                 </div>
 
                 {/* ④ Circle (16px, on the track at TRACK_TOP) */}
@@ -680,7 +679,7 @@ function EventBadge({ event }: { event: TrackingEventType }) {
     <span style={{
       display: 'inline-block', padding: '3px 8px', borderRadius: radii.badge,
       background: bg, border: `1px solid ${color}40`,
-      fontSize: font.size.xs, fontWeight: font.weight.bold, color, fontFamily: font.family, whiteSpace: 'nowrap',
+      fontSize: '17px', fontWeight: font.weight.bold, color, fontFamily: font.family, whiteSpace: 'nowrap',
     }}>
       {label}
     </span>
@@ -723,36 +722,36 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
           </svg>
         </div>
         {/* Order number */}
-        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
+        <span style={{ fontSize: '18px', fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
           {shipment.orderNumber}
         </span>
         {/* Customer name */}
-        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '18px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.customerName}
         </span>
         {/* Destination */}
-        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '18px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.countryFlag} {shipment.postcode}
         </span>
         {/* Carrier logo */}
         <CarrierLogo src={shipment.carrierLogoUrl} name={shipment.carrier} />
         {/* Service */}
-        <span style={{ fontSize: font.size.xs, color: TXT2, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '17px', color: TXT2, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.service}
         </span>
         {/* Tracking number */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
-          <span style={{ fontSize: font.size.xs, fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: '17px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {shipment.trackingNumbers[0]}
           </span>
           {isMulti && (
-            <span style={{ flexShrink: 0, padding: '1px 5px', borderRadius: 99, background: `${colors.mintDim}20`, border: `1px solid ${colors.mintDim}50`, fontSize: 10, fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
+            <span style={{ flexShrink: 0, padding: '1px 5px', borderRadius: 99, background: `${colors.mintDim}20`, border: `1px solid ${colors.mintDim}50`, fontSize: 15, fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
               +{shipment.trackingNumbers.length - 1}
             </span>
           )}
         </div>
         {/* Booked */}
-        <span style={{ fontSize: font.size.xs, fontWeight: font.weight.semibold, color: TXT, fontFamily: M, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '17px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, whiteSpace: 'nowrap' }}>
           {shipment.bookedAt}
         </span>
         {/* Status badge */}
