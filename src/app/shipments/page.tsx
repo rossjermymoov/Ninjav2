@@ -97,12 +97,8 @@ function StageIcon({ stageKey, color, size = 28 }: { stageKey: string; color: st
 
     case 'transit1':
     case 'transit2':
-      // Motion arrow (no icon provided — using simple directional arrow)
-      return (
-        <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
-          <path d="M5 12h14M13 6l6 6-6 6" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      )
+      // No icon for in-transit stages
+      return <svg width={s} height={s} viewBox="0 0 24 24" fill="none"/>
 
     case 'hub':
       // Hub / network
