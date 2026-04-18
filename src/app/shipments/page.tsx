@@ -143,53 +143,84 @@ function StageIcon({ stageKey, color, size = 28 }: { stageKey: string; color: st
 function MovingNinja({ size = 35 }: { size?: number }) {
   const w = size
   const h = Math.round(size * 72 / 35)
+  // All coordinates from Figma CSS % positions, parent = 35×72 viewBox.
+  // Body elements have no rotation; head group rotated ~24.8°
+  // via matrix(0.91, 0.42, −0.42, 0.91, 0, 0) giving side-profile running pose.
   return (
     <svg width={w} height={h} viewBox="0 0 35 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Head skin */}
-      <ellipse cx="17.5" cy="13" rx="10" ry="11" fill="#FED5B2"/>
-      {/* Hair / upper head dark */}
-      <path d="M8 10 Q17.5 2 27 10 Q27 4 17.5 2 Q8 4 8 10Z" fill="#151B2D"/>
-      {/* Face mask lower half */}
-      <path d="M8 16 Q8.5 24.5 17.5 24.5 Q26.5 24.5 27 16Z" fill="#151B2D"/>
-      {/* Eyes white */}
-      <ellipse cx="13.5" cy="13.8" rx="2.6" ry="2.3" fill="white"/>
-      <ellipse cx="21.5" cy="13.8" rx="2.6" ry="2.3" fill="white"/>
-      {/* Pupils */}
-      <circle cx="13.5" cy="13.8" r="1.3" fill="#0D101B"/>
-      <circle cx="21.5" cy="13.8" r="1.3" fill="#0D101B"/>
-      {/* Eye highlights */}
-      <circle cx="13.9" cy="13.2" r="0.5" fill="white" opacity="0.8"/>
-      <circle cx="21.9" cy="13.2" r="0.5" fill="white" opacity="0.8"/>
-      {/* Forehead green Moov diamond */}
-      <path d="M15.5 8 L17.5 5.5 L19.5 8 L17.5 10.5Z" fill="#28FB9D"/>
-      {/* Neck */}
-      <rect x="15.2" y="23.5" width="4.6" height="4" rx="1" fill="#FED5B2"/>
-      {/* Torso */}
-      <path d="M10 27.5 L25 27.5 L26.5 51 L8.5 51Z" fill="#151B2D"/>
-      {/* Green belt sash */}
-      <rect x="10.5" y="37.5" width="14" height="3.5" rx="1.5" fill="#28FB9D"/>
-      {/* Left arm extended back-left */}
-      <path d="M10.5 30 L1 23.5 L0 27.5 L9.5 35Z" fill="#151B2D"/>
-      {/* Left hand skin */}
-      <ellipse cx="0.8" cy="25.2" rx="1.8" ry="2.4" fill="#FED5B2"/>
-      {/* Right arm extended forward-right */}
-      <path d="M24.5 30 L34 23.5 L35 27.5 L25.5 35Z" fill="#151B2D"/>
-      {/* Right hand skin */}
-      <ellipse cx="34.2" cy="25.2" rx="1.8" ry="2.4" fill="#FED5B2"/>
-      {/* Left leg */}
-      <path d="M12.5 51 L10.5 65.5 L15.5 65.5 L17 51Z" fill="#0D101B"/>
-      {/* Right leg */}
-      <path d="M18 51 L19 65.5 L24 65.5 L22.5 51Z" fill="#0D101B"/>
-      {/* Left shoe */}
-      <path d="M7.5 64 L16 64 L16 69 L7.5 69 Q5.5 69 5.5 66.5 Q5.5 64 7.5 64Z" fill="#101010"/>
-      {/* Right shoe */}
-      <path d="M19 64 L27.5 64 Q29.5 64 29.5 66.5 Q29.5 69 27.5 69 L19 69Z" fill="#101010"/>
-      {/* Green laces left */}
-      <line x1="7" y1="65.8" x2="15.5" y2="65.8" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="7" y1="67.2" x2="15.5" y2="67.2" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
-      {/* Green laces right */}
-      <line x1="19.5" y1="65.8" x2="28" y2="65.8" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="19.5" y1="67.2" x2="28" y2="67.2" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+
+      {/* ── BODY / LEGS (no rotation) ── */}
+
+      {/* Main torso (#0D101B): x=0.25→24.88, y=22.82→48.44 */}
+      <rect x="0.25" y="22.82" width="24.63" height="25.62" rx="2" fill="#0D101B"/>
+
+      {/* Left-side body overlay (#151B2D): x=3.94→20.65, y=26.73→40.63 */}
+      <rect x="3.94" y="26.73" width="16.71" height="13.90" rx="2" fill="#151B2D"/>
+
+      {/* Lower body / right leg (#101010): x=9.66→29.19, y=39.59→63.93 */}
+      <rect x="9.66" y="39.59" width="19.53" height="24.34" rx="2" fill="#101010"/>
+
+      {/* Left leg (#151B2D): x=0.27→15.77, y=42.34→71.99 */}
+      <rect x="0.27" y="42.34" width="15.50" height="29.65" rx="2" fill="#151B2D"/>
+
+      {/* ── RIGHT ARM / HAND ── */}
+
+      {/* Right sleeve (#151B2D): x=18.93→31.08, y=28.22→39.42 */}
+      <rect x="18.93" y="28.22" width="12.15" height="11.20" rx="2" fill="#151B2D"/>
+
+      {/* Right inner hand skin (#FED5B2): x=18.42→25.74, y=30.72→35.83 */}
+      <rect x="18.42" y="30.72" width="7.32" height="5.11" rx="1.5" fill="#FED5B2"/>
+      {/* Inner hand shadow (#F2B594) */}
+      <rect x="18.42" y="32.50" width="5.71" height="3.33" rx="1" fill="#F2B594"/>
+
+      {/* Right outer hand skin (#FED5B2): x=28.06→35.02, y=28.29→34.15 */}
+      <rect x="28.06" y="28.29" width="6.96" height="5.86" rx="2" fill="#FED5B2"/>
+      {/* Outer hand shadow (#F2B594): x=29.98→34.60, y=31.16→34.04 */}
+      <rect x="29.98" y="31.16" width="4.62" height="2.88" rx="1" fill="#F2B594"/>
+
+      {/* ── HEAD GROUP — rotated 24.8° about origin ── */}
+      {/* matrix(0.91, 0.42, −0.42, 0.91, 0, 0)  */}
+      <g transform="matrix(0.91, 0.42, -0.42, 0.91, 0, 0)">
+
+        {/* Head base oval (#101010): bbox x=5.29→35.83, y=−4.26→8.25
+            ellipse cx=20.56, cy=2.0, rx=15.27, ry=6.25 */}
+        <ellipse cx="20.56" cy="2.00" rx="15.27" ry="6.25" fill="#101010"/>
+
+        {/* Cheek shadow (#F2B594): bbox x=3.07→27.99, y=6.24→20.40
+            ellipse cx=15.53, cy=13.32, rx=12.46, ry=7.08 */}
+        <ellipse cx="15.53" cy="13.32" rx="12.46" ry="7.08" fill="#F2B594"/>
+
+        {/* Face skin (#FED5B2): bbox x=3.80→27.05, y=8.61→20.07
+            ellipse cx=15.43, cy=14.34, rx=11.63, ry=5.73 */}
+        <ellipse cx="15.43" cy="14.34" rx="11.63" ry="5.73" fill="#FED5B2"/>
+
+        {/* Upper dark (hair/headband) — covers y=−3.44 to y=14.83 (top of left eye) */}
+        {/* bbox of full mask: x=−0.23→32.17, y=−3.44→21.68 */}
+        <rect x="-0.23" y="-3.44" width="32.40" height="18.27" fill="#151B2D"/>
+
+        {/* Lower chin mask — covers y=21.10→21.68 (below right eye bottom y=21.24) */}
+        <rect x="-0.23" y="21.10" width="32.40" height="0.58" fill="#151B2D"/>
+
+        {/* Moov-Original diamond (#28FB9D)
+            bbox x=12.75→18.69, y=5.20→9.17 — centre (15.72, 7.19)
+            slight own-rotation ~7.5° ignored for simplicity */}
+        <polygon points="15.72,5.20 18.69,7.19 15.72,9.17 12.75,7.19" fill="#28FB9D"/>
+
+        {/* Left eye — white: cx=8.745, cy=16.57, rx=1.735, ry=1.74 */}
+        <ellipse cx="8.74" cy="16.57" rx="1.74" ry="1.74" fill="#FFFFFF"/>
+        {/* Left pupil (#000): cx≈8.26, cy=16.58, rx=1.66, ry=1.74 */}
+        <ellipse cx="8.26" cy="16.58" rx="1.66" ry="1.74" fill="#000000"/>
+        {/* Left highlight: cx≈9.72, cy=16.94, rx=0.53, ry=0.56 */}
+        <ellipse cx="9.72" cy="16.94" rx="0.53" ry="0.56" fill="#FFFFFF"/>
+
+        {/* Right eye — white: cx=20.34, cy=19.50, rx=1.735, ry=1.74 */}
+        <ellipse cx="20.34" cy="19.50" rx="1.74" ry="1.74" fill="#FFFFFF"/>
+        {/* Right pupil (#000): cx≈19.83, cy=19.51, rx=1.635, ry=1.73 */}
+        <ellipse cx="19.83" cy="19.51" rx="1.64" ry="1.73" fill="#000000"/>
+        {/* Right highlight: cx≈21.28, cy=19.85, rx=0.52, ry=0.56 */}
+        <ellipse cx="21.28" cy="19.85" rx="0.52" ry="0.56" fill="#FFFFFF"/>
+
+      </g>
     </svg>
   )
 }
