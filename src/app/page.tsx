@@ -244,15 +244,15 @@ export default function DashboardPage() {
             {/* Push legend to bottom */}
             <div style={{ flex: 1 }} />
 
-            {/* Legend — font-size:10px color:#000 squares:17×17 */}
-            <div style={{ display: 'flex', gap: 20, flexShrink: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            {/* Legend — Figma: item1 left:73, item2 left:209 → ~136px apart */}
+            <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginRight: 24 }}>
                 <div style={{ width: 17, height: 17, background: chart.colorA, flexShrink: 0 }} />
                 <span style={{ fontFamily: M, fontWeight: 400, fontSize: 10, color: '#000000', letterSpacing: '0.1px' }}>
                   {chart.legendA}
                 </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                 <div style={{ width: 17, height: 17, background: chart.colorB, flexShrink: 0 }} />
                 <span style={{ fontFamily: M, fontWeight: 400, fontSize: 10, color: '#000000', letterSpacing: '0.1px' }}>
                   {chart.legendB}
