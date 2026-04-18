@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { fetchChannelMap } from '@/lib/channels'
 
 // ─── Design tokens (extracted from Figma CSS) ────────────────────────────────
 const M = 'Mulish, sans-serif'
@@ -42,11 +41,11 @@ const CHART_CARDS = [
     title: "Today's Orders",
     maxTotal: 286,   // TikTok row = 249+37 = 286px
     rows: [
-      { name: 'TikTok',  good: 249, bad: 37  },
-      { name: 'Amazon',  good: 168, bad: 53  },
-      { name: 'eBay',    good: 129, bad: 39  },
-      { name: 'Shopify', good: 81,  bad: 58  },
-      { name: 'Woo',     good: 104, bad: 35  },
+      { name: 'TikTok',  good: 249, bad: 37,  logoUrl: 'https://app.heyneuro.io/images/channel_logos/tiktokshop-logo.png' },
+      { name: 'Amazon',  good: 168, bad: 53,  logoUrl: 'https://app.heyneuro.io/images/channel_logos/amazonsp-logo.png'  },
+      { name: 'eBay',    good: 129, bad: 39,  logoUrl: 'https://app.heyneuro.io/images/channel_logos/ebay-logo.png'      },
+      { name: 'Shopify', good: 81,  bad: 58,  logoUrl: 'https://app.heyneuro.io/images/channel_logos/shopify-logo.png'   },
+      { name: 'Woo',     good: 104, bad: 35,  logoUrl: 'https://app.heyneuro.io/images/channel_logos/woocommerce-logo.png'},
     ],
     colorA: '#1DFB9D',
     colorB: '#4103CC',
@@ -67,15 +66,6 @@ const LOGOS: Record<string, { text: string; color: string; bg: string; fs?: numb
   eBay:       { text: 'eBay',    color: '#E53238', bg: '#f5f5f5', fs: 10 },
   Shopify:    { text: 'shopify', color: '#fff', bg: '#95BF47', fs: 9  },
   Woo:        { text: 'Woo',     color: '#fff', bg: '#945C87', fs: 10 },
-}
-
-// Maps chart row display names to Neuro API channel slugs for logo lookup
-const CHART_NAME_TO_SLUG: Record<string, string> = {
-  TikTok:  'tiktokshop',
-  Amazon:  'amazonsp',
-  eBay:    'ebay',
-  Shopify: 'shopify',
-  Woo:     'woocommerce',
 }
 
 function BrandLogo({ name, logoUrl }: { name: string; logoUrl?: string | null }) {
@@ -133,8 +123,7 @@ function ChartBar({ good, bad, maxTotal, colorA, colorB }: {
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-export default async function DashboardPage() {
-  const channelMap = await fetchChannelMap()
+export default function DashboardPage() {
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32, position: 'relative', minHeight: 0 }}>
 
@@ -243,7 +232,7 @@ export default async function DashboardPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flexShrink: 0 }}>
               {chart.rows.map((row) => (
                 <div key={row.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <BrandLogo name={row.name} logoUrl={channelMap[CHART_NAME_TO_SLUG[row.name]]?.logoUrl} />
+                  <BrandLogo name={row.name} logoUrl={'logoUrl' in row ? row.logoUrl : undefined} />
                   <ChartBar good={row.good} bad={row.bad} maxTotal={chart.maxTotal} colorA={chart.colorA} colorB={chart.colorB} />
                 </div>
               ))}
