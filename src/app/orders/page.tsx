@@ -18,5 +18,9 @@ export default async function OrdersPage() {
     ])
   )
 
-  return <OrdersTable orders={MOCK_ORDERS} total={MOCK_TOTAL_ORDERS} channelMap={channelMap} />
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <OrdersTable orders={MOCK_ORDERS} total={MOCK_TOTAL_ORDERS} channelMap={channelMap} />
+    </div>
+  )
 }
