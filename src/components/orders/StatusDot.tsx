@@ -1,9 +1,9 @@
 import { OrderStatus } from '@/types/order'
 
 const STATUS_CONFIG: Record<OrderStatus, { color: string; label: string }> = {
-  ready:      { color: '#00C853', label: 'Ready' },
-  processing: { color: '#FFC107', label: 'Processing' },
-  issue:      { color: '#E91E8C', label: 'Issue' },
+  ready:      { color: '#1DFB9D', label: 'Ready' },
+  processing: { color: '#FECA00', label: 'Processing' },
+  issue:      { color: '#CD1C69', label: 'Issue' },
 }
 
 export function StatusDot({ status }: { status: OrderStatus }) {

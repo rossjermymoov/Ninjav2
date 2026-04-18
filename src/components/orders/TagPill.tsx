@@ -1,10 +1,10 @@
 import { OrderTag } from '@/types/order'
 
 const COLOUR_MAP: Record<OrderTag['colour'], string> = {
-  green:  '#00C853',
-  purple: '#7B2FBE',
-  amber:  '#FFC107',
-  teal:   '#00BCD4',
+  green:  '#1DFB9D',
+  purple: '#6F4B9F',
+  amber:  '#FECA00',
+  teal:   '#276E93',
 }
 
 export function TagPill({ tag }: { tag: OrderTag }) {
