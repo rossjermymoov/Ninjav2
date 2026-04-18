@@ -157,7 +157,7 @@ export default function DashboardPage() {
           S
         </div>
         <div>
-          <span style={{ fontWeight: 600, color: '#00BCD4', fontSize: 13 }}>Sensai Says </span>
+          <span style={{ fontWeight: 600, color: '#00BCD4', fontSize: 13 }}>Sensei Says </span>
           <span style={{ color: '#9AA0BC', fontSize: 13, fontStyle: 'italic' }}>
             &ldquo;You have 60 orders waiting. 47 are Royal Mail 24 Hour — shall I dispatch them all now?&rdquo;
           </span>
