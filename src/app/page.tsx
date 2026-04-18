@@ -3,11 +3,13 @@ import Link from 'next/link'
 // ─── Design tokens (extracted from Figma CSS) ────────────────────────────────
 const M = 'Mulish, sans-serif'
 
-// ─── Chart data (proportions taken from Figma bar pixel widths) ──────────────
-// Each value = visible pixel width from Figma; ChartBar converts to % internally.
+// ─── Chart data ───────────────────────────────────────────────────────────────
+// good / bad = visible px widths from Figma CSS (volume chart, not %-fill)
+// maxTotal = the widest row's total — sets the 100% reference for all rows
 const CHART_CARDS = [
   {
     title: 'Carrier Performance Tracking',
+    maxTotal: 266,   // Evri row = 234+32 = 266px (widest)
     rows: [
       { name: 'Evri',       good: 234, bad: 32  },
       { name: 'DPD',        good: 134, bad: 49  },
@@ -22,6 +24,7 @@ const CHART_CARDS = [
   },
   {
     title: 'Orders Dispatched by Service',
+    maxTotal: 266,   // Evri row = 141+125 = 266px
     rows: [
       { name: 'Evri',       good: 141, bad: 125 },
       { name: 'DPD',        good: 122, bad: 125 },
@@ -36,6 +39,7 @@ const CHART_CARDS = [
   },
   {
     title: "Today's Orders",
+    maxTotal: 286,   // TikTok row = 249+37 = 286px
     rows: [
       { name: 'TikTok',  good: 249, bad: 37  },
       { name: 'Amazon',  good: 168, bad: 53  },
@@ -87,15 +91,23 @@ function BrandLogo({ name }: { name: string }) {
   )
 }
 
-// ─── Chart bar — stacked left-to-right ───────────────────────────────────────
-function ChartBar({ good, bad, colorA, colorB }: {
-  good: number; bad: number; colorA: string; colorB: string
+// ─── Chart bar — volume bar (Figma design) ───────────────────────────────────
+// The filled portion = (good+bad)/maxTotal of the container width.
+// Within the filled portion: colorA = good fraction, colorB = bad fraction.
+// Remaining space is empty (matches Figma where shorter rows don't fill full width).
+function ChartBar({ good, bad, maxTotal, colorA, colorB }: {
+  good: number; bad: number; maxTotal: number; colorA: string; colorB: string
 }) {
-  const total = good + bad
+  const filledPct = ((good + bad) / maxTotal) * 100
+  const goodFrac  = (good / (good + bad)) * 100
   return (
-    <div style={{ display: 'flex', flex: 1, height: 33 }}>
-      <div style={{ width: `${(good / total) * 100}%`, background: colorA, height: 33 }} />
-      <div style={{ width: `${(bad  / total) * 100}%`, background: colorB, height: 33 }} />
+    <div style={{ display: 'flex', flex: 1, height: 33, alignItems: 'stretch' }}>
+      {/* Filled portion — scales against maxTotal */}
+      <div style={{ width: `${filledPct}%`, display: 'flex', flexShrink: 0, height: 33 }}>
+        <div style={{ width: `${goodFrac}%`, background: colorA, height: 33 }} />
+        <div style={{ flex: 1,              background: colorB, height: 33 }} />
+      </div>
+      {/* Empty remainder */}
     </div>
   )
 }
@@ -224,7 +236,7 @@ export default function DashboardPage() {
               {chart.rows.map((row) => (
                 <div key={row.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <BrandLogo name={row.name} />
-                  <ChartBar good={row.good} bad={row.bad} colorA={chart.colorA} colorB={chart.colorB} />
+                  <ChartBar good={row.good} bad={row.bad} maxTotal={chart.maxTotal} colorA={chart.colorA} colorB={chart.colorB} />
                 </div>
               ))}
             </div>
