@@ -197,53 +197,77 @@ function MovingNinja({ size = 35 }: { size?: number }) {
 function DeliveredNinja({ size = 37 }: { size?: number }) {
   const w = size
   const h = Math.round(size * 74 / 37)
+  // All coordinates derived from Figma CSS percentage positions (parent = 37×74)
+  // Rendered back-to-front
   return (
     <svg width={w} height={h} viewBox="0 0 37 74" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Head skin */}
-      <ellipse cx="18.5" cy="13" rx="10" ry="11" fill="#FED5B2"/>
-      {/* Hair / upper head dark */}
-      <path d="M9 10 Q18.5 2 28 10 Q28 4 18.5 2 Q9 4 9 10Z" fill="#151B2D"/>
-      {/* Face mask lower half */}
-      <path d="M9 16 Q9.5 24.5 18.5 24.5 Q27.5 24.5 28 16Z" fill="#151B2D"/>
-      {/* Eyes wider/open (celebration) */}
-      <ellipse cx="14.5" cy="13.5" rx="3" ry="2.8" fill="white"/>
-      <ellipse cx="22.5" cy="13.5" rx="3" ry="2.8" fill="white"/>
-      {/* Pupils */}
-      <circle cx="14.5" cy="13.5" r="1.5" fill="#0D101B"/>
-      <circle cx="22.5" cy="13.5" r="1.5" fill="#0D101B"/>
-      {/* Eye highlights larger for excitement */}
-      <circle cx="15" cy="12.8" r="0.6" fill="white" opacity="0.8"/>
-      <circle cx="23" cy="12.8" r="0.6" fill="white" opacity="0.8"/>
-      {/* Forehead green Moov diamond */}
-      <path d="M16.5 8 L18.5 5.5 L20.5 8 L18.5 10.5Z" fill="#28FB9D"/>
-      {/* Neck */}
-      <rect x="16.2" y="23.5" width="4.6" height="4" rx="1" fill="#FED5B2"/>
-      {/* Torso */}
-      <path d="M11 27.5 L26 27.5 L27.5 51 L9.5 51Z" fill="#151B2D"/>
-      {/* Green belt sash */}
-      <rect x="11.5" y="37.5" width="14" height="3.5" rx="1.5" fill="#28FB9D"/>
-      {/* Left arm raised up-left (celebration) */}
-      <path d="M11.5 30.5 L3.5 15.5 L6.5 14.5 L13.5 30Z" fill="#151B2D"/>
-      {/* Left hand skin */}
-      <ellipse cx="5" cy="14.5" rx="2" ry="2.5" fill="#FED5B2"/>
-      {/* Right arm raised up-right (celebration) */}
-      <path d="M25.5 30.5 L33.5 15.5 L30.5 14.5 L23.5 30Z" fill="#151B2D"/>
-      {/* Right hand skin */}
-      <ellipse cx="32" cy="14.5" rx="2" ry="2.5" fill="#FED5B2"/>
-      {/* Left leg */}
-      <path d="M13 51 L11 66 L16 66 L17.5 51Z" fill="#0D101B"/>
-      {/* Right leg */}
-      <path d="M19.5 51 L20.5 66 L25.5 66 L24 51Z" fill="#0D101B"/>
-      {/* Left shoe */}
-      <path d="M8 64 L17 64 L17 69.5 L8 69.5 Q6 69.5 6 67 Q6 64 8 64Z" fill="#101010"/>
-      {/* Right shoe */}
-      <path d="M20 64 L29 64 Q31 64 31 67 Q31 69.5 29 69.5 L20 69.5Z" fill="#101010"/>
-      {/* Green laces left (prominent for delivered) */}
-      <line x1="7.5" y1="66" x2="16.5" y2="66" stroke="#28FB9D" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="7.5" y1="67.4" x2="16.5" y2="67.4" stroke="#28FB9D" strokeWidth="1.5" strokeLinecap="round"/>
-      {/* Green laces right */}
-      <line x1="20.5" y1="66" x2="29.5" y2="66" stroke="#28FB9D" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="20.5" y1="67.4" x2="29.5" y2="67.4" stroke="#28FB9D" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* ── Arms (horizontal, extending from body sides) ── */}
+      {/* Left arm sleeve (#101010) — x=3.09→17.05, y=24.16→40.27 */}
+      <rect x="3.09" y="24.16" width="13.96" height="16.11" rx="3" fill="#101010"/>
+      {/* Right arm sleeve (#101010) — x=20.49→34.44, y=24.31→40.41 */}
+      <rect x="20.49" y="24.31" width="13.95" height="16.10" rx="3" fill="#101010"/>
+
+      {/* ── Body / torso (#0D101B) — x=7.97→29.86, y=25.6→50.7 ── */}
+      <rect x="7.97" y="25.60" width="21.89" height="25.10" rx="2" fill="#0D101B"/>
+
+      {/* ── Legs (#0D101B) ── */}
+      {/* Left leg — x=5.07→19.14, y=47.39→73.7 */}
+      <rect x="5.07" y="47.39" width="14.07" height="26.31" rx="2" fill="#0D101B"/>
+      {/* Right leg — x=18.7→32.67, y=47.63→73.96 */}
+      <rect x="18.70" y="47.63" width="13.97" height="26.33" rx="2" fill="#0D101B"/>
+
+      {/* ── Arm sleeve details ── */}
+      {/* Left arm lower sleeve (#151B2D) — x=3.02→15.28, y=33.31→40.71 */}
+      <rect x="3.02" y="33.31" width="12.26" height="7.40" rx="2" fill="#151B2D"/>
+      {/* Right hand skin (#FED5B2) — x=18.69→23.75, y=31.72→38.65 */}
+      <rect x="18.69" y="31.72" width="5.06" height="6.93" rx="2" fill="#FED5B2"/>
+      {/* Right hand shadow (#F2B594) — slightly lower */}
+      <rect x="18.69" y="33.96" width="5.06" height="4.69" rx="1.5" fill="#F2B594"/>
+      {/* Right arm lower sleeve (#151B2D) — x=22.25→34.58, y=33.23→40.74 */}
+      <rect x="22.25" y="33.23" width="12.33" height="7.51" rx="2" fill="#151B2D"/>
+
+      {/* ── Shoelaces / laces (#28FB9D) ── */}
+      {/* Left lace — x=6.5→10.95, y=67.22→70.57 */}
+      <rect x="6.50" y="67.22" width="4.45" height="3.35" rx="1" fill="#28FB9D"/>
+      {/* Right lace — x=26.6→31.06, y=67.22→70.57 */}
+      <rect x="26.60" y="67.22" width="4.46" height="3.35" rx="1" fill="#28FB9D"/>
+
+      {/* ── HEAD GROUP ── */}
+      {/* Outer head oval (#101010) — bbox (3.79,0)→(32.92,27.89) */}
+      <ellipse cx="18.36" cy="13.95" rx="14.57" ry="13.95" fill="#101010"/>
+
+      {/* Face cheek/ear shadow (#F2B594) — bbox (7.33,13.48)→(29.12,24.93) */}
+      <ellipse cx="18.23" cy="19.21" rx="10.90" ry="5.73" fill="#F2B594"/>
+
+      {/* Face skin main (#FED5B2) — bbox (7.07,15.41)→(29.43,27.79) */}
+      <ellipse cx="18.25" cy="21.60" rx="11.18" ry="6.19" fill="#FED5B2"/>
+
+      {/* Upper dark overlay — hair + headband (#151B2D), covers y=4.16→29.44 */}
+      {/* But face skin (rendered above) must show through the eye strip  */}
+      {/* We clip the dark overlay to cover only forehead (top) and chin (bottom) */}
+      {/* Forehead band: y=4.16 to ~y=21 (top edge of visible eye area) */}
+      <rect x="3.59" y="4.16" width="29.30" height="16.84" fill="#151B2D"/>
+      {/* Chin / ninja mask: y=24.5 to y=29.44 */}
+      <rect x="3.59" y="24.50" width="29.30" height="4.94" fill="#151B2D"/>
+
+      {/* Moov-Original diamond (#28FB9D) on forehead */}
+      {/* bbox: x=15.4→21.11, y=6.97→11.46 — center (18.26, 9.22) */}
+      <polygon points="18.26,6.97 21.11,9.22 18.26,11.46 15.40,9.22" fill="#28FB9D"/>
+
+      {/* ── Eyes (from Figma — second corrected set) ── */}
+      {/* Left eye white — cx≈12.66, cy≈22.36, rx≈1.57, ry≈1.76 */}
+      <ellipse cx="12.66" cy="22.36" rx="1.57" ry="1.76" fill="#FFFFFF"/>
+      {/* Left eye pupil/iris (#000000) */}
+      <ellipse cx="12.66" cy="22.05" rx="1.57" ry="1.69" fill="#000000"/>
+      {/* Left eye highlight */}
+      <ellipse cx="11.84" cy="21.57" rx="0.78" ry="0.79" fill="#FFFFFF"/>
+
+      {/* Right eye white — cx≈24.15, cy≈22.36, rx≈1.59, ry≈1.76 */}
+      <ellipse cx="24.15" cy="22.36" rx="1.59" ry="1.76" fill="#FFFFFF"/>
+      {/* Right eye pupil/iris (#000000) */}
+      <ellipse cx="24.15" cy="22.05" rx="1.59" ry="1.69" fill="#000000"/>
+      {/* Right eye highlight */}
+      <ellipse cx="23.34" cy="21.57" rx="0.78" ry="0.79" fill="#FFFFFF"/>
     </svg>
   )
 }
