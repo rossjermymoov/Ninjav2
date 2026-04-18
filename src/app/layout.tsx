@@ -17,11 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="h-full" style={{ background: '#0A0B1E', fontFamily: 'var(--font-sans, Mulish), sans-serif' }}>
         <Sidebar />
         <TopBar />
-        {/* Main content area — offset for sidebar (136px) and topbar (64px) */}
+        {/* Main content area — offset for sidebar (145px) and topbar (80px) */}
         <main
           style={{
-            marginLeft: 136,
-            paddingTop: 64,
+            marginLeft: 145,
+            paddingTop: 80,
             minHeight: '100vh',
             display: 'flex',
             flexDirection: 'column',
