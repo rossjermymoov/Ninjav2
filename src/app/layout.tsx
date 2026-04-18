@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             backgroundSize: 'cover',
             backgroundPosition: 'center bottom',
             backgroundRepeat: 'no-repeat',
-            opacity: 0.07,
+            opacity: 0.2,
             pointerEvents: 'none',
           }}
         />
