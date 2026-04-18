@@ -148,7 +148,7 @@ const NAV_ITEMS = [
   {
     href: '/packing', label: 'Packing',
     renderIcon: (c: string) => <IconPacking color={c} />,
-    wide: true, mintIcon: true,
+    wide: true,
   },
   {
     href: '/settings', label: 'Settings',
