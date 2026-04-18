@@ -355,9 +355,7 @@ export function OrdersTable({
                     key={order.id}
                     className="mn-row transition-colors cursor-pointer"
                     style={{
-                      background: isSelected
-                        ? 'rgba(29,251,157,0.07)'
-                        : '#FDFFFF',
+                      background: '#FDFFFF',
                       borderBottom: '0.5px solid #DFE0EB',
                       height: 50,
                     }}
@@ -388,8 +386,11 @@ export function OrdersTable({
                     </td>
 
                     {/* Date */}
-                    <td className="py-2 px-3 whitespace-nowrap">
-                      <span style={{ fontSize: '12px', color: '#171B2D' }}>{order.createdAt}</span>
+                    <td className="py-2 px-3">
+                      <div className="flex flex-col" style={{ gap: 1 }}>
+                        <span style={{ fontSize: '12px', color: '#171B2D' }}>{order.createdAt.split(' ')[0]}</span>
+                        <span style={{ fontSize: '11px', color: '#6B7280' }}>{order.createdAt.split(' ')[1]}</span>
+                      </div>
                     </td>
 
                     {/* Channel */}
