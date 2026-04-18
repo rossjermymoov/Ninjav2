@@ -234,23 +234,33 @@ function TrackingDetails({ shipment }: { shipment: Shipment }) {
         </div>
       </div>
 
-      {/* Info pills: Carrier / Service / Tracking Number */}
+      {/* Info pills: Carrier / Service */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 32 }}>
         {[
-          { label: 'Carrier',         value: shipment.carrier },
-          { label: 'Service',         value: shipment.service },
-          { label: 'Tracking Number', value: shipment.trackingNumbers[0] },
+          { label: 'Carrier', value: shipment.carrier },
+          { label: 'Service', value: shipment.service },
         ].map(pill => (
           <div key={pill.label} style={{
-            display: 'flex', alignItems: 'stretch',
-            background: colors.surfaceBg,
-            border: `1px solid ${colors.borderSubtle}`,
-            borderRadius: 8, overflow: 'hidden',
+            display: 'flex', alignItems: 'center',
+            background: 'rgba(253,255,255,0.08)',
+            borderRadius: 12,
+            overflow: 'hidden',
           }}>
-            <span style={{ padding: '7px 14px', fontSize: font.size.xs, fontWeight: font.weight.semibold, color: colors.textMuted, fontFamily: M, borderRight: `1px solid ${colors.borderSubtle}`, whiteSpace: 'nowrap' }}>
+            <span style={{
+              padding: '6px 14px',
+              background: 'rgba(253,255,255,0.10)',
+              fontSize: font.size.xs, fontWeight: font.weight.semibold,
+              color: 'rgba(253,255,255,0.55)',
+              fontFamily: M, whiteSpace: 'nowrap',
+            }}>
               {pill.label}
             </span>
-            <span style={{ padding: '7px 16px', fontSize: font.size.xs, fontWeight: font.weight.bold, color: colors.textPrimary, fontFamily: M, whiteSpace: 'nowrap' }}>
+            <span style={{
+              padding: '6px 16px',
+              fontSize: font.size.xs, fontWeight: font.weight.bold,
+              color: colors.textPrimary,
+              fontFamily: M, whiteSpace: 'nowrap',
+            }}>
               {pill.value}
             </span>
           </div>
