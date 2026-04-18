@@ -679,7 +679,7 @@ function EventBadge({ event }: { event: TrackingEventType }) {
     <span style={{
       display: 'inline-block', padding: '3px 8px', borderRadius: radii.badge,
       background: bg, border: `1px solid ${color}40`,
-      fontSize: '17px', fontWeight: font.weight.bold, color, fontFamily: font.family, whiteSpace: 'nowrap',
+      fontSize: '14px', fontWeight: font.weight.bold, color, fontFamily: font.family, whiteSpace: 'nowrap',
     }}>
       {label}
     </span>
@@ -722,36 +722,36 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
           </svg>
         </div>
         {/* Order number */}
-        <span style={{ fontSize: '18px', fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
+        <span style={{ fontSize: '15px', fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
           {shipment.orderNumber}
         </span>
         {/* Customer name */}
-        <span style={{ fontSize: '18px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '15px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.customerName}
         </span>
         {/* Destination */}
-        <span style={{ fontSize: '18px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '15px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.countryFlag} {shipment.postcode}
         </span>
         {/* Carrier logo */}
         <CarrierLogo src={shipment.carrierLogoUrl} name={shipment.carrier} />
         {/* Service */}
-        <span style={{ fontSize: '17px', color: TXT2, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '14px', color: TXT2, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.service}
         </span>
         {/* Tracking number */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
-          <span style={{ fontSize: '17px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: '14px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {shipment.trackingNumbers[0]}
           </span>
           {isMulti && (
-            <span style={{ flexShrink: 0, padding: '1px 5px', borderRadius: 99, background: `${colors.mintDim}20`, border: `1px solid ${colors.mintDim}50`, fontSize: 15, fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
+            <span style={{ flexShrink: 0, padding: '1px 5px', borderRadius: 99, background: `${colors.mintDim}20`, border: `1px solid ${colors.mintDim}50`, fontSize: 13, fontWeight: font.weight.bold, color: colors.mintDim, fontFamily: M }}>
               +{shipment.trackingNumbers.length - 1}
             </span>
           )}
         </div>
         {/* Booked */}
-        <span style={{ fontSize: '17px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '14px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M, whiteSpace: 'nowrap' }}>
           {shipment.bookedAt}
         </span>
         {/* Status badge */}
