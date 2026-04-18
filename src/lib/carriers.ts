@@ -33,11 +33,10 @@ export async function fetchCarrierMap(): Promise<{
 
   try {
     const { db } = await import('@/lib/db')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rows = await (db as any).carrier.findMany({
+    const rows = await db.carrier.findMany({
       where: { isActive: true },
       select: { key: true, displayName: true, logoUrl: true },
-    }) as CarrierData[]
+    })
     return {
       byKey:  Object.fromEntries(rows.map(r => [r.key, r])),
       byName: Object.fromEntries(rows.map(r => [r.displayName.toLowerCase(), r])),
