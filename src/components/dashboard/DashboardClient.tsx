@@ -175,6 +175,131 @@ function AlertsChip({ trackingIssues, serviceAlerts }: { trackingIssues: number;
   )
 }
 
+// ─── Ninja SVG illustration ───────────────────────────────────────────────────
+
+function NinjaSVG({ height = 72 }: { height?: number }) {
+  const w = Math.round(height * (81 / 89))
+  return (
+    <svg width={w} height={height} viewBox="0 0 81 89" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Hair / headband detail */}
+      <path d="M18.5 26C18.5 12.5 28.2 3 40.5 3C52.8 3 62.5 12.5 62.5 26" fill="#28FB9D"/>
+      {/* Head */}
+      <ellipse cx="40.5" cy="28" rx="22" ry="23" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.8"/>
+      {/* Headband line */}
+      <path d="M18.8 24C19 20 21 16 24 13" stroke="#1DFB9D" strokeWidth="1.4" strokeLinecap="round"/>
+      <path d="M62.2 24C62 20 60 16 57 13" stroke="#1DFB9D" strokeWidth="1.4" strokeLinecap="round"/>
+      {/* Eyes */}
+      <ellipse cx="31.5" cy="24" rx="4.5" ry="5" fill="#1DFB9D"/>
+      <ellipse cx="49.5" cy="24" rx="4.5" ry="5" fill="#1DFB9D"/>
+      <ellipse cx="31.5" cy="25" rx="2.2" ry="2.8" fill="#151B2D"/>
+      <ellipse cx="49.5" cy="25" rx="2.2" ry="2.8" fill="#151B2D"/>
+      {/* Eye shine */}
+      <ellipse cx="32.8" cy="23.2" rx="1" ry="1" fill="#fff" opacity="0.7"/>
+      <ellipse cx="50.8" cy="23.2" rx="1" ry="1" fill="#fff" opacity="0.7"/>
+      {/* Face mask (lower half) */}
+      <path d="M19 31 Q19 52 40.5 52 Q62 52 62 31 Z" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.8"/>
+      {/* Mask fold lines */}
+      <path d="M26 37 Q40.5 33 55 37" stroke="#1DFB9D" strokeWidth="1" opacity="0.5" fill="none"/>
+      <path d="M24 43 Q40.5 39 57 43" stroke="#1DFB9D" strokeWidth="1" opacity="0.3" fill="none"/>
+      {/* Smile lines on mask */}
+      <path d="M33 42 Q40.5 46 48 42" stroke="#1DFB9D" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+      {/* Neck */}
+      <rect x="33" y="49" width="15" height="9" rx="2" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.6"/>
+      {/* Body / torso */}
+      <path d="M18 57 C16 57 12 65 12 74 C12 80 16 86 24 87 L57 87 C65 86 69 80 69 74 C69 65 65 57 63 57 L52 55 L40.5 57 L29 55 Z" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.8"/>
+      {/* Left arm */}
+      <path d="M18 57 C10 53 5 60 7 68 C8 72 11 75 14 74" stroke="#1DFB9D" strokeWidth="2" strokeLinecap="round" fill="none"/>
+      {/* Right arm */}
+      <path d="M63 57 C71 53 76 60 74 68 C73 72 70 75 67 74" stroke="#1DFB9D" strokeWidth="2" strokeLinecap="round" fill="none"/>
+      {/* Left fist */}
+      <ellipse cx="7.5" cy="70" rx="5" ry="5" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.6"/>
+      {/* Right fist */}
+      <ellipse cx="73.5" cy="70" rx="5" ry="5" fill="#151B2D" stroke="#1DFB9D" strokeWidth="1.6"/>
+      {/* Belt */}
+      <rect x="19" y="64" width="43" height="6" rx="3" fill="#1DFB9D"/>
+      {/* Belt knot */}
+      <rect x="36" y="61" width="9" height="12" rx="3" fill="#28FB9D"/>
+      {/* Whisker accents */}
+      <path d="M20 36 L9 34" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+      <path d="M20 39 L9 39" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+      <path d="M61 36 L72 34" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+      <path d="M61 39 L72 39" stroke="#28FB9D" strokeWidth="1.2" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+// ─── Ninja Rating Chip ────────────────────────────────────────────────────────
+
+function ninjaRatingTier(pct: number): string {
+  if (pct >= 95) return 'Elite level'
+  if (pct >= 85) return 'Master level'
+  if (pct >= 75) return 'Skilled level'
+  if (pct >= 60) return 'Apprentice level'
+  return 'In training'
+}
+
+function NinjaRatingChip({ dispatched, waiting }: { dispatched: number; waiting: number }) {
+  const total  = dispatched + waiting
+  const pct    = total > 0 ? Math.round((dispatched / total) * 100) : null
+  const pctStr = pct !== null ? `${pct}%` : '—'
+  const tier   = pct !== null ? ninjaRatingTier(pct) : 'No data yet'
+
+  return (
+    <div style={{
+      flex: 1,
+      background: colors.cardBg,
+      border: `1px solid ${colors.mint}`,
+      borderRadius: radii.card,
+      padding: '12px 16px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      overflow: 'hidden',
+      boxShadow: `0 0 16px rgba(29,251,157,0.10)`,
+      position: 'relative',
+    }}>
+      {/* Subtle mint glow behind ninja */}
+      <div style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', width: 80, height: 80, borderRadius: '50%', background: 'rgba(29,251,157,0.06)', pointerEvents: 'none' }} />
+      {/* Ninja illustration */}
+      <div style={{ flexShrink: 0, position: 'relative', zIndex: 1 }}>
+        <NinjaSVG height={68} />
+      </div>
+      {/* Text content */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+        <span style={{
+          fontSize: font.size.xs,
+          fontWeight: font.weight.semibold,
+          color: '#9FA2B4',
+          fontFamily: font.family,
+          textTransform: 'uppercase',
+          letterSpacing: '0.07em',
+        }}>
+          Ninja success rating
+        </span>
+        <span style={{
+          fontSize: 34,
+          fontWeight: font.weight.extrabold,
+          color: colors.mint,
+          fontFamily: font.family,
+          lineHeight: 1,
+          letterSpacing: '-0.02em',
+        }}>
+          {pctStr}
+        </span>
+        <span style={{
+          fontSize: font.size.xs,
+          fontWeight: font.weight.semibold,
+          color: colors.mint,
+          fontFamily: font.family,
+          letterSpacing: '0.03em',
+        }}>
+          {tier}
+        </span>
+      </div>
+    </div>
+  )
+}
+
 // ─── Channel orders panel ─────────────────────────────────────────────────────
 
 // Chart colours — consistent across all white-bg chart panels
@@ -478,19 +603,7 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
           live
           onClick={() => router.push('/orders?filter=nearCutoff')}
         />
-        <StatChip
-          label="Ninja Success Rating"
-          value={(() => {
-            const total = d.ordersDispatched + live.ordersWaiting
-            return total > 0 ? `${Math.round((d.ordersDispatched / total) * 100)}%` : '—'
-          })()}
-          sub="dispatched vs waiting"
-          color={(() => {
-            const total = d.ordersDispatched + live.ordersWaiting
-            const pct = total > 0 ? (d.ordersDispatched / total) * 100 : 100
-            return pct >= 80 ? colors.mint : pct >= 50 ? colors.statusProcessing : colors.statusIssue
-          })()}
-        />
+        <NinjaRatingChip dispatched={d.ordersDispatched} waiting={live.ordersWaiting} />
       </div>
 
       {/* ── Middle row — each card exactly 50% ── */}
