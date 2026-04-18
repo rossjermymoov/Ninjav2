@@ -170,3 +170,10 @@
 
 /* Row hover */
 .mn-row:hover td { background-color: #1C1E35; }
+
+/* Alerts panel scroll — 16px wide, rounded, ghost track */
+.mn-alerts-scroll { overflow-y: auto; }
+.mn-alerts-scroll::-webkit-scrollbar { width: 16px; }
+.mn-alerts-scroll::-webkit-scrollbar-track { background: transparent; border-radius: 8px; }
+.mn-alerts-scroll::-webkit-scrollbar-thumb { background: rgba(217,217,217,0.2); border-radius: 8px; }
+.mn-alerts-scroll::-webkit-scrollbar-thumb:hover { background: rgba(217,217,217,0.35); }

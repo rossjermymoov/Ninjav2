@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { NinjaCard } from '@/components/ui/NinjaCard'
 import { colors, font, radii, shadows } from '@/lib/tokens'
 import type { ChannelData } from '@/lib/channels'
@@ -92,20 +93,25 @@ function LogoImg({ src, name, size = 20 }: { src: string | null; name: string; s
 // ─── Stat chips ───────────────────────────────────────────────────────────────
 
 // Standard chip — single number
-function StatChip({ label, value, sub, color, warning, live }: {
-  label: string; value: string; sub?: string; color?: string; warning?: boolean; live?: boolean
+function StatChip({ label, value, sub, color, warning, live, onClick }: {
+  label: string; value: string; sub?: string; color?: string; warning?: boolean; live?: boolean; onClick?: () => void
 }) {
   const c = color ?? colors.mint
   return (
-    <div style={{
-      flex: 1,
-      background: colors.cardBg,
-      border: `1px solid ${warning ? colors.statusIssue : colors.borderMint}`,
-      borderRadius: radii.card,
-      padding: '14px 18px',
-      boxShadow: warning ? '0 0 12px rgba(255,77,106,0.15)' : shadows.card,
-      position: 'relative',
-    }}>
+    <div
+      onClick={onClick}
+      style={{
+        flex: 1,
+        background: colors.cardBg,
+        border: `1px solid ${warning ? colors.statusIssue : colors.borderMint}`,
+        borderRadius: radii.card,
+        padding: '14px 18px',
+        boxShadow: warning ? '0 0 12px rgba(255,77,106,0.15)' : shadows.card,
+        position: 'relative',
+        cursor: onClick ? 'pointer' : 'default',
+        transition: onClick ? 'opacity 0.15s' : undefined,
+      }}
+    >
       {live && (
         <span style={{
           position: 'absolute', top: 10, right: 12,
@@ -175,12 +181,14 @@ function ChannelOrders({ channelCounts, channelMap }: {
   channelCounts: DashboardChannelRow[]
   channelMap: Record<string, ChannelData>
 }) {
-  const max   = Math.max(...channelCounts.map(c => c.count), 1)
-  const total = channelCounts.reduce((s, c) => s + c.count, 0)
+  // Cap at 5 — most customers won't exceed this
+  const rows  = channelCounts.slice(0, 5)
+  const max   = Math.max(...rows.map(c => c.count), 1)
+  const total = rows.reduce((s, c) => s + c.count, 0)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      {channelCounts.map((row) => {
+      {rows.map((row) => {
         const ch = channelMap[row.slug] ?? { displayName: row.slug, colour: colors.manual, logoUrl: null }
         return (
           <div key={row.slug} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -299,6 +307,7 @@ function PanelLabel({ text }: { text: string }) {
 
 export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, dateOptions }: DashboardClientProps) {
   const [range, setRange] = useState(dateOptions[0])
+  const router = useRouter()
   const d = rangeData[range]
   const live = liveData
 
@@ -350,10 +359,11 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
         <StatChip
           label="Near Cut-off"
           value={String(live.nearCutoff)}
-          sub="at risk of missing"
+          sub="tap to view orders"
           color={live.nearCutoff > 0 ? colors.statusProcessing : colors.mint}
           warning={live.nearCutoff > 0}
           live
+          onClick={() => router.push('/orders?filter=nearCutoff')}
         />
       </div>
 
@@ -368,38 +378,35 @@ export function DashboardClient({ channelMap, carrierMap, rangeData, liveData, d
 
         {/* Live alerts panel — always right now */}
         <NinjaCard style={{ flex: '1 1 0', minWidth: 0 }} padding="18px 20px">
-          {/* Collection cutoff */}
+
+          {/* Panel header — label + Live dot */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <PanelLabel text="Near Cut-off" />
+            <PanelLabel text="Live Alerts" />
             <span style={{ fontSize: font.size.xs, color: colors.mintDim, fontFamily: font.family, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
               <span style={{ width: 5, height: 5, borderRadius: '50%', background: colors.mint, display: 'inline-block' }} />
               Live
             </span>
           </div>
-          {live.collectionAlerts.length > 0
-            ? live.collectionAlerts.map((a, i) => <CollectionAlert key={i} a={a} channelMap={channelMap} />)
-            : <p style={{ margin: '0 0 4px', fontSize: font.size.sm, color: colors.textMuted, fontFamily: font.family }}>No orders at risk ✓</p>
-          }
 
-          {/* Tracking issues */}
-          <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${colors.borderSubtle}` }}>
+          {/* Scrollable alerts body */}
+          <div className="mn-alerts-scroll" style={{ maxHeight: 280, paddingRight: 4 }}>
+
+            {/* Tracking issues */}
             <PanelLabel text="Tracking Issues" />
-            {live.trackingAlerts.slice(0, 3).map((a, i) => <TrackingAlert key={i} a={a} carrierMap={carrierMap} />)}
-            {live.trackingAlerts.length > 3 && (
-              <p style={{ margin: '4px 0 0', fontSize: font.size.sm, color: colors.mint, fontFamily: font.family, cursor: 'pointer' }}>+{live.trackingAlerts.length - 3} more →</p>
-            )}
-            {live.trackingAlerts.length === 0 && (
-              <p style={{ margin: '0 0 4px', fontSize: font.size.sm, color: colors.textMuted, fontFamily: font.family }}>No tracking issues ✓</p>
-            )}
-          </div>
+            {live.trackingAlerts.length > 0
+              ? live.trackingAlerts.map((a, i) => <TrackingAlert key={i} a={a} carrierMap={carrierMap} />)
+              : <p style={{ margin: '0 0 10px', fontSize: font.size.sm, color: colors.textMuted, fontFamily: font.family }}>No tracking issues ✓</p>
+            }
 
-          {/* Service alerts */}
-          {live.serviceAlertList.length > 0 && (
-            <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${colors.borderSubtle}` }}>
-              <PanelLabel text="Service Alerts" />
-              {live.serviceAlertList.map((a, i) => <ServiceAlertRow key={i} a={a} />)}
-            </div>
-          )}
+            {/* Service alerts */}
+            {live.serviceAlertList.length > 0 && (
+              <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${colors.borderSubtle}` }}>
+                <PanelLabel text="Service Alerts" />
+                {live.serviceAlertList.map((a, i) => <ServiceAlertRow key={i} a={a} />)}
+              </div>
+            )}
+
+          </div>
         </NinjaCard>
       </div>
 
