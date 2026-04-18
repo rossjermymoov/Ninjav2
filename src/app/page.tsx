@@ -79,7 +79,7 @@ function BrandLogo({ name, logoUrl }: { name: string; logoUrl?: string | null })
       <img
         src={logoUrl}
         alt={name}
-        style={{ width: 70, height: 40, objectFit: 'contain', flexShrink: 0 }}
+        style={{ width: 60, height: 34, objectFit: 'contain', flexShrink: 0 }}
       />
     )
   }
@@ -93,8 +93,8 @@ function BrandLogo({ name, logoUrl }: { name: string; logoUrl?: string | null })
       fontWeight: 800,
       fontSize: logo?.fs ?? 10,
       borderRadius: 3,
-      width: 70,
-      height: 40,
+      width: 60,
+      height: 34,
       flexShrink: 0,
       letterSpacing: '-0.3px',
       fontFamily: M,
