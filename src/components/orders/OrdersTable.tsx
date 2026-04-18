@@ -302,17 +302,32 @@ export function OrdersTable({
         style={{ border: '1px solid #DFE0EB' }}
       >
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px] border-collapse">
+          {/* table-layout:fixed + colgroup locks every column to Figma-exact widths (total 1330px) */}
+          <table className="border-collapse" style={{ tableLayout: 'fixed', width: 1330 }}>
+            <colgroup>
+              <col style={{ width: 46 }} />   {/* checkbox */}
+              <col style={{ width: 45 }} />   {/* status */}
+              <col style={{ width: 147 }} />  {/* tags */}
+              <col style={{ width: 92 }} />   {/* date */}
+              <col style={{ width: 136 }} />  {/* channel */}
+              <col style={{ width: 152 }} />  {/* order no */}
+              <col style={{ width: 140 }} />  {/* service */}
+              <col style={{ width: 175 }} />  {/* customer */}
+              <col style={{ width: 152 }} />  {/* sku */}
+              <col style={{ width: 50 }} />   {/* items */}
+              <col style={{ width: 65 }} />   {/* iso */}
+              <col style={{ width: 65 }} />   {/* postcode */}
+              <col style={{ width: 65 }} />   {/* menu */}
+            </colgroup>
             {/* Header */}
             <thead>
               <tr style={{ background: '#171B2D' }}>
-                <th className="py-3 px-3 w-10">
+                <th className="py-3 px-3">
                   <input
                     type="checkbox"
                     checked={allSelected}
                     onChange={toggleAll}
-                    className="w-3.5 h-3.5 rounded"
-                    style={{ accentColor: '#1DFB9D' }}
+                    style={{ accentColor: '#1DFB9D', width: 10, height: 10 }}
                   />
                 </th>
                 {[
@@ -343,7 +358,7 @@ export function OrdersTable({
                       background: isSelected
                         ? 'rgba(29,251,157,0.07)'
                         : '#FDFFFF',
-                      borderBottom: '1px solid #DFE0EB',
+                      borderBottom: '0.5px solid #DFE0EB',
                       height: 50,
                     }}
                     onClick={() => toggleRow(order.id)}
@@ -373,7 +388,7 @@ export function OrdersTable({
                     </td>
 
                     {/* Date */}
-                    <td className="py-3 px-3 whitespace-nowrap">
+                    <td className="py-2 px-3 whitespace-nowrap">
                       <span style={{ fontSize: '12px', color: '#171B2D' }}>{order.createdAt}</span>
                     </td>
 
@@ -401,7 +416,7 @@ export function OrdersTable({
                     </td>
 
                     {/* Customer */}
-                    <td className="py-3 px-3 whitespace-nowrap">
+                    <td className="py-2 px-3 whitespace-nowrap">
                       <span style={{ fontSize: '12px', color: '#171B2D' }}>{order.customerName}</span>
                     </td>
 
@@ -433,7 +448,7 @@ export function OrdersTable({
                     </td>
 
                     {/* Postcode */}
-                    <td className="py-3 px-3 whitespace-nowrap">
+                    <td className="py-2 px-3 whitespace-nowrap">
                       <span style={{ fontSize: '12px', color: '#171B2D' }}>{order.postcode}</span>
                     </td>
 
