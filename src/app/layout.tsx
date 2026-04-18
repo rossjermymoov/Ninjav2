@@ -19,10 +19,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <TopBar />
         {/* Main content area — offset for sidebar (136px) and topbar (64px) */}
         <main
-          className="min-h-screen"
-          style={{ marginLeft: 136, paddingTop: 64 }}
+          style={{
+            marginLeft: 136,
+            paddingTop: 64,
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
-          <div className="p-6">{children}</div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 24 }}>
+            {children}
+          </div>
         </main>
       </body>
     </html>

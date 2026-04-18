@@ -60,95 +60,117 @@ function ChartBar({ good, bad, total = 100 }: { good: number; bad: number; total
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col gap-5 relative">
-
-      {/* Gradient orb — top right */}
+    <div
+      style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        position: 'relative',
+        minHeight: 0,
+      }}
+    >
+      {/* Gradient orb */}
       <div
-        className="pointer-events-none absolute"
         style={{
-          top: -80,
-          right: -60,
-          width: 340,
-          height: 340,
+          pointerEvents: 'none',
+          position: 'absolute',
+          top: -80, right: -60,
+          width: 400, height: 400,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,200,83,0.18) 0%, rgba(123,47,190,0.10) 50%, transparent 70%)',
-          filter: 'blur(40px)',
+          background: 'radial-gradient(circle, rgba(0,200,83,0.15) 0%, rgba(123,47,190,0.08) 50%, transparent 70%)',
+          filter: 'blur(50px)',
           zIndex: 0,
         }}
       />
 
-      {/* KPI cards — white surface like V1 */}
-      <div className="grid grid-cols-4 gap-4 relative z-10">
+      {/* KPI row — fixed height */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, position: 'relative', zIndex: 1 }}>
         {KPI_CARDS.map((card) => (
           <div
             key={card.label}
-            className="rounded-xl p-5 flex flex-col gap-3"
-            style={{ background: '#FFFFFF', boxShadow: '0 2px 16px rgba(0,0,0,0.25)' }}
+            style={{ background: '#FFFFFF', borderRadius: 14, padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 10, boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}
           >
-            <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500 }}>{card.label}</span>
-            <span style={{ fontSize: '48px', fontWeight: 800, color: card.numColor, lineHeight: 1 }}>
-              {card.value}
-            </span>
+            <span style={{ fontSize: 12, color: '#6B7280', fontWeight: 500 }}>{card.label}</span>
+            <span style={{ fontSize: 52, fontWeight: 800, color: card.numColor, lineHeight: 1 }}>{card.value}</span>
           </div>
         ))}
       </div>
 
-      {/* Chart cards row */}
-      <div className="grid grid-cols-3 gap-4 relative z-10">
+      {/* Chart row — grows to fill remaining space */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, flex: 1, minHeight: 0, position: 'relative', zIndex: 1 }}>
         {CHART_CARDS.map((chart) => (
           <div
             key={chart.title}
-            className="rounded-xl p-5 flex flex-col gap-4"
-            style={{ background: '#FFFFFF', boxShadow: '0 2px 16px rgba(0,0,0,0.25)' }}
+            style={{ background: '#FFFFFF', borderRadius: 14, padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 0, boxShadow: '0 4px 24px rgba(0,0,0,0.3)', overflow: 'hidden' }}
           >
-            <h3 className="font-bold text-sm" style={{ color: chart.titleColor }}>{chart.title}</h3>
-            <div className="flex flex-col gap-3">
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: chart.titleColor, marginBottom: 20 }}>{chart.title}</h3>
+            {/* Bars — flex-1 so they spread evenly */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               {chart.rows.map((row) => (
-                <div key={row.name} className="flex items-center gap-3">
-                  <span style={{ width: 64, fontSize: '11px', color: '#374151', fontWeight: 600, flexShrink: 0 }}>
+                <div key={row.name} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ width: 68, fontSize: 11, color: '#374151', fontWeight: 600, flexShrink: 0 }}>
                     {row.name}
                   </span>
                   <ChartBar good={row.good} bad={row.bad} />
                 </div>
               ))}
             </div>
-            <div className="flex gap-4">
-              <div className="flex items-center gap-1.5">
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: chart.legendA.color }} />
-                <span style={{ fontSize: '10px', color: '#6B7280' }}>{chart.legendA.label}</span>
+            {/* Legend */}
+            <div style={{ display: 'flex', gap: 16, marginTop: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: chart.legendA.color, flexShrink: 0 }} />
+                <span style={{ fontSize: 10, color: '#6B7280' }}>{chart.legendA.label}</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: chart.legendB.color }} />
-                <span style={{ fontSize: '10px', color: '#6B7280' }}>{chart.legendB.label}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: chart.legendB.color, flexShrink: 0 }} />
+                <span style={{ fontSize: 10, color: '#6B7280' }}>{chart.legendB.label}</span>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Sensai strip */}
+      {/* Sensai strip — pinned to bottom */}
       <div
-        className="rounded-xl px-5 py-4 flex items-center gap-4 relative z-10"
-        style={{ background: '#14162A', border: '1px solid #2A2D4A' }}
+        style={{
+          background: '#14162A',
+          border: '1px solid #2A2D4A',
+          borderRadius: 14,
+          padding: '14px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          position: 'relative',
+          zIndex: 1,
+          flexShrink: 0,
+        }}
       >
         <div
-          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-lg"
-          style={{ background: 'linear-gradient(135deg, #00C853, #7B2FBE)', color: '#fff' }}
+          style={{
+            width: 40, height: 40, borderRadius: '50%',
+            background: 'linear-gradient(135deg, #00C853, #7B2FBE)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontWeight: 700, fontSize: 16, color: '#fff', flexShrink: 0,
+          }}
         >
           S
         </div>
         <div>
-          <span className="font-semibold" style={{ color: '#00BCD4', fontSize: '13px' }}>
-            Sensai Says{' '}
-          </span>
-          <span style={{ color: '#9AA0BC', fontSize: '13px', fontStyle: 'italic' }}>
+          <span style={{ fontWeight: 600, color: '#00BCD4', fontSize: 13 }}>Sensai Says </span>
+          <span style={{ color: '#9AA0BC', fontSize: 13, fontStyle: 'italic' }}>
             &ldquo;You have 60 orders waiting. 47 are Royal Mail 24 Hour — shall I dispatch them all now?&rdquo;
           </span>
         </div>
         <Link
           href="/orders"
-          className="ml-auto px-4 h-8 rounded-full font-semibold shrink-0 flex items-center"
-          style={{ background: '#00C853', color: '#000', fontSize: '12px' }}
+          style={{
+            marginLeft: 'auto', flexShrink: 0,
+            background: '#00C853', color: '#000',
+            padding: '0 16px', height: 32, borderRadius: 999,
+            display: 'flex', alignItems: 'center',
+            fontWeight: 700, fontSize: 12,
+          }}
         >
           Yes, dispatch
         </Link>
