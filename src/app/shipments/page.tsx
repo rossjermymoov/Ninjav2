@@ -494,7 +494,7 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
         </span>
 
         {/* Country + postcode */}
-        <span style={{ fontSize: font.size.sm, color: TXT2, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: font.size.sm, fontWeight: font.weight.semibold, color: TXT, fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {shipment.countryFlag} {shipment.postcode}
         </span>
 
