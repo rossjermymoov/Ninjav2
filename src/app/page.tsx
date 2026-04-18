@@ -115,7 +115,7 @@ function ChartBar({ good, bad, maxTotal, colorA, colorB }: {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', minHeight: 0 }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32, position: 'relative', minHeight: 0 }}>
 
       {/* Gradient orb */}
       <div style={{
@@ -126,7 +126,7 @@ export default function DashboardPage() {
       }} />
 
       {/* ── KPI row ────────────────────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, zIndex: 1 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 43, zIndex: 1 }}>
 
         {/* Card 1 — Orders Waiting */}
         <div style={kpiCard}>
@@ -215,18 +215,20 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Chart row ──────────────────────────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, flex: 1, minHeight: 0, zIndex: 1 }}>
+      {/* Figma: Frame 8973 — gap:35px, each card 378px tall */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 35, flexShrink: 0, zIndex: 1 }}>
         {CHART_CARDS.map((chart) => (
           <div key={chart.title} style={{
             background: '#FFFFFF', border: '1px solid #DFE0EB', borderRadius: 8,
             display: 'flex', flexDirection: 'column', overflow: 'hidden',
-            boxSizing: 'border-box', padding: '12px 20px 14px',
+            boxSizing: 'border-box', padding: '12px 20px 53px',
+            height: 378,
           }}>
-            {/* Title — Figma: left:23px top:12px, font-size:19px */}
+            {/* Title — Figma: top:12px height:24px → ends at 36px */}
             <h3 style={{
               fontFamily: M, fontWeight: 700, fontSize: 19, lineHeight: '24px',
               letterSpacing: '0.4px', color: '#4103CC',
-              margin: 0, marginBottom: 16, flexShrink: 0,
+              margin: 0, marginBottom: 34, flexShrink: 0,
             }}>
               {chart.title}
             </h3>
