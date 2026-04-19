@@ -411,26 +411,8 @@ export default function OrderDetailsPage() {
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
 
-        {/* Left: back + title + logo */}
+        {/* Left: channel logo + title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <button
-            onClick={() => router.push('/orders')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '7px 16px', borderRadius: 99,
-              background: 'transparent', border: `1px solid ${colors.borderMint}`,
-              color: colors.textPrimary, fontSize: font.size.xs, fontWeight: font.weight.semibold,
-              fontFamily: M, cursor: 'pointer', transition: 'background 0.15s', flexShrink: 0,
-            }}
-            onMouseEnter={e => (e.currentTarget.style.background = `${colors.mint}12`)}
-            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-          >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path d="M10 12L6 8l4-4" stroke={colors.mint} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            Back
-          </button>
-
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {/* Channel logo */}
             {channelData?.logoUrl && (
@@ -464,31 +446,36 @@ export default function OrderDetailsPage() {
           </div>
         </div>
 
-        {/* Right: actions */}
-        <div style={{ display: 'flex', gap: 8 }}>
+        {/* Right: split Back | Save pill */}
+        <div style={{
+          display: 'flex', height: 36,
+          borderRadius: 99, border: `1px solid ${colors.mint}`,
+          overflow: 'hidden', flexShrink: 0,
+        }}>
           <button
             onClick={() => router.push('/orders')}
             style={{
-              padding: '8px 20px', borderRadius: 99,
-              background: 'transparent', border: `1px solid ${colors.borderMint}`,
-              color: colors.textPrimary, fontSize: font.size.xs, fontWeight: font.weight.semibold,
+              padding: '0 22px', background: colors.cardBg,
+              border: 'none', borderRight: `1px solid ${colors.mint}`,
+              color: '#FDFFFF', fontSize: font.size.xs, fontWeight: font.weight.bold,
               fontFamily: M, cursor: 'pointer', transition: 'background 0.15s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = `${colors.mint}12`)}
-            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+            onMouseEnter={e => (e.currentTarget.style.background = `${colors.mint}18`)}
+            onMouseLeave={e => (e.currentTarget.style.background = colors.cardBg)}
           >
-            Cancel
+            Back
           </button>
-          <button style={{
-            padding: '8px 24px', borderRadius: 99,
-            background: colors.mint, border: 'none',
-            color: '#0A0B1E', fontSize: font.size.xs, fontWeight: font.weight.extrabold,
-            fontFamily: M, cursor: 'pointer', transition: 'opacity 0.15s',
-          }}
+          <button
+            style={{
+              padding: '0 22px', background: colors.mint,
+              border: 'none',
+              color: '#171B2D', fontSize: font.size.xs, fontWeight: font.weight.extrabold,
+              fontFamily: M, cursor: 'pointer', transition: 'opacity 0.15s',
+            }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
-            Save Changes
+            Save
           </button>
         </div>
       </div>
