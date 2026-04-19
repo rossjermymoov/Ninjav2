@@ -10,7 +10,7 @@ interface Props {
 
 export function ChannelBadge({ storeName, channel }: Props) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-0.5 items-center">
       {channel.logoUrl ? (
         // Logo loaded from DB — PNG from Neuro CDN
         // eslint-disable-next-line @next/next/no-img-element
