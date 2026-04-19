@@ -139,12 +139,17 @@ function tagColors(colour: string) {
 
 function statusBorderColor(status: string): string {
   switch (status) {
-    case 'ready':      return colors.statusReady
-    case 'issue':      return colors.statusIssue
-    case 'processing': return colors.statusProcessing
-    case 'shipped':    return colors.statusShipped
-    default:           return colors.borderSubtle
+    case 'ready':            return colors.statusReady
+    case 'processing':       return colors.statusProcessing
+    case 'issue':            return colors.statusIssue
+    case 'validation_error': return colors.statusIssue
+    case 'error':            return colors.statusIssue
+    default:                 return colors.borderSubtle
   }
+}
+
+function isErrorStatus(status: string) {
+  return status === 'validation_error' || status === 'error'
 }
 
 // ─── Hamburger menu ───────────────────────────────────────────────────────────
@@ -262,21 +267,35 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
   const M = font.family
   const TXT  = '#171B2D'
   const TXT2 = '#5C6478'
-  const leftBorder = statusBorderColor(order.status)
+  const leftBorder  = statusBorderColor(order.status)
+  const hasError    = isErrorStatus(order.status)
+  const errorMsg    = order.validationError ?? order.processingError
+  const errorLabel  = order.status === 'validation_error' ? 'Validation Error' : 'Processing Error'
+  const rowBorder   = hasError
+    ? `1px solid ${colors.statusIssue}50`
+    : selected ? `1px solid ${colors.borderMint}` : '1px solid #E4E6ED'
 
   return (
+    <div
+      style={{
+        borderRadius: radii.card,
+        border: rowBorder,
+        borderLeft: `3px solid ${leftBorder}`,
+        marginBottom: 6,
+        background: '#fff',
+        overflow: 'hidden',
+        boxShadow: hasError
+          ? `0 0 14px ${colors.statusIssue}18`
+          : selected ? `0 0 0 1px ${colors.mint}30` : '0 1px 4px rgba(0,0,0,0.06)',
+        transition: 'border-color 0.2s, box-shadow 0.2s',
+      }}
+    >
     <div
       onClick={onToggle}
       style={{
         display: 'grid', gridTemplateColumns: GRID,
         alignItems: 'center', gap: 8, padding: '11px 16px',
-        background: '#fff',
-        borderRadius: radii.card,
-        border: `1px solid ${selected ? colors.borderMint : '#E4E6ED'}`,
-        borderLeft: `3px solid ${leftBorder}`,
-        marginBottom: 6, cursor: 'pointer', userSelect: 'none',
-        boxShadow: selected ? `0 0 0 1px ${colors.mint}30` : '0 1px 4px rgba(0,0,0,0.06)',
-        transition: 'border-color 0.2s, box-shadow 0.2s',
+        cursor: 'pointer', userSelect: 'none',
       }}
     >
       {/* Checkbox */}
@@ -324,15 +343,15 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
         </span>
       </div>
 
-      {/* Order number — two-line layout (space above for a second/external ID) */}
+      {/* Order number — external ID above, internal ID below */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2, overflow: 'hidden', minWidth: 0 }}>
-        {/* Row above: secondary / external order ID — empty until data model includes it */}
         <span style={{
           fontSize: '11px', color: TXT2, fontFamily: M,
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          minHeight: 16, display: 'block',
-        }} />
-        {/* Primary order number */}
+          minHeight: 16, display: 'block', letterSpacing: '0.02em',
+        }}>
+          {order.externalOrderId ?? ''}
+        </span>
         <span style={{
           fontSize: '14px', fontWeight: font.weight.bold, color: colors.mintDim,
           fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -386,6 +405,38 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
       <div onClick={e => e.stopPropagation()}>
         <OrderMenu orderId={order.id} />
       </div>
+    </div>
+
+    {/* Error strip — shown for validation_error and error statuses */}
+    {hasError && errorMsg && (
+      <div style={{
+        display: 'flex', alignItems: 'flex-start', gap: 10,
+        padding: '9px 16px 10px',
+        background: `${colors.statusIssue}12`,
+        borderTop: `1px solid ${colors.statusIssue}30`,
+      }}>
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
+          <path fillRule="evenodd" clipRule="evenodd"
+            d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 4a1 1 0 011 1v3a1 1 0 11-2 0V7a1 1 0 011-1zm0 7a1 1 0 100 2 1 1 0 000-2z"
+            fill={colors.statusIssue}
+          />
+        </svg>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{
+            fontSize: font.size.xs, fontWeight: font.weight.extrabold,
+            color: colors.statusIssue, fontFamily: M, textTransform: 'uppercase', letterSpacing: '0.06em',
+          }}>
+            {errorLabel}
+          </span>
+          <span style={{
+            fontSize: font.size.sm, fontWeight: font.weight.semibold,
+            color: colors.statusIssue, fontFamily: M, opacity: 0.85,
+          }}>
+            {errorMsg}
+          </span>
+        </div>
+      </div>
+    )}
     </div>
   )
 }

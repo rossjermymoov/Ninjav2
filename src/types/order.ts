@@ -1,4 +1,4 @@
-export type OrderStatus = 'ready' | 'processing' | 'issue'
+export type OrderStatus = 'ready' | 'processing' | 'issue' | 'validation_error' | 'error'
 
 export type SalesChannel =
   | 'tiktok'
@@ -23,6 +23,7 @@ export interface Order {
   channel: SalesChannel
   channelStoreName: string
   orderNumber: string
+  externalOrderId?: string     // channel's own order reference (e.g. 12-digit eBay/Shopify ID)
   deliveryService: string
   customerName: string
   sku: string[]
@@ -30,4 +31,6 @@ export interface Order {
   countryCode: string
   countryFlag: string
   postcode: string
+  validationError?: string     // populated when status === 'validation_error'
+  processingError?: string     // populated when status === 'error'
 }

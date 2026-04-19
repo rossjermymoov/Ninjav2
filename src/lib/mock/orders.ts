@@ -22,7 +22,7 @@ export const MOCK_ORDERS: Order[] = [
   },
   {
     id: '2',
-    status: 'ready',
+    status: 'validation_error',
     tags: [
       { id: 't1', label: 'Express', colour: 'green' },
       { id: 't2', label: 'Priority', colour: 'purple' },
@@ -31,6 +31,7 @@ export const MOCK_ORDERS: Order[] = [
     channel: 'shopify',
     channelStoreName: 'Shopify Store',
     orderNumber: '#4836',
+    externalOrderId: '284739182647',
     deliveryService: '24 Hour',
     customerName: 'Arthur Goth',
     sku: ['SPK-PORTABLE-WHT'],
@@ -38,10 +39,11 @@ export const MOCK_ORDERS: Order[] = [
     countryCode: 'GB',
     countryFlag: '🇬🇧',
     postcode: 'DH2 1LP',
+    validationError: 'Destination postcode DH2 1LP not found in carrier zone',
   },
   {
     id: '3',
-    status: 'issue',
+    status: 'validation_error',
     tags: [
       { id: 't1', label: 'Express', colour: 'green' },
       { id: 't3', label: 'Fragile', colour: 'amber' },
@@ -57,6 +59,7 @@ export const MOCK_ORDERS: Order[] = [
     countryCode: 'GB',
     countryFlag: '🇬🇧',
     postcode: 'LE2 9PL',
+    validationError: 'SKU data missing for USB-CABLE-C',
   },
   {
     id: '4',
@@ -117,7 +120,7 @@ export const MOCK_ORDERS: Order[] = [
   },
   {
     id: '7',
-    status: 'issue',
+    status: 'error',
     tags: [
       { id: 't1', label: 'Express', colour: 'green' },
       { id: 't3', label: 'Fragile', colour: 'amber' },
@@ -126,6 +129,7 @@ export const MOCK_ORDERS: Order[] = [
     channel: 'ebay',
     channelStoreName: 'eBay Store',
     orderNumber: '#3754',
+    externalOrderId: '591827364059',
     deliveryService: '48 Hour',
     customerName: 'Scott Snelson',
     sku: ['SPK-PORTABLE-BLK'],
@@ -133,6 +137,7 @@ export const MOCK_ORDERS: Order[] = [
     countryCode: 'GB',
     countryFlag: '🇬🇧',
     postcode: 'YO15 2TH',
+    processingError: 'Carrier API timeout — label generation failed after 3 retries',
   },
   {
     id: '8',
@@ -181,6 +186,7 @@ export const MOCK_ORDERS: Order[] = [
     channel: 'shopify',
     channelStoreName: 'Shopify Store',
     orderNumber: '#9201',
+    externalOrderId: '738264019283',
     deliveryService: '24 Hour',
     customerName: 'Marcus Webb',
     sku: ['USB-HUB-7PORT'],
