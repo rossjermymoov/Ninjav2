@@ -107,19 +107,38 @@ function ActionBtn({ icon, label, mint = false }: { icon: React.ReactNode; label
   )
 }
 
-// ─── Items badge ──────────────────────────────────────────────────────────────
+// ─── Items badge ─────────────────────────────────────────────────────────────
+// 1 item → green   2 items → purple   3+ items → red (count as text)
 
 function ItemsBadge({ count }: { count: number }) {
+  if (count === 1) {
+    return (
+      <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
+        <circle cx="12.5" cy="12.5" r="12.5" fill="#1DFB9D"/>
+        <path d="M10.2345 16.2059V14.9219H12.1785V9.04187H12.9225L10.4265 10.5299V9.06587L12.6225 7.74587H13.7265V14.9219H15.5505V16.2059H10.2345Z" fill="#FDFFFF"/>
+      </svg>
+    )
+  }
+  if (count === 2) {
+    return (
+      <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
+        <circle cx="12.5" cy="12.5" r="12.5" fill="#6F4B9F"/>
+        <path d="M9.83846 16.2059V15.0659L12.6465 12.1379C12.9985 11.7699 13.2585 11.4299 13.4265 11.1179C13.5945 10.8059 13.6785 10.4859 13.6785 10.1579C13.6785 9.74987 13.5505 9.44187 13.2945 9.23387C13.0385 9.02587 12.6665 8.92187 12.1785 8.92187C11.7865 8.92187 11.4105 8.99387 11.0505 9.13787C10.6905 9.27387 10.3385 9.48987 9.99446 9.78587L9.49046 8.63387C9.83446 8.32987 10.2585 8.08587 10.7625 7.90187C11.2745 7.71787 11.8105 7.62587 12.3705 7.62587C13.2825 7.62587 13.9825 7.82987 14.4705 8.23787C14.9585 8.64587 15.2025 9.22987 15.2025 9.98987C15.2025 10.5179 15.0785 11.0219 14.8305 11.5019C14.5825 11.9739 14.1985 12.4699 13.6785 12.9899L11.3385 15.3299V14.9219H15.5385V16.2059H9.83846Z" fill="#FDFFFF"/>
+      </svg>
+    )
+  }
+  // 3+ items — red circle with dynamic count
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      width: 30, height: 30, borderRadius: '50%',
-      background: `${colors.mint}18`, border: `1px solid ${colors.mint}50`,
-      color: colors.mint, fontSize: font.size.sm, fontWeight: font.weight.extrabold,
-      fontFamily: font.family,
-    }}>
-      {count}
-    </span>
+    <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
+      <circle cx="12.5" cy="12.5" r="12.5" fill="#CD1C69"/>
+      <text
+        x="12.5" y="17" textAnchor="middle"
+        fill="#FDFFFF" fontSize="11" fontWeight="800"
+        fontFamily="system-ui, sans-serif"
+      >
+        {count}
+      </text>
+    </svg>
   )
 }
 
