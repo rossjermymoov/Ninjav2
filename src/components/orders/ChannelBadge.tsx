@@ -20,15 +20,19 @@ export function ChannelBadge({ storeName, channel }: Props) {
           style={{ height: 20, width: 'auto', maxWidth: 72, objectFit: 'contain' }}
         />
       ) : (
-        // Fallback: channel name in brand colour
+        // Fallback: channel display name as secondary (purple)
         <span
-          className="text-xs font-bold tracking-wide"
-          style={{ color: channel.colour }}
+          className="text-xs font-semibold tracking-wide"
+          style={{ color: '#6F4B9F' }}
         >
           {channel.displayName}
         </span>
       )}
-      <span className="text-xs" style={{ color: '#9FA2B4' }}>
+      {/* Store name — primary */}
+      <span
+        className="text-xs font-semibold"
+        style={{ color: '#171B2D', fontSize: 13 }}
+      >
         {storeName}
       </span>
     </div>

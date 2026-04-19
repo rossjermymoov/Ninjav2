@@ -264,16 +264,20 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
   selected: boolean
   onToggle: () => void
 }) {
-  const M = font.family
-  const TXT  = '#171B2D'
-  const TXT2 = '#5C6478'
-  const leftBorder  = statusBorderColor(order.status)
-  const hasError    = isErrorStatus(order.status)
-  const errorMsg    = order.validationError ?? order.processingError
-  const errorLabel  = order.status === 'validation_error' ? 'Validation Error' : 'Processing Error'
-  const rowBorder   = hasError
+  const M   = font.family
+  const PRI = '#171B2D'   // primary text
+  const SEC = '#6F4B9F'   // secondary text (purple)
+  const leftBorder = statusBorderColor(order.status)
+  const hasError   = isErrorStatus(order.status)
+  const errorMsg   = order.validationError ?? order.processingError
+  const errorLabel = order.status === 'validation_error' ? 'Validation Error' : 'Processing Error'
+  const rowBorder  = hasError
     ? `1px solid ${colors.statusIssue}50`
     : selected ? `1px solid ${colors.borderMint}` : '1px solid #E4E6ED'
+
+  // SKU display — max 2, remainder shown as red +N badge
+  const visibleSkus  = order.sku.slice(0, 2)
+  const extraSkuCount = order.sku.length - visibleSkus.length
 
   return (
     <div
@@ -310,7 +314,7 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
       {/* Customer name + tags */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, overflow: 'hidden', minWidth: 0 }}>
         <span style={{
-          fontSize: '15px', fontWeight: font.weight.semibold, color: TXT,
+          fontSize: '13px', fontWeight: font.weight.semibold, color: PRI,
           fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {order.customerName}
@@ -335,25 +339,25 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
 
       {/* Date & time */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <span style={{ fontSize: '14px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M }}>
+        <span style={{ fontSize: '13px', fontWeight: font.weight.semibold, color: PRI, fontFamily: M }}>
           {order.createdAt.split(' ')[0]}
         </span>
-        <span style={{ fontSize: '12px', color: TXT2, fontFamily: M }}>
+        <span style={{ fontSize: '12px', color: SEC, fontFamily: M }}>
           {order.createdAt.split(' ')[1]}
         </span>
       </div>
 
-      {/* Order number — external ID above, internal ID below */}
+      {/* Order number — external ID above (primary), internal #ref below (secondary) */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2, overflow: 'hidden', minWidth: 0 }}>
         <span style={{
-          fontSize: '13px', fontWeight: font.weight.semibold, color: '#171B2D', fontFamily: M,
+          fontSize: '13px', fontWeight: font.weight.semibold, color: PRI, fontFamily: M,
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           minHeight: 16, display: 'block', letterSpacing: '0.02em',
         }}>
           {order.externalOrderId ?? ''}
         </span>
         <span style={{
-          fontSize: '13px', fontWeight: font.weight.bold, color: '#6F4B9F',
+          fontSize: '12px', fontWeight: font.weight.semibold, color: SEC,
           fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {order.orderNumber}
@@ -368,34 +372,47 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
         />
       </div>
 
-      {/* SKU + items badge — merged column */}
+      {/* SKU + items badge — merged column, max 2 SKUs */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, overflow: 'hidden', minWidth: 0 }}>
         <div style={{ flexShrink: 0, paddingTop: 1 }}>
           <ItemsBadge count={order.itemCount} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'hidden', minWidth: 0, flex: 1 }}>
-          {order.sku.map((s, i) => (
+          {visibleSkus.map((s, i) => (
             <span key={i} style={{
-              fontSize: '12px', fontWeight: font.weight.semibold, color: '#276E93',
+              fontSize: i === 0 ? '13px' : '12px',
+              fontWeight: font.weight.semibold,
+              color: i === 0 ? PRI : SEC,
               fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
               {s}
             </span>
           ))}
+          {extraSkuCount > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 1 }}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <circle cx="6" cy="6" r="6" fill="#CD1C69"/>
+                <path d="M5.508 8.916V6.372H3V5.484H5.508V3H6.42V5.484H8.928V6.372H6.42V8.916H5.508Z" fill="white"/>
+              </svg>
+              <span style={{ fontSize: '11px', fontWeight: font.weight.bold, color: '#CD1C69', fontFamily: M }}>
+                {extraSkuCount} more
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Destination — flag + postcode + country, moved to end */}
+      {/* Destination — flag + postcode (primary) + country code (secondary) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{order.countryFlag}</span>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 1, overflow: 'hidden', minWidth: 0 }}>
           <span style={{
-            fontSize: '14px', fontWeight: font.weight.semibold, color: TXT,
+            fontSize: '13px', fontWeight: font.weight.semibold, color: PRI,
             fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>
             {order.postcode}
           </span>
-          <span style={{ fontSize: '11px', color: TXT2, fontFamily: M }}>
+          <span style={{ fontSize: '12px', color: SEC, fontFamily: M }}>
             {order.countryCode}
           </span>
         </div>
