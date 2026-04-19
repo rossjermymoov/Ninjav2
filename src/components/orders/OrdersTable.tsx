@@ -373,8 +373,8 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
       </div>
 
       {/* SKU + items badge — merged column, max 2 SKUs */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, overflow: 'hidden', minWidth: 0 }}>
-        <div style={{ flexShrink: 0, paddingTop: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden', minWidth: 0 }}>
+        <div style={{ flexShrink: 0 }}>
           <ItemsBadge count={order.itemCount} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'hidden', minWidth: 0, flex: 1 }}>
