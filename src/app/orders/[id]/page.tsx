@@ -451,17 +451,14 @@ export default function OrderDetailsPage() {
             )}
 
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <h1 style={{
-                  margin: 0, fontSize: font.size['2xl'], fontWeight: font.weight.extrabold,
-                  color: colors.textPrimary, fontFamily: M, lineHeight: 1,
-                }}>
-                  Order {order.orderNumber}
-                </h1>
-                <StatusBadge status={order.status} />
-              </div>
+              <h1 style={{
+                margin: 0, fontSize: font.size['2xl'], fontWeight: font.weight.extrabold,
+                color: colors.textPrimary, fontFamily: M, lineHeight: 1,
+              }}>
+                Order {order.orderNumber}
+              </h1>
               <span style={{ fontSize: font.size.sm, color: colors.textSecondary, fontFamily: M, marginTop: 3, display: 'block' }}>
-                {order.channelStoreName} · {order.createdAt}
+                {order.channelStoreName}
               </span>
             </div>
           </div>
@@ -499,7 +496,7 @@ export default function OrderDetailsPage() {
       {/* ── 25 / 50 / 25 three-column layout ───────────────────────────── */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 2fr 1fr',
+        gridTemplateColumns: '30% 45% 25%',
         gap: 16,
         alignItems: 'start',
       }}>
