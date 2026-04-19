@@ -222,8 +222,9 @@ function OrderMenu({ orderId }: { orderId: string }) {
 }
 
 // ─── Grid template (shared between header and rows) ───────────────────────────
-const GRID = '36px 1fr 90px 100px 145px 120px 1fr 50px 44px'
-const COLS  = ['', 'Customer', 'Date', 'Order No.', 'Channel', 'Destination', 'SKU', 'Items', '']
+// checkbox | customer | date+time | order no. | channel | sku+items | destination | menu
+const GRID = '36px 1fr 95px 120px 155px 1fr 120px 44px'
+const COLS  = ['', 'Customer', 'Date & Time', 'Order No.', 'Channel', 'SKU & Items', 'Destination', '']
 
 // ─── Column header ────────────────────────────────────────────────────────────
 
@@ -313,7 +314,7 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
         )}
       </div>
 
-      {/* Date */}
+      {/* Date & time */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
         <span style={{ fontSize: '14px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M }}>
           {order.createdAt.split(' ')[0]}
@@ -323,13 +324,22 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
         </span>
       </div>
 
-      {/* Order number */}
-      <span style={{
-        fontSize: '14px', fontWeight: font.weight.bold, color: colors.mintDim,
-        fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-      }}>
-        {order.orderNumber}
-      </span>
+      {/* Order number — two-line layout (space above for a second/external ID) */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, overflow: 'hidden', minWidth: 0 }}>
+        {/* Row above: secondary / external order ID — empty until data model includes it */}
+        <span style={{
+          fontSize: '11px', color: TXT2, fontFamily: M,
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          minHeight: 16, display: 'block',
+        }} />
+        {/* Primary order number */}
+        <span style={{
+          fontSize: '14px', fontWeight: font.weight.bold, color: colors.mintDim,
+          fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>
+          {order.orderNumber}
+        </span>
+      </div>
 
       {/* Channel */}
       <div>
@@ -339,34 +349,37 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
         />
       </div>
 
-      {/* Destination */}
+      {/* SKU + items badge — merged column */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, overflow: 'hidden', minWidth: 0 }}>
+        <div style={{ flexShrink: 0, paddingTop: 1 }}>
+          <ItemsBadge count={order.itemCount} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'hidden', minWidth: 0, flex: 1 }}>
+          {order.sku.map((s, i) => (
+            <span key={i} style={{
+              fontSize: '12px', fontWeight: font.weight.semibold, color: '#276E93',
+              fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            }}>
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Destination — flag + postcode + country, moved to end */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <span style={{ fontSize: 18, lineHeight: 1 }}>{order.countryFlag}</span>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <span style={{ fontSize: '14px', fontWeight: font.weight.semibold, color: TXT, fontFamily: M }}>
+        <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{order.countryFlag}</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 1, overflow: 'hidden', minWidth: 0 }}>
+          <span style={{
+            fontSize: '14px', fontWeight: font.weight.semibold, color: TXT,
+            fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>
             {order.postcode}
           </span>
           <span style={{ fontSize: '11px', color: TXT2, fontFamily: M }}>
             {order.countryCode}
           </span>
         </div>
-      </div>
-
-      {/* SKU */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'hidden', minWidth: 0 }}>
-        {order.sku.map((s, i) => (
-          <span key={i} style={{
-            fontSize: '12px', fontWeight: font.weight.semibold, color: '#276E93',
-            fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          }}>
-            {s}
-          </span>
-        ))}
-      </div>
-
-      {/* Items */}
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <ItemsBadge count={order.itemCount} />
       </div>
 
       {/* Hamburger */}
