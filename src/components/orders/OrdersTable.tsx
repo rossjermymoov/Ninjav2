@@ -346,14 +346,14 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
       {/* Order number — external ID above, internal ID below */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2, overflow: 'hidden', minWidth: 0 }}>
         <span style={{
-          fontSize: '11px', color: TXT2, fontFamily: M,
+          fontSize: '13px', fontWeight: font.weight.semibold, color: '#171B2D', fontFamily: M,
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           minHeight: 16, display: 'block', letterSpacing: '0.02em',
         }}>
           {order.externalOrderId ?? ''}
         </span>
         <span style={{
-          fontSize: '14px', fontWeight: font.weight.bold, color: colors.mintDim,
+          fontSize: '13px', fontWeight: font.weight.bold, color: '#6F4B9F',
           fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {order.orderNumber}
