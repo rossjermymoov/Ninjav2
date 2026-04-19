@@ -222,14 +222,22 @@ function OrderMenu({ orderId }: { orderId: string }) {
 }
 
 // ─── Grid template (shared between header and rows) ───────────────────────────
-const GRID = '36px 1fr 105px 110px 160px 130px 56px 44px'
+const GRID = '36px 1fr 90px 100px 145px 120px 1fr 50px 44px'
+const COLS  = ['', 'Customer', 'Date', 'Order No.', 'Channel', 'Destination', 'SKU', 'Items', '']
 
 // ─── Column header ────────────────────────────────────────────────────────────
 
-function TableHeader() {
+function TableHeader({ allSelected, onToggleAll }: { allSelected: boolean; onToggleAll: () => void }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: GRID, gap: 8, padding: '6px 16px 8px' }}>
-      {['', 'Customer', 'Date', 'Order No.', 'Channel', 'Destination', 'Items', ''].map((h, i) => (
+    <div style={{ display: 'grid', gridTemplateColumns: GRID, gap: 8, padding: '6px 16px 8px', alignItems: 'center' }}>
+      {/* Select-all checkbox */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <input
+          type="checkbox" checked={allSelected} onChange={onToggleAll}
+          style={{ accentColor: colors.mint, width: 14, height: 14, cursor: 'pointer' }}
+        />
+      </div>
+      {COLS.slice(1).map((h, i) => (
         <span key={i} style={{
           fontSize: font.size.xs, fontWeight: font.weight.bold,
           color: colors.textMuted, fontFamily: font.family,
@@ -342,6 +350,18 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
             {order.countryCode}
           </span>
         </div>
+      </div>
+
+      {/* SKU */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'hidden', minWidth: 0 }}>
+        {order.sku.map((s, i) => (
+          <span key={i} style={{
+            fontSize: '12px', fontWeight: font.weight.semibold, color: '#276E93',
+            fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>
+            {s}
+          </span>
+        ))}
       </div>
 
       {/* Items */}
@@ -534,7 +554,7 @@ export function OrdersTable({
 
       {/* ── Table ────────────────────────────────────────────────── */}
       <div>
-        <TableHeader />
+        <TableHeader allSelected={allSelected} onToggleAll={toggleAll} />
         {orders.length === 0 && (
           <p style={{ margin: '24px 0', textAlign: 'center', color: colors.textMuted, fontFamily: M, fontSize: font.size.sm }}>
             No orders found.
