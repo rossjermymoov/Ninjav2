@@ -199,17 +199,23 @@ function OrderMenu({ orderId }: { orderId: string }) {
       <button
         onClick={e => { e.stopPropagation(); setOpen(v => !v) }}
         style={{
-          width: 30, height: 30, borderRadius: 8,
-          background: open ? colors.borderSubtle : 'transparent',
-          border: `1px solid ${open ? colors.borderMint : 'transparent'}`,
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          justifyContent: 'center', gap: 3.5, cursor: 'pointer', transition: 'all 0.15s',
+          width: 25, height: 26, background: 'none', border: 'none',
+          padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', opacity: open ? 1 : 0.85, transition: 'opacity 0.15s',
         }}
         aria-label="Order options"
       >
-        {[0, 1, 2].map(i => (
-          <div key={i} style={{ width: 3.5, height: 3.5, borderRadius: '50%', background: colors.mint }} />
-        ))}
+        <svg width="25" height="26" viewBox="0 0 25 26" fill="none">
+          <g clipPath="url(#hbg-orders)">
+            <ellipse cx="12.5" cy="12.6412" rx="12.5" ry="12.6412" fill="#171B2D"/>
+            <path fillRule="evenodd" clipRule="evenodd" d="M12.75 16.6864C13.7165 16.6864 14.5 17.4788 14.5 18.4562C14.5 19.4336 13.7165 20.226 12.75 20.226C11.7835 20.226 11 19.4336 11 18.4562C11 17.4788 11.7835 16.6864 12.75 16.6864ZM12.75 11.3771C13.7165 11.3771 14.5 12.1695 14.5 13.1469C14.5 14.1243 13.7165 14.9167 12.75 14.9167C11.7835 14.9167 11 14.1243 11 13.1469C11 12.1695 11.7835 11.3771 12.75 11.3771ZM14.5 7.83756C14.5 6.86015 13.7165 6.06779 12.75 6.06779C11.7835 6.06779 11 6.86015 11 7.83756C11 8.81498 11.7835 9.60734 12.75 9.60734C13.7165 9.60734 14.5 8.81498 14.5 7.83756Z" fill="#1DFB9D"/>
+          </g>
+          <defs>
+            <clipPath id="hbg-orders">
+              <rect width="25" height="25.2825" fill="white"/>
+            </clipPath>
+          </defs>
+        </svg>
       </button>
 
       {open && (
