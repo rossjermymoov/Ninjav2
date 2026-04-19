@@ -436,7 +436,7 @@ export default function OrderDetailsPage() {
             {channelData?.logoUrl && (
               <div style={{
                 width: 40, height: 40, borderRadius: 10,
-                background: colors.cardBg,
+                background: '#FFFFFF',
                 border: `1px solid ${colors.borderMint}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden', flexShrink: 0,
@@ -530,23 +530,6 @@ export default function OrderDetailsPage() {
               )}
             </div>
           </Card>
-        </div>
-
-        {/* ── Middle 50%: Address + Items ──────────────────────────── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-
-          <Card>
-            <CardTitle>Shipping Address</CardTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-              <FieldRow label="Address Line 1"  value={addressLine1}  editable onChange={setAddressLine1} />
-              <FieldRow label="Address Line 2"  value={addressLine2}  editable onChange={setAddressLine2} />
-              <FieldRow label="City"            value={city}          editable onChange={setCity} />
-              <FieldRow label="County"          value={county}        editable onChange={setCounty} />
-              <FieldRow label="Postcode"        value={postcode}      editable onChange={setPostcode} />
-              <FieldRow label="Country"         value={country}       editable onChange={setCountry} />
-              <FieldRow label="What3Words"      value={what3words}    editable onChange={setWhat3words} mono />
-            </div>
-          </Card>
 
           <Card>
             <CardTitle>Tax &amp; Compliance</CardTitle>
@@ -556,6 +539,10 @@ export default function OrderDetailsPage() {
               <FieldRow label="UKIMS No."  value={ukimsNumber} editable onChange={setUkimsNumber} mono />
             </div>
           </Card>
+        </div>
+
+        {/* ── Middle 50%: Items + Address ──────────────────────────── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
           <Card style={{ padding: '18px 20px' }}>
             <CardTitle>Items</CardTitle>
@@ -596,6 +583,19 @@ export default function OrderDetailsPage() {
                   </span>
                 </div>
               </div>
+            </div>
+          </Card>
+
+          <Card>
+            <CardTitle>Shipping Address</CardTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+              <FieldRow label="Address Line 1"  value={addressLine1}  editable onChange={setAddressLine1} />
+              <FieldRow label="Address Line 2"  value={addressLine2}  editable onChange={setAddressLine2} />
+              <FieldRow label="City"            value={city}          editable onChange={setCity} />
+              <FieldRow label="County"          value={county}        editable onChange={setCounty} />
+              <FieldRow label="Postcode"        value={postcode}      editable onChange={setPostcode} />
+              <FieldRow label="Country"         value={country}       editable onChange={setCountry} />
+              <FieldRow label="What3Words"      value={what3words}    editable onChange={setWhat3words} mono />
             </div>
           </Card>
         </div>
