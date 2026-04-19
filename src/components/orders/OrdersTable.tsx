@@ -570,16 +570,14 @@ function OrderRow({ order, channelMap, selected, onToggle, onPrintLabel }: {
       }}
     >
     <div
-      onClick={onToggle}
       style={{
         display: 'grid', gridTemplateColumns: GRID,
         alignItems: 'center', gap: 8, padding: '11px 16px',
-        cursor: 'pointer', userSelect: 'none',
+        cursor: 'default', userSelect: 'none',
       }}
     >
-      {/* Checkbox */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        onClick={e => e.stopPropagation()}>
+      {/* Checkbox — only ticks when the checkbox itself is clicked */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <input
           type="checkbox" checked={selected} onChange={onToggle}
           style={{ accentColor: colors.mint, width: 14, height: 14, cursor: 'pointer' }}
@@ -653,11 +651,13 @@ function OrderRow({ order, channelMap, selected, onToggle, onPrintLabel }: {
           <ItemsBadge count={order.itemCount} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'hidden', minWidth: 0, flex: 1 }}>
-          {/* First SKU row — text + optional + badge inline to the right */}
+          {/* First SKU row — text + optional + badge sits directly after text end */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden', minWidth: 0 }}>
             <span style={{
               fontSize: '13px', fontWeight: font.weight.semibold, color: PRI,
-              fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1,
+              fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              minWidth: 0,
+              // no flex:1 — span is only as wide as its content, badge follows immediately after
             }}>
               {visibleSkus[0]}
             </span>
