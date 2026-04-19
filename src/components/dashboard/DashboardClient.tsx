@@ -324,9 +324,10 @@ function ChannelOrders({ channelCounts, channelMap }: {
             <span style={{ width: 100, fontSize: font.size.sm, color: CHART_TEXT, fontFamily: font.family, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: font.weight.semibold }}>
               {ch.displayName}
             </span>
-            {/* Bar: green fill (dispatched) on purple-tint track (outstanding context) */}
-            <div style={{ flex: 1, height: 8, background: CHART_TRACK, borderRadius: 4, overflow: 'hidden' }}>
-              <div style={{ width: `${(row.count / max) * 100}%`, height: '100%', background: CHART_GREEN, borderRadius: 4, transition: 'width 0.4s ease' }} />
+            {/* Bar: green fill (dispatched) on pink gap — matches BreakdownChart height */}
+            <div style={{ flex: 1, height: 32, display: 'flex', borderRadius: 6, overflow: 'hidden', minWidth: 0 }}>
+              <div style={{ width: `${(row.count / max) * 100}%`, background: CHART_GREEN, flexShrink: 0, transition: 'width 0.4s ease' }} />
+              <div style={{ flex: 1, background: CHART_PINK }} />
             </div>
             <span style={{ width: 36, fontSize: font.size.md, fontWeight: font.weight.bold, color: CHART_TEXT, fontFamily: font.family, textAlign: 'right', flexShrink: 0 }}>
               {row.count}
