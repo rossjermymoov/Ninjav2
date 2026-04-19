@@ -382,6 +382,7 @@ export default function OrderDetailsPage() {
   const [postcode,      setPostcode]      = useState(order?.postcode ?? '')
   const [country,       setCountry]       = useState(order?.countryCode ?? 'GB')
   const [what3words,    setWhat3words]    = useState('///tables.chair.lamp')
+  const [deliveryNotes, setDeliveryNotes] = useState('')
   const [taxId,         setTaxId]         = useState('')
   const [eoriId,        setEoriId]        = useState('')
   const [ukimsNumber,   setUkimsNumber]   = useState('')
@@ -512,6 +513,8 @@ export default function OrderDetailsPage() {
               {order.tags.length > 0 && (
                 <FieldRow label="Tags"         value={order.tags.map(t => t.label).join(', ')} />
               )}
+              <FieldRow label="Shipping"       value="£4.99" />
+              <FieldRow label="Total"          value={`£${(subtotal + 4.99).toFixed(2)}`} />
             </div>
           </Card>
 
@@ -538,6 +541,7 @@ export default function OrderDetailsPage() {
               <FieldRow label="Postcode"        value={postcode}      editable onChange={setPostcode} />
               <FieldRow label="Country"         value={country}       editable onChange={setCountry} />
               <FieldRow label="What3Words"      value={what3words}    editable onChange={setWhat3words} mono />
+              <FieldRow label="Delivery Notes"  value={deliveryNotes} editable onChange={setDeliveryNotes} />
             </div>
           </Card>
 
@@ -553,34 +557,6 @@ export default function OrderDetailsPage() {
                 price: '£0.00',
               }])}
             />
-            {/* Totals */}
-            <div style={{
-              display: 'flex', justifyContent: 'flex-end',
-              marginTop: 12, paddingTop: 12,
-              borderTop: '1px solid rgba(253,255,255,0.08)',
-            }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 200 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 24 }}>
-                  <span style={{ fontSize: '12px', color: 'rgba(253,255,255,0.45)', fontFamily: M }}>Subtotal</span>
-                  <span style={{ fontSize: '13px', fontWeight: font.weight.semibold, color: '#FDFFFF', fontFamily: M }}>
-                    £{subtotal.toFixed(2)}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 24 }}>
-                  <span style={{ fontSize: '12px', color: 'rgba(253,255,255,0.45)', fontFamily: M }}>Shipping</span>
-                  <span style={{ fontSize: '13px', fontWeight: font.weight.semibold, color: '#FDFFFF', fontFamily: M }}>£4.99</span>
-                </div>
-                <div style={{
-                  display: 'flex', justifyContent: 'space-between', gap: 24,
-                  paddingTop: 8, borderTop: '1px solid rgba(253,255,255,0.12)',
-                }}>
-                  <span style={{ fontSize: '13px', fontWeight: font.weight.extrabold, color: '#FDFFFF', fontFamily: M }}>Total</span>
-                  <span style={{ fontSize: '14px', fontWeight: font.weight.extrabold, color: colors.mint, fontFamily: M }}>
-                    £{(subtotal + 4.99).toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </div>
           </Card>
 
         </div>
