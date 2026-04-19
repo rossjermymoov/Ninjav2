@@ -662,7 +662,7 @@ function OrderRow({ order, channelMap, selected, onToggle, onPrintLabel }: {
               {visibleSkus[0]}
             </span>
             {extraSkuCount > 0 && (
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ flexShrink: 0 }}>
+              <svg width="16" height="16" viewBox="0 0 12 12" fill="none" style={{ flexShrink: 0 }}>
                 <circle cx="6" cy="6" r="6" fill="#CD1C69"/>
                 <path d="M5.508 8.916V6.372H3V5.484H5.508V3H6.42V5.484H8.928V6.372H6.42V8.916H5.508Z" fill="white"/>
               </svg>
