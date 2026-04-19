@@ -263,70 +263,94 @@ function OrderMenu({ orderId, onPrintLabel }: { orderId: string; onPrintLabel: (
 
 function PrintLabelModal({ orderId, onClose }: { orderId: string; onClose: () => void }) {
   const M = font.family
-  const [length, setLength]                   = useState('50')
-  const [width, setWidth]                     = useState('60')
-  const [height, setHeight]                   = useState('20')
-  const [weight, setWeight]                   = useState('1.2kg')
   const [dispatchDate, setDispatchDate]       = useState('Today')
+  const [dispatchRef, setDispatchRef]         = useState('')
   const [shippingService, setShippingService] = useState('Royal Mail 48')
+  const [weight, setWeight]                   = useState('1.2kg')
+  const [packingSlips, setPackingSlips]       = useState(false)
+  const [addTracking, setAddTracking]         = useState(false)
 
   void orderId // available for API calls
 
-  function ModalFieldRow({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  // Wide dropdown pill with mint right-cap containing chevron
+  function DropdownPill({ value }: { value: string }) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', borderRadius: 12.5, overflow: 'hidden', height: 32, flex: 1, minWidth: 0 }}>
-        <div style={{
-          background: 'rgba(223,224,235,0.20)', padding: '0 10px', height: '100%',
-          display: 'flex', alignItems: 'center', flexShrink: 0,
+      <div style={{
+        display: 'flex', alignItems: 'center', borderRadius: 12.5, overflow: 'hidden',
+        height: 25, flex: 1, background: 'rgba(253,255,255,0.20)', cursor: 'pointer',
+      }}>
+        <span style={{
+          flex: 1, padding: '0 10px',
+          color: colors.textPrimary, fontFamily: M, fontSize: 11,
+          fontWeight: font.weight.semibold, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
-          <span style={{ fontSize: 11, color: colors.textPrimary, fontFamily: M, fontWeight: font.weight.semibold, whiteSpace: 'nowrap' }}>
-            {label}
-          </span>
-        </div>
+          {value}
+        </span>
+        {/* Mint right cap — semicircle shape via border-radius on right side only */}
         <div style={{
-          background: 'rgba(253,255,255,0.20)', flex: 1, height: '100%',
-          display: 'flex', alignItems: 'center', padding: '0 10px', minWidth: 0,
+          width: 30, height: '100%', flexShrink: 0,
+          background: colors.mint,
+          borderRadius: '0 12.5px 12.5px 0',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <input
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            style={{
-              background: 'none', border: 'none', outline: 'none',
-              color: colors.textPrimary, fontFamily: M, fontSize: 12,
-              fontWeight: font.weight.semibold, width: '100%',
-            }}
-          />
+          <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
+            <path d="M1 1l3 4 3-4" stroke="#171B2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
       </div>
     )
   }
 
-  function ModalDropdownRow({ label, value }: { label: string; value: string }) {
+  // Narrow plain pill (editable or read-only value)
+  function PlainPill({ value, onChange }: { value: string; onChange?: (v: string) => void }) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', borderRadius: 12.5, overflow: 'hidden', height: 32, flex: 1, minWidth: 0 }}>
-        <div style={{
-          background: 'rgba(223,224,235,0.20)', padding: '0 10px', height: '100%',
-          display: 'flex', alignItems: 'center', flexShrink: 0,
-        }}>
-          <span style={{ fontSize: 11, color: colors.textPrimary, fontFamily: M, fontWeight: font.weight.semibold, whiteSpace: 'nowrap' }}>
-            {label}
-          </span>
-        </div>
-        <div style={{
-          background: 'rgba(253,255,255,0.20)', flex: 1, height: '100%',
-          display: 'flex', alignItems: 'center', padding: '0 10px', minWidth: 0,
-        }}>
-          <span style={{ color: colors.textPrimary, fontFamily: M, fontSize: 12, fontWeight: font.weight.semibold, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+      <div style={{
+        width: 90, flexShrink: 0, borderRadius: 12.5,
+        height: 25, background: 'rgba(253,255,255,0.20)',
+        display: 'flex', alignItems: 'center', padding: '0 10px', overflow: 'hidden',
+      }}>
+        {onChange ? (
+          <input
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            style={{
+              background: 'none', border: 'none', outline: 'none',
+              color: colors.textPrimary, fontFamily: M, fontSize: 11,
+              fontWeight: font.weight.semibold, width: '100%',
+            }}
+          />
+        ) : (
+          <span style={{ color: colors.textPrimary, fontFamily: M, fontSize: 11, fontWeight: font.weight.semibold, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {value}
           </span>
+        )}
+      </div>
+    )
+  }
+
+  // A labelled row: label text above, then wide dropdown + narrow pill side by side
+  function FieldRow({ label1, dropdown1Value, pill1Value, onPill1Change, label2 }: {
+    label1: string
+    dropdown1Value: string
+    pill1Value: string
+    onPill1Change?: (v: string) => void
+    label2: string
+  }) {
+    return (
+      <div style={{ display: 'flex', gap: 10 }}>
+        {/* Wide column: label + dropdown pill */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <span style={{ fontSize: 10, fontWeight: font.weight.semibold, color: 'rgba(253,255,255,0.55)', fontFamily: M, letterSpacing: '0.04em' }}>
+            {label1}
+          </span>
+          <DropdownPill value={dropdown1Value} />
         </div>
-        <div style={{
-          background: colors.mint, width: 32, height: '100%', flexShrink: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-        }}>
-          <svg width="9" height="6" viewBox="0 0 9 6" fill="none">
-            <path d="M1 1l3.5 4 3.5-4" stroke="#171B2D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+        {/* Narrow column: label + plain pill */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <span style={{ fontSize: 10, fontWeight: font.weight.semibold, color: 'rgba(253,255,255,0.55)', fontFamily: M, letterSpacing: '0.04em' }}>
+            {label2}
+          </span>
+          <PlainPill value={pill1Value} onChange={onPill1Change} />
         </div>
       </div>
     )
@@ -342,7 +366,7 @@ function PrintLabelModal({ orderId, onClose }: { orderId: string; onClose: () =>
     >
       <div
         style={{
-          width: 617, background: '#171B2D', border: `1px solid ${colors.mint}`,
+          width: 560, background: '#171B2D', border: `1px solid ${colors.mint}`,
           borderRadius: 18, padding: '20px 24px 22px', position: 'relative',
           boxShadow: '0 24px 80px rgba(0,0,0,0.6)',
         }}
@@ -373,53 +397,97 @@ function PrintLabelModal({ orderId, onClose }: { orderId: string; onClose: () =>
         <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
 
           {/* Isometric 3D box illustration */}
-          <div style={{ flexShrink: 0, width: 136 }}>
-            <svg width="136" height="116" viewBox="0 0 136 116" fill="none">
-              {/* Top face */}
+          <div style={{ flexShrink: 0, width: 130 }}>
+            <svg width="130" height="112" viewBox="0 0 136 116" fill="none">
               <path d="M68 6 L118 34 L68 62 L18 34 Z" fill="#1DFB9D"/>
-              {/* Right face */}
               <path d="M118 34 L118 82 L68 110 L68 62 Z" fill="#17D080"/>
-              {/* Left face */}
               <path d="M68 62 L68 110 L18 82 L18 34 Z" fill="#0E9E63"/>
-              {/* Tape cross on top face */}
               <path d="M68 6 L68 62" stroke="#171B2D" strokeWidth="5" strokeOpacity="0.25"/>
               <path d="M18 34 L118 34" stroke="#171B2D" strokeWidth="5" strokeOpacity="0.25"/>
-              {/* Vertical tape on right face */}
               <path d="M93 48 L93 96" stroke="#171B2D" strokeWidth="4" strokeOpacity="0.2"/>
-              {/* Vertical tape on left face */}
               <path d="M43 48 L43 96" stroke="#171B2D" strokeWidth="4" strokeOpacity="0.2"/>
             </svg>
           </div>
 
-          {/* Fields + buttons */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {/* Fields section */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-            {/* Dimension + weight row */}
-            <div style={{ display: 'flex', gap: 6 }}>
-              <ModalFieldRow label="L (cm)" value={length} onChange={setLength} />
-              <ModalFieldRow label="W (cm)" value={width}  onChange={setWidth}  />
-              <ModalFieldRow label="H (cm)" value={height} onChange={setHeight} />
-              <ModalFieldRow label="Weight" value={weight} onChange={setWeight} />
-            </div>
+            {/* Row 1: Dispatch Date + Ref */}
+            <FieldRow
+              label1="Dispatch Date"
+              dropdown1Value={dispatchDate}
+              label2="Ref"
+              pill1Value={dispatchRef}
+              onPill1Change={setDispatchRef}
+            />
 
-            {/* Dispatch date + shipping service dropdowns */}
-            <div style={{ display: 'flex', gap: 6 }}>
-              <ModalDropdownRow label="Dispatch date"    value={dispatchDate}    />
-              <ModalDropdownRow label="Shipping service" value={shippingService} />
+            {/* Row 2: Shipping Service + Weight */}
+            <FieldRow
+              label1="Shipping Service"
+              dropdown1Value={shippingService}
+              label2="Weight"
+              pill1Value={weight}
+              onPill1Change={setWeight}
+            />
+
+            {/* Legend row: two checkbox squares + labels */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              {/* Checkbox 1 */}
+              <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
+                <div
+                  onClick={() => setPackingSlips(v => !v)}
+                  style={{
+                    width: 9, height: 9, borderRadius: 2, flexShrink: 0,
+                    background: packingSlips ? colors.mint : '#DFE0EB',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {packingSlips && (
+                    <svg width="7" height="5" viewBox="0 0 7 5" fill="none">
+                      <path d="M1 2.5l1.5 1.5L6 1" stroke="#171B2D" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </div>
+                <span style={{ fontSize: 10, fontWeight: font.weight.semibold, color: 'rgba(253,255,255,0.65)', fontFamily: M }}>
+                  Include packing slips
+                </span>
+              </label>
+              {/* Checkbox 2 */}
+              <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
+                <div
+                  onClick={() => setAddTracking(v => !v)}
+                  style={{
+                    width: 9, height: 9, borderRadius: 2, flexShrink: 0,
+                    background: addTracking ? colors.mint : '#DFE0EB',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {addTracking && (
+                    <svg width="7" height="5" viewBox="0 0 7 5" fill="none">
+                      <path d="M1 2.5l1.5 1.5L6 1" stroke="#171B2D" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </div>
+                <span style={{ fontSize: 10, fontWeight: font.weight.semibold, color: 'rgba(253,255,255,0.65)', fontFamily: M }}>
+                  Add tracking info
+                </span>
+              </label>
             </div>
 
             {/* Action buttons */}
-            <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+            <div style={{ display: 'flex', gap: 8 }}>
               <button style={{
-                flex: 1, height: 36, borderRadius: 99, background: colors.mint,
-                border: 'none', color: '#171B2D', fontSize: 13,
+                width: 98, height: 35, borderRadius: 17.5, background: colors.mint,
+                border: 'none', color: '#171B2D', fontSize: 12,
                 fontWeight: font.weight.bold, fontFamily: M, cursor: 'pointer',
               }}>
                 Get Quote
               </button>
               <button style={{
-                flex: 1, height: 36, borderRadius: 99, background: colors.mint,
-                border: 'none', color: '#171B2D', fontSize: 13,
+                width: 98, height: 35, borderRadius: 17.5, background: colors.mint,
+                border: 'none', color: '#171B2D', fontSize: 12,
                 fontWeight: font.weight.bold, fontFamily: M, cursor: 'pointer',
               }}>
                 Process
@@ -596,12 +664,23 @@ function OrderRow({ order, channelMap, selected, onToggle, onPrintLabel }: {
             </span>
           ))}
           {extraSkuCount > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 1 }}>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <circle cx="6" cy="6" r="6" fill="#CD1C69"/>
-                <path d="M5.508 8.916V6.372H3V5.484H5.508V3H6.42V5.484H8.928V6.372H6.42V8.916H5.508Z" fill="white"/>
-              </svg>
-              <span style={{ fontSize: '11px', fontWeight: font.weight.bold, color: '#CD1C69', fontFamily: M }}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 2,
+              background: '#FFFFFF', borderRadius: 99,
+              padding: '2px 8px 2px 5px',
+              border: '1px solid #E4E6ED',
+            }}>
+              {/* + circle */}
+              <div style={{
+                width: 14, height: 14, borderRadius: '50%',
+                background: '#171B2D',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <svg width="7" height="7" viewBox="0 0 7 7" fill="none">
+                  <path d="M3.5 1v5M1 3.5h5" stroke="#FDFFFF" strokeWidth="1.4" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <span style={{ fontSize: '11px', fontWeight: font.weight.bold, color: '#6F4B9F', fontFamily: M, lineHeight: 1 }}>
                 {extraSkuCount} more
               </span>
             </div>
