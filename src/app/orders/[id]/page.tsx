@@ -64,7 +64,7 @@ function getMockActivities(): Activity[] {
 // ─── Pill field row ───────────────────────────────────────────────────────────
 // Label: grey-tinted left pill; Value: white-tinted right (editable or static)
 
-function FieldRow({ label, value, editable = false, onChange, mono = false }: {
+function FieldRow({ label, value, editable = true, onChange, mono = false }: {
   label: string
   value: string
   editable?: boolean
@@ -76,15 +76,15 @@ function FieldRow({ label, value, editable = false, onChange, mono = false }: {
     <div style={{
       display: 'flex', alignItems: 'center',
       height: 34, borderRadius: 12,
-      background: 'rgba(253,255,255,0.06)',
+      background: 'rgba(253,255,255,0.20)',
       overflow: 'hidden',
     }}>
       <div style={{
         width: 140, flexShrink: 0,
         height: '100%', display: 'flex', alignItems: 'center',
         padding: '0 12px',
-        background: 'rgba(223,224,235,0.12)',
-        borderRight: '1px solid rgba(253,255,255,0.07)',
+        background: 'rgba(223,224,235,0.20)',
+        borderRight: '1px solid rgba(253,255,255,0.10)',
       }}>
         <span style={{
           fontSize: '11px', fontWeight: font.weight.semibold,
@@ -370,9 +370,17 @@ export default function OrderDetailsPage() {
   const [activityNote,  setActivityNote]  = useState('')
 
   // Customer fields
-  const [customerName,  setCustomerName]  = useState(order?.customerName ?? '')
-  const [customerEmail, setCustomerEmail] = useState('customer@example.com')
-  const [customerPhone, setCustomerPhone] = useState('+44 7700 900123')
+  const [customerName,    setCustomerName]    = useState(order?.customerName ?? '')
+  const [customerEmail,   setCustomerEmail]   = useState('customer@example.com')
+  const [customerPhone,   setCustomerPhone]   = useState('+44 7700 900123')
+
+  // Order summary fields
+  const [channelId,       setChannelId]       = useState(order?.externalOrderId ?? '')
+  const [channelStore,    setChannelStore]     = useState(order?.channelStoreName ?? '')
+  const [deliveryService, setDeliveryService] = useState(order?.deliveryService ?? '')
+  const [dateCreated,     setDateCreated]     = useState(order?.createdAt ?? '')
+  const [tagsText,        setTagsText]        = useState(order?.tags.map(t => t.label).join(', ') ?? '')
+  const [shipping,        setShipping]        = useState('£4.99')
 
   // Address fields
   const [addressLine1,  setAddressLine1]  = useState('14 Station Road')
@@ -505,16 +513,14 @@ export default function OrderDetailsPage() {
             <CardTitle>Order Summary</CardTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
               {order.externalOrderId && (
-                <FieldRow label="Channel ID"   value={order.externalOrderId} mono />
+                <FieldRow label="Channel ID"   value={channelId}       onChange={setChannelId}       mono />
               )}
-              <FieldRow label="Channel"        value={order.channelStoreName} />
-              <FieldRow label="Delivery"       value={order.deliveryService} />
-              <FieldRow label="Date Created"   value={order.createdAt} />
-              {order.tags.length > 0 && (
-                <FieldRow label="Tags"         value={order.tags.map(t => t.label).join(', ')} />
-              )}
-              <FieldRow label="Shipping"       value="£4.99" />
-              <FieldRow label="Total"          value={`£${(subtotal + 4.99).toFixed(2)}`} />
+              <FieldRow label="Channel"        value={channelStore}    onChange={setChannelStore} />
+              <FieldRow label="Delivery"       value={deliveryService} onChange={setDeliveryService} />
+              <FieldRow label="Date Created"   value={dateCreated}     onChange={setDateCreated} />
+              <FieldRow label="Tags"           value={tagsText}        onChange={setTagsText} />
+              <FieldRow label="Shipping"       value={shipping}        onChange={setShipping} />
+              <FieldRow label="Total"          value={`£${(subtotal + 4.99).toFixed(2)}`} editable={false} />
             </div>
           </Card>
 
