@@ -653,37 +653,29 @@ function OrderRow({ order, channelMap, selected, onToggle, onPrintLabel }: {
           <ItemsBadge count={order.itemCount} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'hidden', minWidth: 0, flex: 1 }}>
-          {visibleSkus.map((s, i) => (
-            <span key={i} style={{
-              fontSize: i === 0 ? '13px' : '12px',
-              fontWeight: font.weight.semibold,
-              color: i === 0 ? PRI : SEC,
+          {/* First SKU row — text + optional + badge inline to the right */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden', minWidth: 0 }}>
+            <span style={{
+              fontSize: '13px', fontWeight: font.weight.semibold, color: PRI,
+              fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1,
+            }}>
+              {visibleSkus[0]}
+            </span>
+            {extraSkuCount > 0 && (
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ flexShrink: 0 }}>
+                <circle cx="6" cy="6" r="6" fill="#CD1C69"/>
+                <path d="M5.508 8.916V6.372H3V5.484H5.508V3H6.42V5.484H8.928V6.372H6.42V8.916H5.508Z" fill="white"/>
+              </svg>
+            )}
+          </div>
+          {/* Second SKU row */}
+          {visibleSkus.length > 1 && (
+            <span style={{
+              fontSize: '12px', fontWeight: font.weight.semibold, color: SEC,
               fontFamily: M, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
-              {s}
+              {visibleSkus[1]}
             </span>
-          ))}
-          {extraSkuCount > 0 && (
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 2,
-              background: '#FFFFFF', borderRadius: 99,
-              padding: '2px 8px 2px 5px',
-              border: '1px solid #E4E6ED',
-            }}>
-              {/* + circle */}
-              <div style={{
-                width: 14, height: 14, borderRadius: '50%',
-                background: '#171B2D',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-              }}>
-                <svg width="7" height="7" viewBox="0 0 7 7" fill="none">
-                  <path d="M3.5 1v5M1 3.5h5" stroke="#FDFFFF" strokeWidth="1.4" strokeLinecap="round"/>
-                </svg>
-              </div>
-              <span style={{ fontSize: '11px', fontWeight: font.weight.bold, color: '#6F4B9F', fontFamily: M, lineHeight: 1 }}>
-                {extraSkuCount} more
-              </span>
-            </div>
           )}
         </div>
       </div>
