@@ -541,8 +541,21 @@ export default function OrderDetailsPage() {
           </Card>
         </div>
 
-        {/* ── Middle 50%: Items + Address ──────────────────────────── */}
+        {/* ── Middle 50%: Address + Items ──────────────────────────── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+          <Card>
+            <CardTitle>Shipping Address</CardTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+              <FieldRow label="Address Line 1"  value={addressLine1}  editable onChange={setAddressLine1} />
+              <FieldRow label="Address Line 2"  value={addressLine2}  editable onChange={setAddressLine2} />
+              <FieldRow label="City"            value={city}          editable onChange={setCity} />
+              <FieldRow label="County"          value={county}        editable onChange={setCounty} />
+              <FieldRow label="Postcode"        value={postcode}      editable onChange={setPostcode} />
+              <FieldRow label="Country"         value={country}       editable onChange={setCountry} />
+              <FieldRow label="What3Words"      value={what3words}    editable onChange={setWhat3words} mono />
+            </div>
+          </Card>
 
           <Card style={{ padding: '18px 20px' }}>
             <CardTitle>Items</CardTitle>
@@ -586,18 +599,6 @@ export default function OrderDetailsPage() {
             </div>
           </Card>
 
-          <Card>
-            <CardTitle>Shipping Address</CardTitle>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-              <FieldRow label="Address Line 1"  value={addressLine1}  editable onChange={setAddressLine1} />
-              <FieldRow label="Address Line 2"  value={addressLine2}  editable onChange={setAddressLine2} />
-              <FieldRow label="City"            value={city}          editable onChange={setCity} />
-              <FieldRow label="County"          value={county}        editable onChange={setCounty} />
-              <FieldRow label="Postcode"        value={postcode}      editable onChange={setPostcode} />
-              <FieldRow label="Country"         value={country}       editable onChange={setCountry} />
-              <FieldRow label="What3Words"      value={what3words}    editable onChange={setWhat3words} mono />
-            </div>
-          </Card>
         </div>
 
         {/* ── Right 25%: Activity Log ──────────────────────────────── */}
