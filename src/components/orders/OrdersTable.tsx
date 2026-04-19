@@ -306,7 +306,6 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
         borderLeft: `3px solid ${leftBorder}`,
         marginBottom: 6,
         background: '#fff',
-        overflow: 'hidden',
         boxShadow: hasError
           ? `0 0 14px ${colors.statusIssue}18`
           : selected ? `0 0 0 1px ${colors.mint}30` : '0 1px 4px rgba(0,0,0,0.06)',
@@ -450,6 +449,7 @@ function OrderRow({ order, channelMap, selected, onToggle }: {
         padding: '9px 16px 10px',
         background: `${colors.statusIssue}12`,
         borderTop: `1px solid ${colors.statusIssue}30`,
+        borderRadius: `0 0 ${radii.card}px ${radii.card}px`,
       }}>
         <svg width="15" height="15" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
           <path fillRule="evenodd" clipRule="evenodd"

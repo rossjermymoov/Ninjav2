@@ -54,7 +54,7 @@ export const MOCK_ORDERS: Order[] = [
     orderNumber: '#4873',
     deliveryService: '24 Hour',
     customerName: 'Alex Kassan',
-    sku: ['BT-HEADSET-BLK', 'USB-CABLE-C'],
+    sku: ['BT-HEADSET-BLK', 'USB-CABLE-C', 'CHG-PAD-10W'],
     itemCount: 3,
     countryCode: 'GB',
     countryFlag: '🇬🇧',

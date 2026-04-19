@@ -730,7 +730,7 @@ function ShipmentRow({ shipment, expanded, onToggle }: {
     <div style={{
       background: '#fff',
       border: `1px solid ${isProblem ? `${RED}60` : '#E4E6ED'}`,
-      borderRadius: radii.card, marginBottom: 8, overflow: 'hidden',
+      borderRadius: radii.card, marginBottom: 8,
       boxShadow: isProblem ? `0 0 14px ${RED}20` : '0 1px 4px rgba(0,0,0,0.06)',
       transition: 'border-color 0.2s',
     }}>
