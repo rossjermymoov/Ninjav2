@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Order, SalesChannel } from '@/types/order'
 import { ChannelBadge } from './ChannelBadge'
 import type { ChannelData } from '@/lib/channels'
@@ -187,6 +188,7 @@ const ORDER_MENU_OPTIONS = [
 function OrderMenu({ orderId }: { orderId: string }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -230,7 +232,11 @@ function OrderMenu({ orderId }: { orderId: string }) {
             <React.Fragment key={opt.label}>
               {opt.danger && <div style={{ height: 1, margin: '4px 12px', background: '#E8EAEF' }} />}
               <button
-                onClick={e => { e.stopPropagation(); setOpen(false) }}
+                onClick={e => {
+                  e.stopPropagation()
+                  setOpen(false)
+                  if (opt.label === 'Order Details') router.push(`/orders/${orderId}`)
+                }}
                 style={{
                   display: 'block', width: '100%', textAlign: 'left',
                   padding: '9px 16px', background: 'transparent', border: 'none',
