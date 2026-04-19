@@ -83,18 +83,21 @@ function FilterPill({ label, active = false }: { label: string; active?: boolean
 
 // ─── Action button ────────────────────────────────────────────────────────────
 
-function ActionBtn({ icon, label, mint = false }: { icon: React.ReactNode; label: string; mint?: boolean }) {
+function ActionBtn({ icon, label, disabled = false }: { icon: React.ReactNode; label: string; disabled?: boolean; mint?: boolean }) {
   return (
     <button
+      disabled={disabled}
       style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         gap: 4, padding: '7px 12px', borderRadius: radii.badge,
         background: colors.cardBg,
-        border: `1px solid ${mint ? colors.borderMint : colors.borderDim}`,
-        cursor: 'pointer', transition: 'border-color 0.15s', minWidth: 52,
+        border: `1px solid ${colors.borderMint}`,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.3 : 1,
+        transition: 'opacity 0.15s, border-color 0.15s', minWidth: 52,
       }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = colors.borderMint)}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = mint ? colors.borderMint : colors.borderDim)}
+      onMouseEnter={e => { if (!disabled) e.currentTarget.style.borderColor = colors.mint }}
+      onMouseLeave={e => { if (!disabled) e.currentTarget.style.borderColor = colors.borderMint }}
     >
       {icon}
       <span style={{
@@ -220,10 +223,9 @@ function OrderMenu({ orderId }: { orderId: string }) {
 
       {open && (
         <div style={{
-          position: 'absolute', right: 0, top: 36, zIndex: 100,
+          position: 'absolute', right: 0, top: 36, zIndex: 9999,
           background: '#FDFFFF', border: `1px solid ${colors.mint}`,
-          borderRadius: radii.badge + 4, padding: '4px 0',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.35)', minWidth: 180,
+          borderRadius: 8, padding: '4px 0', minWidth: 180,
         }}>
           {ORDER_MENU_OPTIONS.map(opt => (
             <React.Fragment key={opt.label}>
@@ -233,12 +235,12 @@ function OrderMenu({ orderId }: { orderId: string }) {
                 style={{
                   display: 'block', width: '100%', textAlign: 'left',
                   padding: '9px 16px', background: 'transparent', border: 'none',
-                  cursor: 'pointer', fontSize: font.size.sm, fontFamily: font.family,
+                  cursor: 'pointer', fontSize: '12px', fontFamily: font.family,
                   fontWeight: font.weight.semibold,
                   color: opt.danger ? colors.statusIssue : '#171B2D',
                   transition: 'background 0.1s',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = opt.danger ? `${colors.statusIssue}12` : 'rgba(29,251,157,0.08)')}
+                onMouseEnter={e => (e.currentTarget.style.background = opt.danger ? `${colors.statusIssue}12` : `${colors.mint}12`)}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
               >
                 {opt.label}
@@ -616,12 +618,12 @@ export function OrdersTable({
           display: 'flex', alignItems: 'center', gap: 6,
           marginLeft: 'auto', borderLeft: `1px solid ${colors.borderSubtle}`, paddingLeft: 12,
         }}>
-          <ActionBtn icon={<IconBatch />}        label="Batch"   />
-          <ActionBtn icon={<IconTag />}          label="Tag"     />
-          <ActionBtn icon={<IconMerge />}        label="Merge"   />
-          <ActionBtn icon={<IconInvoice />}      label="Invoice" />
-          <ActionBtn icon={<IconActionCopy />}   label="Copy"    mint />
-          <ActionBtn icon={<IconActionDelete />} label="Delete"  mint />
+          <ActionBtn icon={<IconBatch />}        label="Batch"   disabled={selected.size < 1} />
+          <ActionBtn icon={<IconTag />}          label="Tag"     disabled={selected.size < 1} />
+          <ActionBtn icon={<IconMerge />}        label="Merge"   disabled={selected.size < 2} />
+          <ActionBtn icon={<IconInvoice />}      label="Invoice" disabled={selected.size < 1} />
+          <ActionBtn icon={<IconActionCopy />}   label="Copy"    disabled={selected.size < 1} />
+          <ActionBtn icon={<IconActionDelete />} label="Delete"  disabled={selected.size < 2} />
         </div>
       </div>
 
