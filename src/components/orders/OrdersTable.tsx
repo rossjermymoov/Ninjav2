@@ -177,12 +177,11 @@ function isErrorStatus(status: string) {
 // ─── Hamburger menu ───────────────────────────────────────────────────────────
 
 const ORDER_MENU_OPTIONS = [
-  { label: 'View Order' },
-  { label: 'Edit Order' },
+  { label: 'Order Details' },
   { label: 'Print Label' },
-  { label: 'Print Invoice' },
-  { label: 'Duplicate' },
-  { label: 'Cancel Order', danger: true },
+  { label: 'Multi Parcel' },
+  { label: 'Copy' },
+  { label: 'Delete', danger: true },
 ]
 
 function OrderMenu({ orderId }: { orderId: string }) {
